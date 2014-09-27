@@ -7,22 +7,34 @@
 //
 
 #import "DashboardViewController.h"
+#import "AppDelegate.h"
+#import "Personal_Details.h"
 
 @interface DashboardViewController ()
 @property (strong, nonatomic) IBOutlet UILabel *username;
+@property (strong, nonatomic) IBOutlet UILabel *access_token;
 @end
 
 @implementation DashboardViewController
 
 -(void)viewWillAppear:(BOOL)animated{
     
-    NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+    NSManagedObjectContext *context = [(AppDelegate *)[[UIApplication sharedApplication] delegate] managedObjectContext];
     
-    NSObject * object = [prefs objectForKey:@"username"];
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Personal_Details"];
+    NSError *error;
+    NSArray *details = [context executeFetchRequest:request error:&error];
     
-    NSString *username = (NSString *)object;
+    Personal_Details *person = [details firstObject];
+    
+    NSString *username = [NSString stringWithFormat:@"%@ %@", person.firstname, person.surname];
     
     [self.username setText:username];
+    
+    NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+    NSString *access = [NSString stringWithFormat:@"%@", [prefs valueForKey:@"access_token"]];
+    
+    [self.access_token setText:access];
     
 }
 @end

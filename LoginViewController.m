@@ -9,11 +9,15 @@
 #import "LoginViewController.h"
 
 @interface LoginViewController () <UITextFieldDelegate>
+
+#pragma mark IBOutlets
 @property (strong, nonatomic) IBOutlet UITextField *usernameTextField;
 @property (strong, nonatomic) IBOutlet UITextField *passwordTextField;
 @property (strong, nonatomic) IBOutlet UIButton *loginButton;
 @property (strong, nonatomic) IBOutlet UIActivityIndicatorView *loginActivityIndicator;
 @property (strong, nonatomic) IBOutlet UILabel *loginErrorLabel;
+
+#pragma mark Instance Variables
 @property (strong, nonatomic) NSMutableData *responseData;
 @property (strong, nonatomic) NSURLConnection *conn;
 @end
@@ -22,18 +26,19 @@
 @synthesize conn;
 @synthesize responseData;
 
+#pragma mark View Delegate Methods
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    //Set delegate for username & password text field
     [self.usernameTextField setDelegate:self];
     [self.passwordTextField setDelegate:self];
 }
 
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-}
 
+#pragma mark TextField Control Methods
 -(BOOL)textFieldShouldReturn:(UITextField *)textField
 {
     [textField resignFirstResponder];
@@ -41,18 +46,23 @@
 }
 
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField{
+    
+    //Cancel ongoing connection
     [conn cancel];
     [self.loginActivityIndicator stopAnimating];
     self.loginButton.hidden = NO;
     return YES;
 }
 
+
+#pragma mark Login Submission
 - (IBAction)submitLogin
 {
+    //Hide login button and animate activity indicator
     self.loginButton.hidden = YES;
-    
     [self.loginActivityIndicator startAnimating];
     
+    //URL for authentication API
     NSURL *url = [NSURL URLWithString:@"http://drf8.host.cs.st-andrews.ac.uk/Carbon/authenticate.php"];
     
     // Create the request.
@@ -60,12 +70,10 @@
                                                            cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData
                                                        timeoutInterval:40.0];
     request.HTTPMethod = @"POST";
-    
     NSString *stringData = [NSString stringWithFormat:@"username=%@&password=%@", [self.usernameTextField text], [self.passwordTextField text]];
-    
     request.HTTPBody = [stringData dataUsingEncoding:NSUTF8StringEncoding];
     
-    // Create url connection and fire request
+    // Create url connection, set request and delegate
     conn = [[NSURLConnection alloc] initWithRequest:request delegate:self];
 }
 
@@ -94,6 +102,7 @@
     // The request is complete and data has been received
     NSError *e = nil;
     
+    //Load JSON data as dictionary
     NSDictionary *json = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingMutableContainers error:&e];
     
     BOOL success = [[json valueForKey:@"success"] boolValue];
@@ -103,7 +112,7 @@
     if(success){
         
         NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
-        [prefs setObject:@"dfoster89776" forKey:@"username"];
+        [prefs setObject:[NSString stringWithFormat:@"%@", [json valueForKey:@"access_token"]] forKey:@"access_token"];
         
         [self performSegueWithIdentifier:@"Login Success" sender:self];
         
@@ -120,12 +129,31 @@
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
     
+    NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+    
     if(error.code == NSURLErrorTimedOut){
-        
         [conn cancel];
         [self.loginActivityIndicator stopAnimating];
         self.loginButton.hidden = NO;
         self.loginErrorLabel.text = @"Request timed out. Please try again.";
+    }
+    else if (error.code == NSURLErrorNotConnectedToInternet){
+        [conn cancel];
+        [self.loginActivityIndicator stopAnimating];
+        self.loginButton.hidden = NO;
+        self.loginErrorLabel.text = @"No internet connection available.";
+    }
+    else if(error.code == NSURLErrorNetworkConnectionLost){
+        [conn cancel];
+        [self.loginActivityIndicator stopAnimating];
+        self.loginButton.hidden = NO;
+        self.loginErrorLabel.text = @"Network connection has been lost.";
+    }
+    else{
+        [conn cancel];
+        [self.loginActivityIndicator stopAnimating];
+        self.loginButton.hidden = NO;
+        self.loginErrorLabel.text = @"Unknown error has occurred.";
     }
     
 }

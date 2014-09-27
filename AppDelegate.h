@@ -18,7 +18,7 @@
 
 - (void)saveContext;
 - (NSURL *)applicationDocumentsDirectory;
-
+-(void)clearPersistentStore;
 
 @end
 

@@ -16,21 +16,19 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
-    NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
-    
-    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    
     // Load Main App Screen
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     UIViewController *homeScreenVC = nil;
-    
-    NSObject * object = [prefs objectForKey:@"username"];
-    if(object != nil){
+
+    //Check if username is set in preferences, if so load dashboard view, otherwise display login screen
+    if([[NSUserDefaults standardUserDefaults] objectForKey:@"access_token"] != nil){
         homeScreenVC = [storyboard instantiateViewControllerWithIdentifier:@"TabBarController"];
     }else{
         homeScreenVC = [storyboard instantiateViewControllerWithIdentifier:@"Login"];
     }
-        
+
+    //Display appropriate initial view
+    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.rootViewController = homeScreenVC;
     [self.window makeKeyAndVisible];
     
@@ -69,7 +67,7 @@
 
 - (NSURL *)applicationDocumentsDirectory {
     // The directory the application uses to store the Core Data store file. This code uses a directory named "david.foster.Saint_Portal" in the application's documents directory.
-    return [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
+    return [[[NSFileManager defaultManager] URLsForDirectory:NSLibraryDirectory inDomains:NSUserDomainMask] lastObject];
 }
 
 - (NSManagedObjectModel *)managedObjectModel {
@@ -105,6 +103,8 @@
         // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
         NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
         abort();
+    }else{
+        [self addSkipBackupAttributeToItemAtURL:storeURL];
     }
     
     return _persistentStoreCoordinator;
@@ -139,6 +139,31 @@
             abort();
         }
     }
+}
+
+-(void)clearPersistentStore{
+    
+    NSPersistentStoreCoordinator *storeCoordinator = [self persistentStoreCoordinator];
+    NSPersistentStore *store = [[storeCoordinator persistentStores] lastObject];
+    NSURL *storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"dataModel"];
+    NSError *error;
+    
+    [storeCoordinator removePersistentStore:store error:&error];
+    [[NSFileManager defaultManager] removeItemAtPath:storeURL.path error:&error];
+    
+    [_persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:nil error:&error];
+    
+    if (storeCoordinator != nil) {
+        _managedObjectContext = [[NSManagedObjectContext alloc] init];
+        [_managedObjectContext setPersistentStoreCoordinator:storeCoordinator];
+    }
+}
+
+- (BOOL)addSkipBackupAttributeToItemAtURL:(NSURL *)URL
+{
+    NSError *error = nil;
+    [URL setResourceValue:[NSNumber numberWithBool:YES] forKey:NSURLIsExcludedFromBackupKey error:&error];
+    return error == nil;
 }
 
 @end
