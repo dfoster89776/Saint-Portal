@@ -7,18 +7,18 @@
 //
 
 #import "SetupViewController.h"
-#import "SetupPersonalDetails.h"
+#import "UpdatePersonalDetailsHandler.h"
 
 @interface SetupViewController ()
 @property (nonatomic) BOOL personalDetailsStatus;
-@property (nonatomic, strong) SetupPersonalDetails* personalDetails;
 @property (strong, nonatomic) IBOutlet UIActivityIndicatorView *personalDetailsActivityIndicator;
 @property (strong, nonatomic) IBOutlet UILabel *personalDetailsCheckmark;
 @property (strong, nonatomic) IBOutlet UIButton *continueButton;
+
+@property (strong, nonatomic) UpdatePersonalDetailsHandler *updatePersonalDetailsHandler;
 @end
 
 @implementation SetupViewController
-@synthesize personalDetails;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -29,8 +29,13 @@
 }
 
 -(void)viewDidAppear:(BOOL)animated{
-    self.personalDetails = [[SetupPersonalDetails alloc]init];
-    [self.personalDetails setSetupController:self];
+    
+    //Update personal details
+    self.updatePersonalDetailsHandler = [[UpdatePersonalDetailsHandler alloc] init];
+    [self.updatePersonalDetailsHandler UpdatePersonalDetailsWithDelegate:self];
+    
+    
+    
 }
 
 
@@ -40,31 +45,21 @@
 
 -(void)updateStatus{
     
-    NSLog(@"Updating status");
+    //Check status of personal details setup
+    BOOL personal = [self.updatePersonalDetailsHandler getStatus];
     
-    //Personal Details
-    self.personalDetailsStatus = [self.personalDetails getStatus];
-    
-    if(self.personalDetailsStatus){
+    if(personal){
         [self.personalDetailsActivityIndicator stopAnimating];
-        self.personalDetailsActivityIndicator.hidden = YES;
         self.personalDetailsCheckmark.hidden = NO;
     }
     
-    if(self.personalDetailsStatus){
+    if(personal){
         self.continueButton.hidden = NO;
     }
-
+    
+    
+    NSLog(@"Setup delegate called");
+    
 }
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

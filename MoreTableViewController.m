@@ -27,7 +27,7 @@
     
     //Personal Details
     if((indexPath.section == 0) && (indexPath.row == 0)){
-        [self performSegueWithIdentifier: @"View Personal Details" sender: self];
+        
     }else if((indexPath.section == 0) && (indexPath.row == 1)){
         [self performSegueWithIdentifier: @"Show Student Record" sender: self];
     }
@@ -44,6 +44,8 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     // Get the new view controller using [segue destinationViewController].
     // Pass the selected object to the new view controller.
+    NSLog(@"Segueing");
+
 }
 
 
@@ -61,9 +63,7 @@
     UIViewController *homeScreenVC = [storyboard instantiateViewControllerWithIdentifier:@"Login"];
     
     [[self view] window].rootViewController = homeScreenVC;
-    
-    NSLog(@"Logged out succesfully");
-    
+        
 }
 
 @end
