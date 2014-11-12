@@ -31,8 +31,6 @@
     
     SaintPortalAPI *api = [[SaintPortalAPI alloc] init];
     
-    NSLog(@"%p", self);
-    
     [api APIRequest:UpdatePersonalDetailsRequest withData:nil withDelegate:self];
     
     
@@ -51,25 +49,29 @@
     if(count){
         NSArray *details = [context executeFetchRequest:request error:&error];
         Personal_Details *person = [details firstObject];
-        person.firstname = [data objectForKey:@"firstname"];
+        person.firstname = [data objectForKey:@"forename"];
         person.surname = [data objectForKey:@"surname"];
         person.matriculation_number = [data objectForKey:@"matriculation_number"];
+        person.hesa_number = [data objectForKey:@"hesa_number"];
+        person.student_support_number = [data objectForKey:@"student_support_number"];
+        person.fee_status = [data objectForKey:@"fee_status"];
         
     }
     //Else add new person object
     else{
         
         Personal_Details *person = [NSEntityDescription insertNewObjectForEntityForName:@"Personal_Details" inManagedObjectContext:context];
-        person.firstname = [data objectForKey:@"firstname"];
+        person.firstname = [data objectForKey:@"forename"];
         person.surname = [data objectForKey:@"surname"];
         person.matriculation_number = [data objectForKey:@"matriculation_number"];
+        person.hesa_number = [data objectForKey:@"hesa_number"];
+        person.student_support_number = [data objectForKey:@"student_support_number"];
+        person.fee_status = [data objectForKey:@"fee_status"];
     }
     
     NSError *err = nil;
     
     [context save:&err];
-    
-    NSLog(@"Updating Personal Details");
     
     self.status = YES;
     
@@ -77,9 +79,20 @@
         [self.delegate updateStatus];
     }else{
         //Send personal details update notification
+        [[NSNotificationCenter defaultCenter]
+         postNotificationName:@"PersonalDetailsHaveUpdated"
+         object:self];
     }
     
     
+    
+}
+
+-(void)APIErrorHandler:(NSError *)error{
+    
+    if(self.delegate != nil){
+        [self.delegate updateStatus];
+    }
     
 }
 

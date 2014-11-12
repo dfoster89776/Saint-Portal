@@ -1,11 +1,109 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="6244" systemVersion="13F34" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="6252" systemVersion="14B17" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="Buildings" representedClassName="Buildings" syncable="YES">
+        <attribute name="building_name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="major_value" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="buildings_rooms" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Rooms" inverseName="rooms_building" inverseEntity="Rooms" syncable="YES"/>
+    </entity>
+    <entity name="Coursework" representedClassName="Coursework" syncable="YES">
+        <attribute name="coursework_description" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="coursework_due" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="coursework_feedback_date" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="coursework_file" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="coursework_id" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="coursework_name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="coursework_weighting" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="submitted" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <relationship name="assignments_module" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="Modules" inverseName="module_assignments" inverseEntity="Modules" syncable="YES"/>
+    </entity>
+    <entity name="Directory" representedClassName="Directory" parentEntity="Store" syncable="YES">
+        <attribute name="directory_id" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <relationship name="children" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Store" inverseName="parent" inverseEntity="Store" syncable="YES"/>
+    </entity>
+    <entity name="Event" representedClassName="Event" isAbstract="YES" syncable="YES">
+        <attribute name="end_time" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="event_calendar_identifier" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="event_id" attributeType="Integer 64" defaultValueString="0" indexed="YES" syncable="YES"/>
+        <attribute name="start_time" optional="YES" attributeType="Date" syncable="YES"/>
+        <relationship name="event_location" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Rooms" inverseName="rooms_events" inverseEntity="Rooms" syncable="YES"/>
+        <relationship name="event_module" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="Modules" inverseName="module_events" inverseEntity="Modules" syncable="YES"/>
+    </entity>
+    <entity name="Examples" representedClassName="Examples" parentEntity="Store" syncable="YES">
+        <relationship name="examples_post" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Posts" inverseName="posts_examples" inverseEntity="Posts" syncable="YES"/>
+    </entity>
+    <entity name="File" representedClassName="File" parentEntity="Store" syncable="YES">
+        <attribute name="file_id" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="file_url" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="Lectures" representedClassName="Lectures" parentEntity="Event" syncable="YES"/>
+    <entity name="Modules" representedClassName="Modules" syncable="YES">
+        <attribute name="current" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="module_code" optional="YES" attributeType="String" maxValueString="10" syncable="YES"/>
+        <attribute name="module_id" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="module_name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="school" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="semester" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="year" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="module_assignments" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Coursework" inverseName="assignments_module" inverseEntity="Coursework" syncable="YES"/>
+        <relationship name="module_events" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Event" inverseName="event_module" inverseEntity="Event" syncable="YES"/>
+        <relationship name="modules_topics" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Topics" inverseName="topics_module" inverseEntity="Topics" syncable="YES"/>
+    </entity>
     <entity name="Personal_Details" representedClassName="Personal_Details" syncable="YES">
+        <attribute name="fee_status" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="firstname" attributeType="String" syncable="YES"/>
+        <attribute name="hesa_number" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="matriculation_number" attributeType="String" syncable="YES"/>
+        <attribute name="student_support_number" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="surname" attributeType="String" syncable="YES"/>
     </entity>
+    <entity name="Posts" representedClassName="Posts" syncable="YES">
+        <attribute name="post_description" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="post_id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="post_name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="post_order" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <relationship name="posts_examples" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Examples" inverseName="examples_post" inverseEntity="Examples" syncable="YES"/>
+        <relationship name="posts_slides" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Slides" inverseName="slides_post" inverseEntity="Slides" syncable="YES"/>
+        <relationship name="posts_topic" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Topics" inverseName="topics_posts" inverseEntity="Topics" syncable="YES"/>
+    </entity>
+    <entity name="Rooms" representedClassName="Rooms" syncable="YES">
+        <attribute name="location_id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="minor_value" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="room_name" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="rooms_building" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Buildings" inverseName="buildings_rooms" inverseEntity="Buildings" syncable="YES"/>
+        <relationship name="rooms_events" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Event" inverseName="event_location" inverseEntity="Event" syncable="YES"/>
+    </entity>
+    <entity name="Slides" representedClassName="Slides" parentEntity="File" syncable="YES">
+        <relationship name="slides_post" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Posts" inverseName="posts_slides" inverseEntity="Posts" syncable="YES"/>
+    </entity>
+    <entity name="Store" representedClassName="Store" isAbstract="YES" syncable="YES">
+        <attribute name="last_update" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="parent" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Directory" inverseName="children" inverseEntity="Directory" syncable="YES"/>
+    </entity>
+    <entity name="Topics" representedClassName="Topics" syncable="YES">
+        <attribute name="topic_description" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="topic_id" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="topic_name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="topic_order" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <relationship name="topics_module" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Modules" inverseName="modules_topics" inverseEntity="Modules" syncable="YES"/>
+        <relationship name="topics_posts" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Posts" inverseName="posts_topic" inverseEntity="Posts" syncable="YES"/>
+    </entity>
+    <entity name="Tutorials" representedClassName="Tutorials" parentEntity="Event" syncable="YES"/>
     <elements>
-        <element name="Personal_Details" positionX="-4212" positionY="-1800" width="128" height="88"/>
+        <element name="Buildings" positionX="-3323" positionY="-1753" width="128" height="88"/>
+        <element name="Coursework" positionX="-4169" positionY="-1827" width="128" height="178"/>
+        <element name="Directory" positionX="-3510" positionY="-1314" width="128" height="73"/>
+        <element name="Event" positionX="-3755" positionY="-1818" width="128" height="133"/>
+        <element name="File" positionX="-3674" positionY="-1314" width="128" height="73"/>
+        <element name="Lectures" positionX="-3690" positionY="-1618" width="128" height="43"/>
+        <element name="Modules" positionX="-3942" positionY="-1863" width="128" height="193"/>
+        <element name="Personal_Details" positionX="-4401" positionY="-1863" width="128" height="133"/>
+        <element name="Posts" positionX="-4095" positionY="-1404" width="128" height="148"/>
+        <element name="Rooms" positionX="-3521" positionY="-1782" width="128" height="118"/>
+        <element name="Slides" positionX="-3888" positionY="-1327" width="128" height="58"/>
+        <element name="Store" positionX="-3510" positionY="-1474" width="128" height="88"/>
+        <element name="Topics" positionX="-4122" positionY="-1585" width="128" height="133"/>
+        <element name="Tutorials" positionX="-3843" positionY="-1618" width="128" height="43"/>
+        <element name="Examples" positionX="-3890" positionY="-1420" width="128" height="58"/>
     </elements>
 </model>

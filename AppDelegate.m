@@ -7,14 +7,35 @@
 //
 
 #import "AppDelegate.h"
+#import <EventKit/EventKit.h>
+#import "UpdateAllModuleData.h"
+#import "CourseworkDetailsViewController.h"
+#import "CourseworkModalViewController.h"
 
-@interface AppDelegate ()
+#define UIColorFromRGB(rgbValue) [UIColor colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 green:((float)((rgbValue & 0xFF00) >> 8))/255.0 blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
 
+@interface AppDelegate () <UpdateAllModuleDataDelegate>
+@property (nonatomic, copy) void (^completionHandler)(UIBackgroundFetchResult fetchResult);
 @end
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    
+    [[UIApplication sharedApplication] registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge) categories:nil]];
+    
+    [application setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalMinimum];
+    
+    [[UIApplication sharedApplication] registerForRemoteNotifications];
+    
+    [[UINavigationBar appearance] setBarTintColor:UIColorFromRGB(0x00539B)];
+    
+    [[UINavigationBar appearance] setTitleTextAttributes: [NSDictionary dictionaryWithObjectsAndKeys:
+                                                           [UIColor colorWithRed:245.0/255.0 green:245.0/255.0 blue:245.0/
+                                                            255.0 alpha:1.0], NSForegroundColorAttributeName,
+                                                           [UIFont fontWithName:@"HelveticaNeue-Light" size:21.0], NSFontAttributeName, nil]];
+    
+    [[UINavigationBar appearance] setTintColor:[UIColor whiteColor]];
     
     // Load Main App Screen
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
@@ -22,7 +43,12 @@
 
     //Check if username is set in preferences, if so load dashboard view, otherwise display login screen
     if([[NSUserDefaults standardUserDefaults] objectForKey:@"access_token"] != nil){
-        homeScreenVC = [storyboard instantiateViewControllerWithIdentifier:@"TabBarController"];
+        
+        if(([[NSUserDefaults standardUserDefaults] objectForKey:@"setup_complete"] != nil)){
+            homeScreenVC = [storyboard instantiateViewControllerWithIdentifier:@"TabBarController"];
+        }else{
+            homeScreenVC = [storyboard instantiateViewControllerWithIdentifier:@"SetupViewController"];
+        }
     }else{
         homeScreenVC = [storyboard instantiateViewControllerWithIdentifier:@"Login"];
     }
@@ -31,6 +57,8 @@
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.rootViewController = homeScreenVC;
     [self.window makeKeyAndVisible];
+    
+    
     
     return YES;
 }
@@ -89,7 +117,8 @@
     // Create the coordinator and store
     
     _persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];
-    NSURL *storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"Saint_Portal.sqlite"];
+    NSURL *directory = [[NSFileManager defaultManager] containerURLForSecurityApplicationGroupIdentifier:@"group.SaintAndrews"];
+    NSURL *storeURL = [directory  URLByAppendingPathComponent:@"Saint_Portal.sqlite"];
     NSError *error = nil;
     NSString *failureReason = @"There was an error creating or loading the application's saved data.";
     if (![_persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:nil error:&error]) {
@@ -143,6 +172,8 @@
 
 -(void)clearPersistentStore{
     
+    NSLog(@"Cleared persistent store");
+    
     NSPersistentStoreCoordinator *storeCoordinator = [self persistentStoreCoordinator];
     NSPersistentStore *store = [[storeCoordinator persistentStores] lastObject];
     NSURL *storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"dataModel"];
@@ -165,5 +196,104 @@
     [URL setResourceValue:[NSNumber numberWithBool:YES] forKey:NSURLIsExcludedFromBackupKey error:&error];
     return error == nil;
 }
+
+-(BOOL)application:(UIApplication *)application
+           openURL:(NSURL *)url
+ sourceApplication:(NSString *)sourceApplication
+        annotation:(id)annotation {
+    
+    NSMutableDictionary *query;
+    
+    if(url != nil){
+        
+        query = [AppDelegate urlQueryDictionaryFromString:[url query]];
+    }
+    
+    if(query )
+    
+    if([query objectForKey:@"type"]){
+     
+        if([[query objectForKey:@"type"] isEqualToString:@"coursework"]){
+            
+            NSManagedObjectContext *context = [(AppDelegate *)[[UIApplication sharedApplication] delegate] managedObjectContext];
+            
+            NSNumber *coursework_id = [NSNumber numberWithInteger:[[query objectForKey:@"coursework_id"] integerValue]];
+            
+            NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Coursework"];
+            
+            request.predicate = [NSPredicate predicateWithFormat:@"coursework_id == %@", coursework_id];
+            
+            NSError *error = nil;
+            
+            NSArray *items = [context executeFetchRequest:request error:&error];
+
+            
+            UIViewController *root = self.window.rootViewController;
+            
+            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+            
+            CourseworkDetailsViewController *vc = [storyboard instantiateViewControllerWithIdentifier:@"courseworkModal"];
+            
+            CourseworkModalViewController *cmvc = [vc.childViewControllers objectAtIndex:0];
+            cmvc.coursework = [items objectAtIndex:0];
+            
+            [root presentViewController:vc animated:NO completion:nil];
+            
+        }
+        
+    }
+    
+    
+    
+    /*if (url != nil && [url isFileURL]) {
+        
+    }*/
+     
+    return YES;
+}
+
++(NSMutableDictionary *)urlQueryDictionaryFromString:(NSString *)query{
+    
+    NSArray *components = [query componentsSeparatedByString:@"&"];
+    NSMutableDictionary *parameters = [[NSMutableDictionary alloc] init];
+    for (NSString *component in components) {
+        NSArray *subcomponents = [component componentsSeparatedByString:@"="];
+        [parameters setObject:[[subcomponents objectAtIndex:1] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]
+                       forKey:[[subcomponents objectAtIndex:0] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+    }
+    
+    return parameters;
+    
+}
+
+- (void)application:(UIApplication*)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData*)deviceToken
+{
+    NSLog(@"My token is: %@", deviceToken);
+}
+
+- (void)application:(UIApplication*)application didFailToRegisterForRemoteNotificationsWithError:(NSError*)error
+{
+    NSLog(@"Failed to get token, error: %@", error);
+}
+
+-(void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler{
+    
+    self.completionHandler = completionHandler;
+    UpdateAllModuleData *umd = [[UpdateAllModuleData alloc] init];
+    [umd updateAllModuleDataWithDelegate:self];
+    
+}
+
+-(void)updateAllModuleDataSuccess{
+    NSLog(@"All Module Data Update Success");
+    
+    self.completionHandler(UIBackgroundFetchResultNewData);
+}
+
+-(void)updateAllModuleDataFailure:(NSError *)error{
+    NSLog(@"Module Data Update Failure");
+    self.completionHandler(UIBackgroundFetchResultFailed);
+}
+
 
 @end

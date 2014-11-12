@@ -2,39 +2,94 @@
 //  DashboardViewController.m
 //  Saint Portal
 //
-//  Created by David Foster on 22/09/2014.
+//  Created by David Foster on 13/10/2014.
 //  Copyright (c) 2014 David Foster. All rights reserved.
 //
 
 #import "DashboardViewController.h"
-#import "AppDelegate.h"
-#import "Personal_Details.h"
+#import "CourseworkDetailsViewController.h"
+#import "DashboardUpcomingCourseworkTableViewController.h"
 
 @interface DashboardViewController ()
-@property (strong, nonatomic) IBOutlet UILabel *username;
-@property (strong, nonatomic) IBOutlet UILabel *access_token;
+@property (strong, nonatomic) NSArray *myViewControllers;
 @end
 
 @implementation DashboardViewController
 
--(void)viewWillAppear:(BOOL)animated{
+- (void)viewDidLoad {
+    [super viewDidLoad];
     
-    NSManagedObjectContext *context = [(AppDelegate *)[[UIApplication sharedApplication] delegate] managedObjectContext];
+    self.delegate = self;
+    self.dataSource = self;
     
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Personal_Details"];
-    NSError *error;
-    NSArray *details = [context executeFetchRequest:request error:&error];
     
-    Personal_Details *person = [details firstObject];
+    UIViewController *p1 = [self.storyboard
+                            instantiateViewControllerWithIdentifier:@"DashboardUpcomingEvents"];
+    UIViewController *p2 = [self.storyboard
+                            instantiateViewControllerWithIdentifier:@"DashboardUpcomingCoursework"];
     
-    NSString *username = [NSString stringWithFormat:@"%@ %@", person.firstname, person.surname];
+    self.myViewControllers = @[p1, p2];
     
-    [self.username setText:username];
+    [self setViewControllers:@[p1]
+                   direction:UIPageViewControllerNavigationDirectionForward
+                    animated:NO completion:nil];
     
-    NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
-    NSString *access = [NSString stringWithFormat:@"%@", [prefs valueForKey:@"access_token"]];
+    // Do any additional setup after loading the view.
+}
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+-(UIViewController *)viewControllerAtIndex:(NSUInteger)index
+{
+    return self.myViewControllers[index];
+}
+
+-(UIViewController *)pageViewController:(UIPageViewController *)pageViewController
+     viewControllerBeforeViewController:(UIViewController *)viewController
+{
+    NSUInteger currentIndex = [self.myViewControllers indexOfObject:viewController];
     
-    [self.access_token setText:access];
+    if(currentIndex == 0){
+        return nil;
+    }else{
+        --currentIndex;
+        return [self.myViewControllers objectAtIndex:currentIndex];
+    }
+}
+
+-(UIViewController *)pageViewController:(UIPageViewController *)pageViewController
+      viewControllerAfterViewController:(UIViewController *)viewController
+{
+    NSUInteger currentIndex = [self.myViewControllers indexOfObject:viewController];
+    
+    if(currentIndex == 1){
+        return nil;
+    }else{
+        ++currentIndex;
+        return [self.myViewControllers objectAtIndex:currentIndex];
+    }
+}
+
+-(NSInteger)presentationCountForPageViewController:
+(UIPageViewController *)pageViewController
+{
+    return self.myViewControllers.count;
+}
+
+-(NSInteger)presentationIndexForPageViewController:
+(UIPageViewController *)pageViewController
+{
+    return 0;
+}
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    // Get the new view controller using [segue destinationViewController].
+    // Pass the selected object to the new view controller.
+
     
 }
+
 @end

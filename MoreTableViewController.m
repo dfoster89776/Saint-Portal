@@ -8,6 +8,7 @@
 
 #import "MoreTableViewController.h"
 #import "AppDelegate.h"
+#import "MoreViewHeaderTableViewCell.h"
 
 @interface MoreTableViewController ()
 
@@ -17,6 +18,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    [self.tableView registerNib:[UINib nibWithNibName:@"MoreViewHeaderTableViewCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"MoreViewHeader"];
     
 }
 
@@ -38,13 +41,33 @@
     }
 }
 
+-(UIView *) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    
+    MoreViewHeaderTableViewCell *headerView = [tableView dequeueReusableCellWithIdentifier:@"MoreViewHeader"];
+    
+    if (headerView == nil){
+        headerView = [[MoreViewHeaderTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"MoreViewHeader"];
+    }
+    
+    if(section == 0){
+        headerView.headerLabel.text = @"Student Record";
+    }else{
+        headerView.headerLabel.text = @"Settings";
+    }
+    
+    return headerView;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    
+    return 35;
+}
+
 #pragma mark - Navigation
 
 // In a storyboard-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-    NSLog(@"Segueing");
 
 }
 
@@ -52,6 +75,8 @@
 #pragma mark - Logout
 
 -(void) logout{
+    
+    NSLog(@"Logged out");
     
     //Clear persistent store
     [(AppDelegate *)[[UIApplication sharedApplication] delegate] clearPersistentStore];

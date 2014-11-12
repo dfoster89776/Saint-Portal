@@ -8,42 +8,49 @@
 
 #import "SetupViewController.h"
 #import "UpdatePersonalDetailsHandler.h"
+#import <EventKit/EventKit.h>
+#import "AppDelegate.h"
+#import "CalendarHandler.h"
+#import "UpdateAllModuleData.h"
 
-@interface SetupViewController ()
+
+@interface SetupViewController () <UpdateAllModuleDataDelegate>
 @property (nonatomic) BOOL personalDetailsStatus;
 @property (strong, nonatomic) IBOutlet UIActivityIndicatorView *personalDetailsActivityIndicator;
 @property (strong, nonatomic) IBOutlet UILabel *personalDetailsCheckmark;
 @property (strong, nonatomic) IBOutlet UIButton *continueButton;
+@property (strong, nonatomic) IBOutlet UIActivityIndicatorView *moduleDetailsActivityIndicator;
+@property (strong, nonatomic) IBOutlet UILabel *moduleDetailsCheckmark;
+
 
 @property (strong, nonatomic) UpdatePersonalDetailsHandler *updatePersonalDetailsHandler;
+@property (strong, nonatomic) UpdateAllModuleData *updateModuleDataHandler;
+
+@property (nonatomic) BOOL moduleData;
 @end
 
 @implementation SetupViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(updateForeground:)
-                                                 name: UIApplicationWillEnterForegroundNotification
-                                               object:nil];
+    self.moduleData = false;
 }
 
 -(void)viewDidAppear:(BOOL)animated{
     
-    //Update personal details
-    self.updatePersonalDetailsHandler = [[UpdatePersonalDetailsHandler alloc] init];
-    [self.updatePersonalDetailsHandler UpdatePersonalDetailsWithDelegate:self];
-    
-    
-    
-}
+        [CalendarHandler setupCalendar];
 
-
--(void)updateForeground:(id)not{
-   
+        //Update personal details
+        self.updatePersonalDetailsHandler = [[UpdatePersonalDetailsHandler alloc] init];
+        [self.updatePersonalDetailsHandler UpdatePersonalDetailsWithDelegate:self];
+    
+        self.updateModuleDataHandler = [[UpdateAllModuleData alloc] init];
+        [self.updateModuleDataHandler updateAllModuleDataWithDelegate:self];
+    
 }
 
 -(void)updateStatus{
+    
     
     //Check status of personal details setup
     BOOL personal = [self.updatePersonalDetailsHandler getStatus];
@@ -53,13 +60,35 @@
         self.personalDetailsCheckmark.hidden = NO;
     }
     
-    if(personal){
-        self.continueButton.hidden = NO;
+    if(self.moduleData){
+        [self.moduleDetailsActivityIndicator stopAnimating];
+        self.moduleDetailsCheckmark.hidden = NO;
     }
     
+    if(personal && self.moduleData){
+        
+        self.continueButton.hidden = NO;
+        
+        NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+        [prefs setObject:[NSString stringWithFormat:@"true"] forKey:@"setup_complete"];
+    }
     
-    NSLog(@"Setup delegate called");
+}
+
+-(void)APIErrorHandler:(NSError *)error{
     
+    NSLog(@"Error Occcured");
+    
+}
+
+-(void)updateAllModuleDataSuccess{
+    self.moduleData = true;
+    [self updateStatus];
+}
+
+-(void)updateAllModuleDataFailure:(NSError *)error{
+    self.moduleData = true;
+    [self updateStatus];
 }
 
 @end

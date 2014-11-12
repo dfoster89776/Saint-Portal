@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6250" systemVersion="14A388b" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6244"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="OlderModuleCell" rowHeight="36" id="KGk-i7-Jjw" customClass="OlderModuleTableViewCell">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="36"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UZC-gW-e3C">
+                        <rect key="frame" x="121" y="1" width="166" height="37"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="166" id="TYA-PE-uUr"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" name="HelveticaNeue-Thin" family="Helvetica Neue" pointSize="16"/>
+                        <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="CS1002" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cRR-Mn-U2E">
+                        <rect key="frame" x="8" y="5" width="98" height="29"/>
+                        <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="20"/>
+                        <color key="textColor" red="0.0" green="0.68235294120000001" blue="0.93725490199999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                </subviews>
+                <constraints>
+                    <constraint firstAttribute="trailing" secondItem="UZC-gW-e3C" secondAttribute="trailing" id="AV6-pY-hh0"/>
+                    <constraint firstItem="cRR-Mn-U2E" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" id="dCe-KP-N7v"/>
+                    <constraint firstItem="UZC-gW-e3C" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" constant="-7" id="kuF-xM-PC6"/>
+                    <constraint firstAttribute="bottomMargin" secondItem="UZC-gW-e3C" secondAttribute="bottom" constant="-11" id="pBS-yY-kkv"/>
+                    <constraint firstItem="cRR-Mn-U2E" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" constant="-3" id="qSl-nL-dma"/>
+                    <constraint firstItem="cRR-Mn-U2E" firstAttribute="centerY" secondItem="UZC-gW-e3C" secondAttribute="centerY" id="x5Q-Sg-rFX"/>
+                    <constraint firstItem="UZC-gW-e3C" firstAttribute="leading" secondItem="cRR-Mn-U2E" secondAttribute="trailing" constant="15" id="zqs-BO-cFP"/>
+                </constraints>
+            </tableViewCellContentView>
+            <connections>
+                <outlet property="moduleCodeLabel" destination="cRR-Mn-U2E" id="j1h-KZ-ZLV"/>
+                <outlet property="moduleTitleLabel" destination="UZC-gW-e3C" id="NCQ-2y-niC"/>
+            </connections>
+            <point key="canvasLocation" x="358" y="264"/>
+        </tableViewCell>
+    </objects>
+</document>

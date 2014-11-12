@@ -11,7 +11,13 @@
 
 enum {
     AuthenticationRequest = 1,
-    UpdatePersonalDetailsRequest = 2
+    UpdatePersonalDetailsRequest = 2,
+    UpdateEnrolledModulesRequest = 3,
+    UpdateModuleCourseworkRequest = 4,
+    UpdateModuleEventsRequest = 5,
+    UpdateModuleTopicsRequest = 6,
+    UpdateTopicPostsRequest = 7,
+    UpdateLocationsRequest = 8
 };
 
 typedef NSUInteger SaintPortalAPIOperation;
@@ -28,5 +34,6 @@ typedef NSUInteger SaintPortalAPIOperation;
 @end
 
 @interface SaintPortalAPI : NSObject
+-(BOOL)APIRequest:(SaintPortalAPIOperation)APIOperation withDelegate:(id)delegate;
 -(BOOL)APIRequest:(SaintPortalAPIOperation)APIOperation withData:(NSDictionary *)options withDelegate:(id)delegate;
 @end
