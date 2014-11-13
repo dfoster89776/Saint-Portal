@@ -1,19 +1,20 @@
 //
-//  PostSlidesTableViewController.m
+//  PostsExamplesTableViewController.m
 //  Saint Portal
 //
-//  Created by David Foster on 11/11/2014.
+//  Created by David Foster on 13/11/2014.
 //  Copyright (c) 2014 David Foster. All rights reserved.
 //
 
-#import "PostSlidesTableViewController.h"
+#import "PostsExamplesTableViewController.h"
+#import "Examples.h"
 #import "OpenStoreHandler.h"
 
-@interface PostSlidesTableViewController ()
-@property (nonatomic, strong) NSArray* slides;
+@interface PostsExamplesTableViewController ()
+@property (strong, nonatomic) NSArray *examples;
 @end
 
-@implementation PostSlidesTableViewController
+@implementation PostsExamplesTableViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -38,34 +39,37 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    
-    self.slides = [self.post.posts_slides allObjects];
-    
     // Return the number of rows in the section.
-    return [self.slides count];
+    
+    self.examples = [self.post.posts_examples allObjects];
+    
+    return [self.examples count];
 }
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"StandardCell" forIndexPath:indexPath];
+    Examples *example = [self.examples objectAtIndex:indexPath.row];
     
-    // Configure the cell...
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"standardCell" forIndexPath:indexPath];
     
-    Slides *slide = [self.slides objectAtIndex:indexPath.row];
-    
-    cell.textLabel.text = slide.name;
-    
+    cell.textLabel.text = example.name;
+        
     return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     
+   Examples *example = [self.examples objectAtIndex:indexPath.row];
+    
     OpenStoreHandler *osh = [[OpenStoreHandler alloc] init];
     
-    [osh openFile:[self.slides objectAtIndex:indexPath.row] withCurrentView:self.parentViewController];
+    [osh openDirectory:example withCurrentView:self.parentViewController];
+
+    
     
 }
+
 
 
 /*

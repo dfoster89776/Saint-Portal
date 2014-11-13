@@ -12,6 +12,9 @@
 #import "Posts.h"
 #import "Topics.h"
 #import "Slides.h"
+#import "Examples.h"
+#import "Directory.h"
+#import "DirectoryUpdate.h"
 
 @interface UpdateTopicPosts () <SaintPortalAPIDelegate>
 @property (nonatomic, strong)Topics *topic;
@@ -65,6 +68,7 @@
                 new_post.posts_topic = self.topic;
                 
                 [self updateSlidesForPost:new_post withData:[post objectForKey:@"slides_data"]];
+                [self updateExamplesForPost:new_post withData:[post objectForKey:@"examples"]];
                 
                 [self.topic addTopics_postsObject:new_post];
                 
@@ -79,6 +83,8 @@
                 new_post.posts_topic = self.topic;
                 
                 [self updateSlidesForPost:new_post withData:[post objectForKey:@"slides_data"]];
+                [self updateExamplesForPost:new_post withData:[post objectForKey:@"examples"]];
+
             }
             
             NSError *error;
@@ -168,6 +174,70 @@
     for(Slides *slide in slidesToDelete){
         [self.context deleteObject:slide];
         [post removePosts_slidesObject:slide];
+    }
+    
+    NSError *error;
+    [self.context save:&error];
+    
+}
+
+-(void)updateExamplesForPost:(Posts *)post withData:(NSArray *)data{
+    
+    NSLog(@"%@", data);
+    
+    NSMutableArray *examples_list = [[NSMutableArray alloc] init];
+    
+    for(NSDictionary *example in data){
+        
+        [examples_list addObject:[NSNumber numberWithInteger:[[example objectForKey:@"example_id"] integerValue]]];
+        
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"example_id == %i", [[example objectForKey:@"example_id"] integerValue]];
+        
+        NSSet *matches = [post.posts_examples filteredSetUsingPredicate:predicate];
+        
+        if([matches count] == 0){
+            
+            Examples *new_example = [NSEntityDescription insertNewObjectForEntityForName:@"Examples" inManagedObjectContext:self.context];
+            
+            new_example.example_id = [NSNumber numberWithInteger:[[example objectForKey:@"example_id"] integerValue]];
+            new_example.name = [example objectForKey:@"example_name"];
+            new_example.examples_post = post;
+            
+            [post addPosts_examplesObject:new_example];
+            
+            DirectoryUpdate *du = [[DirectoryUpdate alloc] init];
+            [du updateExamplesDirectory:new_example withData:[example objectForKey:@"directory_details"]];
+            
+            
+        }else{
+            
+            Examples *new_example = [[matches allObjects] firstObject];
+            
+            new_example.example_id = [NSNumber numberWithInteger:[[example objectForKey:@"example_id"] integerValue]];
+            new_example.name = [example objectForKey:@"example_name"];
+            new_example.examples_post = post;
+            
+            DirectoryUpdate *du = [[DirectoryUpdate alloc] init];
+            [du updateExamplesDirectory:new_example withData:[example objectForKey:@"directory_details"]];
+            
+        }
+        
+        
+        
+        NSError *error;
+        [self.context save:&error];
+    }
+    
+    //Remove any events not on core database
+    NSArray *deleteingExamples = [NSArray arrayWithArray:examples_list];
+    
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"NOT (example_id IN %@)", deleteingExamples];
+    
+    NSSet *examplesToDelete = [post.posts_examples filteredSetUsingPredicate:predicate];
+    
+    for(Examples *example in examplesToDelete){
+        [self.context deleteObject:example];
+        [post removePosts_examplesObject:example];
     }
     
     NSError *error;

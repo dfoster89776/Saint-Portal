@@ -1,19 +1,22 @@
 //
-//  PostSlidesTableViewController.m
+//  DirectoryTableViewController.m
 //  Saint Portal
 //
-//  Created by David Foster on 11/11/2014.
+//  Created by David Foster on 13/11/2014.
 //  Copyright (c) 2014 David Foster. All rights reserved.
 //
 
-#import "PostSlidesTableViewController.h"
+#import "DirectoryTableViewController.h"
+#import "File.h"
+#import "Directory.h"
 #import "OpenStoreHandler.h"
 
-@interface PostSlidesTableViewController ()
-@property (nonatomic, strong) NSArray* slides;
+@interface DirectoryTableViewController ()
+@property (strong, nonatomic) NSArray* files;
+@property (strong, nonatomic) NSArray* directories;
 @end
 
-@implementation PostSlidesTableViewController
+@implementation DirectoryTableViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -33,38 +36,70 @@
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+
+    self.files = [self.directory.files allObjects];
+    self.directories = [self.directory.child_directories allObjects];
+    
     // Return the number of sections.
-    return 1;
+    return 2;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    
-    self.slides = [self.post.posts_slides allObjects];
-    
     // Return the number of rows in the section.
-    return [self.slides count];
+    
+    NSLog(@"Section: %lu", section);
+    
+    if(section == 0){
+        NSLog(@"No of files to show: %lu", [self.files count]);
+        return [self.files count];
+    }else{
+        NSLog(@"Number of directories to show: %lu", [self.directories count]);
+        return [self.directories count];
+    }
+    
 }
-
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"StandardCell" forIndexPath:indexPath];
+    UITableViewCell *cell;
     
-    // Configure the cell...
-    
-    Slides *slide = [self.slides objectAtIndex:indexPath.row];
-    
-    cell.textLabel.text = slide.name;
+    if(indexPath.section == 0){
+     
+        File *file = [self.files objectAtIndex:indexPath.row];
+        
+        cell = [tableView dequeueReusableCellWithIdentifier:@"fileCell" forIndexPath:indexPath];
+        cell.textLabel.text = [NSString stringWithFormat:@"File: %@", file.file_url];
+        
+    }else if (indexPath.section == 1){
+        
+        Directory *directory = [self.directories objectAtIndex:indexPath.row];
+        
+        cell = [tableView dequeueReusableCellWithIdentifier:@"directoryCell" forIndexPath:indexPath];
+        cell.textLabel.text = [NSString stringWithFormat:@"Directory: %@", directory.name];
+    }
     
     return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     
-    OpenStoreHandler *osh = [[OpenStoreHandler alloc] init];
-    
-    [osh openFile:[self.slides objectAtIndex:indexPath.row] withCurrentView:self.parentViewController];
-    
+    if(indexPath.section == 0){
+        
+        File *file = [self.files objectAtIndex:indexPath.row];
+        
+        OpenStoreHandler *osh = [[OpenStoreHandler alloc] init];
+        
+        [osh openFile:file withCurrentView:self];
+        
+    }else if (indexPath.section == 1){
+     
+        Directory *directory = [self.directories objectAtIndex:indexPath.row];
+        
+        OpenStoreHandler *osh = [[OpenStoreHandler alloc] init];
+        
+        [osh openDirectory:directory withCurrentView:self];
+        
+    }
 }
 
 

@@ -7,9 +7,11 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "Store.h"
+#import "File.h"
+#import "Directory.h"
 #import <UIKit/UIKit.h>
 
 @interface OpenStoreHandler : NSObject
--(void)openStore:(Store*)store withCurrentView:(UIViewController *)current;
+-(void)openFile:(File*)file withCurrentView:(UIViewController *)current;
+-(void)openDirectory:(Directory*)directory withCurrentView:(UIViewController *)current;
 @end

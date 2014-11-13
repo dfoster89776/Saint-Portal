@@ -2,17 +2,21 @@
 //  Directory.m
 //  Saint Portal
 //
-//  Created by David Foster on 12/11/2014.
+//  Created by David Foster on 13/11/2014.
 //  Copyright (c) 2014 David Foster. All rights reserved.
 //
 
 #import "Directory.h"
-#import "Store.h"
+#import "Directory.h"
+#import "File.h"
 
 
 @implementation Directory
 
 @dynamic directory_id;
-@dynamic children;
+@dynamic name;
+@dynamic files;
+@dynamic parent_directory;
+@dynamic child_directories;
 
 @end

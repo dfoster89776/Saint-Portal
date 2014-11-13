@@ -193,9 +193,7 @@
 }
 
 -(void)requestTopicPostsCallWithData:(NSDictionary *)data{
-    
-    NSLog(@"UPDATING POST");
-    
+        
     NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
     NSString *accesstoken = [NSString stringWithFormat:@"%@", [prefs valueForKey:@"access_token"]];
     
@@ -266,14 +264,10 @@
     NSError *e = nil;
     
     NSDictionary *json = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingMutableContainers error:&e];
-    
-    NSLog(@"%@", json);
-    
+        
     //If authenticate operation
     if([[json objectForKey:@"api_operation"] isEqualToString:@"authenticate"]){
         
-        NSLog(@"API CALL FINISHED");
-
         NSDictionary *data = [json objectForKey:@"queryData"];
         
         [self.delegate APICallbackHandler:data];
