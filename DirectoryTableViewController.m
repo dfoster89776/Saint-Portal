@@ -10,6 +10,8 @@
 #import "File.h"
 #import "Directory.h"
 #import "OpenStoreHandler.h"
+#import "FileTableViewCell.h"
+#import "DirectoryTableViewCell.h"
 
 @interface DirectoryTableViewController ()
 @property (strong, nonatomic) NSArray* files;
@@ -20,6 +22,10 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+     [self.tableView registerNib:[UINib nibWithNibName:@"DirectoryTableViewCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"directoryCell"];
+    
+     [self.tableView registerNib:[UINib nibWithNibName:@"FileTableViewCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"fileCell"];
     
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
@@ -49,7 +55,7 @@
     
     NSLog(@"Section: %lu", section);
     
-    if(section == 0){
+    if(section == 1){
         NSLog(@"No of files to show: %lu", [self.files count]);
         return [self.files count];
     }else{
@@ -59,23 +65,43 @@
     
 }
 
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+    return 50;
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     UITableViewCell *cell;
     
-    if(indexPath.section == 0){
+    if(indexPath.section == 1){
      
+        FileTableViewCell *fileCell = [tableView dequeueReusableCellWithIdentifier:@"fileCell" forIndexPath:indexPath];
+        
+        if(fileCell == nil)
+        {
+            fileCell = [[FileTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"fileCell"];
+        }
+        
         File *file = [self.files objectAtIndex:indexPath.row];
         
-        cell = [tableView dequeueReusableCellWithIdentifier:@"fileCell" forIndexPath:indexPath];
-        cell.textLabel.text = [NSString stringWithFormat:@"File: %@", file.file_url];
+        fileCell.fileNameLabel.text = file.file_url;
         
-    }else if (indexPath.section == 1){
+        cell = fileCell;
+        
+    }else if (indexPath.section == 0){
+        
+        DirectoryTableViewCell *directoryCell = [tableView dequeueReusableCellWithIdentifier:@"directoryCell" forIndexPath:indexPath];
+        
+        if(directoryCell == nil)
+        {
+            directoryCell = [[DirectoryTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"directoryCell"];
+        }
         
         Directory *directory = [self.directories objectAtIndex:indexPath.row];
         
-        cell = [tableView dequeueReusableCellWithIdentifier:@"directoryCell" forIndexPath:indexPath];
-        cell.textLabel.text = [NSString stringWithFormat:@"Directory: %@", directory.name];
+        directoryCell.directoryNameLabel.text = directory.name;
+        
+        cell = directoryCell;
     }
     
     return cell;
@@ -83,7 +109,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     
-    if(indexPath.section == 0){
+    if(indexPath.section == 1){
         
         File *file = [self.files objectAtIndex:indexPath.row];
         
@@ -91,7 +117,7 @@
         
         [osh openFile:file withCurrentView:self];
         
-    }else if (indexPath.section == 1){
+    }else if (indexPath.section == 0){
      
         Directory *directory = [self.directories objectAtIndex:indexPath.row];
         
