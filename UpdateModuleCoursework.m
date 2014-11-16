@@ -10,6 +10,7 @@
 #import "SaintPortalAPI.h"
 #import "AppDelegate.h"
 #import "Coursework.h"
+#import "Specification.h"
 
 @interface UpdateModuleCoursework() <SaintPortalAPIDelegate>
 @property (nonatomic, strong)Modules *module;
@@ -74,8 +75,9 @@
                 
                 new_coursework.coursework_description = [assignment objectForKey:@"description"];
                 
-                new_coursework.submitted = [NSNumber numberWithInteger:[[assignment objectForKey:@"submitted"] integerValue]];
+                [self updateCourseworkFile:[assignment objectForKey:@"coursework_file"] forCoursework:new_coursework];
                 
+                new_coursework.submitted = [NSNumber numberWithInteger:[[assignment objectForKey:@"submitted"] integerValue]];
                 
                 [self.module addModule_assignmentsObject:new_coursework];
                 
@@ -101,7 +103,8 @@
                 
                 new_coursework.submitted = [NSNumber numberWithInteger:[[assignment objectForKey:@"submitted"] integerValue]];
                 
-                new_coursework.coursework_file = [assignment objectForKey:@"file"];
+                [self updateCourseworkFile:[assignment objectForKey:@"coursework_file"] forCoursework:new_coursework];
+
             }
             
             NSError *error;
@@ -140,6 +143,73 @@
     
     return self.status;
     
+}
+
+-(void)updateCourseworkFile:(NSDictionary *)fileData forCoursework:(Coursework *)coursework{
+    
+    
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Specification"];
+    
+    request.predicate = [NSPredicate predicateWithFormat:@"file_id = %@", [fileData objectForKey:@"file_id"]];
+    
+    NSError *error = nil;
+    NSUInteger count = [self.context countForFetchRequest:request error:&error];
+    
+    NSDateFormatter *df = [[NSDateFormatter alloc] init];
+    [df setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+    
+    if(count == 0){
+        
+        Specification *file = [NSEntityDescription insertNewObjectForEntityForName:@"Specification"
+                                                            inManagedObjectContext:self.context];
+        
+        file.file_id = [NSNumber numberWithInteger:[[fileData objectForKey:@"file_id"] integerValue]];
+        file.file_url = [fileData objectForKey:@"file_url"];
+        
+        NSArray *parts = [file.file_url componentsSeparatedByString:@"/"];
+        file.file_name = [parts lastObject];
+        
+        if(file.downloaded){
+            
+            NSDate *updated = [df dateFromString:[fileData objectForKey:@"last_modified"]];
+            
+            if(updated > file.downloaded){
+                file.update_available = [NSNumber numberWithInt:1];
+            }
+        }
+        
+        coursework.specification = file;
+        
+        NSError *saveError;
+        [self.context save:&saveError];
+        
+        
+    }else{
+        NSArray *files = [self.context executeFetchRequest:request error:&error];
+        Specification* file = [files firstObject];
+    
+        file.file_id = [NSNumber numberWithInteger:[[fileData objectForKey:@"file_id"] integerValue]];
+        file.file_url = [fileData objectForKey:@"file_url"];
+        
+        NSArray *parts = [file.file_url componentsSeparatedByString:@"/"];
+        file.file_name = [parts lastObject];
+        
+        if(file.downloaded){
+            
+            NSDate *updated = [df dateFromString:[fileData objectForKey:@"last_modified"]];
+            
+            if(updated > file.downloaded){
+                file.update_available = [NSNumber numberWithInt:1];
+            }
+        }
+        
+        coursework.specification = file;
+        
+        NSError *saveError;
+        [self.context save:&saveError];
+    
+    }
+     
 }
 
 @end

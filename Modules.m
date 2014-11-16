@@ -21,6 +21,7 @@
 @dynamic school;
 @dynamic semester;
 @dynamic year;
+@dynamic module_description;
 @dynamic module_assignments;
 @dynamic module_events;
 @dynamic modules_topics;

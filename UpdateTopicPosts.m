@@ -145,6 +145,8 @@
             new_slide.file_id = [NSNumber numberWithInteger:[[slide objectForKey:@"file_id"] integerValue]];
             new_slide.name = [slide objectForKey:@"slides_name"];
             new_slide.file_url = [slide objectForKey:@"file_url"];
+            NSArray *parts = [new_slide.file_url componentsSeparatedByString:@"/"];
+            new_slide.file_name = [parts lastObject];
             new_slide.slides_post = post;
             
             [post addPosts_slidesObject:new_slide];
@@ -156,6 +158,8 @@
             new_slide.file_id = [NSNumber numberWithInteger:[[slide objectForKey:@"file_id"] integerValue]];
             new_slide.name = [slide objectForKey:@"slides_name"];
             new_slide.file_url = [slide objectForKey:@"file_url"];
+            NSArray *parts = [new_slide.file_url componentsSeparatedByString:@"/"];
+            new_slide.file_name = [parts lastObject];
             new_slide.slides_post = post;
             
         }

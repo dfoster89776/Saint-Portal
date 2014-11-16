@@ -9,12 +9,12 @@
         <attribute name="coursework_description" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="coursework_due" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="coursework_feedback_date" optional="YES" attributeType="Date" syncable="YES"/>
-        <attribute name="coursework_file" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="coursework_id" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="coursework_name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="coursework_weighting" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="submitted" optional="YES" attributeType="Boolean" syncable="YES"/>
         <relationship name="assignments_module" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="Modules" inverseName="module_assignments" inverseEntity="Modules" syncable="YES"/>
+        <relationship name="specification" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Specification" inverseName="coursework_item" inverseEntity="Specification" syncable="YES"/>
     </entity>
     <entity name="Directory" representedClassName="Directory" syncable="YES">
         <attribute name="directory_id" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
@@ -36,15 +36,19 @@
         <relationship name="examples_post" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Posts" inverseName="posts_examples" inverseEntity="Posts" syncable="YES"/>
     </entity>
     <entity name="File" representedClassName="File" syncable="YES">
+        <attribute name="downloaded" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="file_id" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="file_name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="file_url" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="update_available" optional="YES" attributeType="Boolean" defaultValueString="YES" syncable="YES"/>
         <relationship name="parentDirectory" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Directory" inverseName="files" inverseEntity="Directory" syncable="YES"/>
     </entity>
     <entity name="Lectures" representedClassName="Lectures" parentEntity="Event" syncable="YES"/>
     <entity name="Modules" representedClassName="Modules" syncable="YES">
         <attribute name="current" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="module_code" optional="YES" attributeType="String" maxValueString="10" syncable="YES"/>
+        <attribute name="module_description" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="module_id" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="module_name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="school" optional="YES" attributeType="String" syncable="YES"/>
@@ -81,6 +85,9 @@
     <entity name="Slides" representedClassName="Slides" parentEntity="File" syncable="YES">
         <relationship name="slides_post" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Posts" inverseName="posts_slides" inverseEntity="Posts" syncable="YES"/>
     </entity>
+    <entity name="Specification" representedClassName="Specification" parentEntity="File" syncable="YES">
+        <relationship name="coursework_item" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Coursework" inverseName="specification" inverseEntity="Coursework" syncable="YES"/>
+    </entity>
     <entity name="Topics" representedClassName="Topics" syncable="YES">
         <attribute name="topic_description" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="topic_id" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
@@ -96,14 +103,15 @@
         <element name="Directory" positionX="-3476" positionY="-1314" width="128" height="118"/>
         <element name="Event" positionX="-3755" positionY="-1818" width="128" height="133"/>
         <element name="Examples" positionX="-3665" positionY="-1153" width="128" height="73"/>
-        <element name="File" positionX="-3674" positionY="-1314" width="128" height="103"/>
+        <element name="File" positionX="-3665" positionY="-1377" width="128" height="148"/>
         <element name="Lectures" positionX="-3690" positionY="-1618" width="128" height="43"/>
-        <element name="Modules" positionX="-3942" positionY="-1863" width="128" height="193"/>
+        <element name="Modules" positionX="-3942" positionY="-1863" width="128" height="208"/>
         <element name="Personal_Details" positionX="-4401" positionY="-1863" width="128" height="133"/>
         <element name="Posts" positionX="-4095" positionY="-1404" width="128" height="148"/>
         <element name="Rooms" positionX="-3521" positionY="-1782" width="128" height="118"/>
         <element name="Slides" positionX="-3818" positionY="-1399" width="128" height="58"/>
         <element name="Topics" positionX="-4122" positionY="-1585" width="128" height="133"/>
         <element name="Tutorials" positionX="-3843" positionY="-1618" width="128" height="43"/>
+        <element name="Specification" positionX="-3800" positionY="-1507" width="128" height="58"/>
     </elements>
 </model>

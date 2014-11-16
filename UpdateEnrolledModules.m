@@ -59,6 +59,9 @@
             new_module.year = [module objectForKey:@"year"];;
             new_module.semester = [module objectForKey:@"semester"];
             new_module.school = [module objectForKey:@"school"];
+            if([[module objectForKey:@"module_description"] isKindOfClass:[NSString class]]){
+                new_module.module_description = [module objectForKey:@"module_description"];
+            }
             
         }else if (count == 1){
             
@@ -72,6 +75,9 @@
             new_module.year = [module objectForKey:@"year"];
             new_module.semester = [module objectForKey:@"semester"];
             new_module.school = [module objectForKey:@"school"];
+            if([[module objectForKey:@"module_description"] isKindOfClass:[NSString class]]){
+                new_module.module_description = [module objectForKey:@"module_description"];
+            }
         }
         
         NSError *saveError;

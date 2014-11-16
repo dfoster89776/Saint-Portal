@@ -26,17 +26,18 @@
 
 - (IBAction)previewFile:(id)sender {
     
-    NSString *stringPath = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,   NSUserDomainMask, YES)objectAtIndex:0]stringByAppendingPathComponent:@"Files"];
+    NSString *stringPath = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,   NSUserDomainMask, YES)objectAtIndex:0]stringByAppendingPathComponent:[NSString stringWithFormat:@"Files/%@", self.file.file_id]];
     // Content_ Folder is your folder name
     NSError *error = nil;
     
     if (![[NSFileManager defaultManager] fileExistsAtPath:stringPath])
-        [[NSFileManager defaultManager] createDirectoryAtPath:stringPath  withIntermediateDirectories:NO attributes:nil error:&error];
+        [[NSFileManager defaultManager] createDirectoryAtPath:stringPath  withIntermediateDirectories:YES attributes:nil error:&error];
+    NSLog(@"Creating file directory");
     //This will create a new folder if content folder is not exist
     
-    NSString *fileName = [stringPath stringByAppendingFormat:@"/%@.pdf", self.file.file_id];
+    NSString *fileName = [stringPath stringByAppendingFormat:@"/%@", self.file.file_name];
     
-    if ((![[NSFileManager defaultManager] fileExistsAtPath:fileName]) || (false)) {
+    if ((![[NSFileManager defaultManager] fileExistsAtPath:fileName]) || self.file.update_available) {
         
         NSLog(@"Downloading");
         
@@ -48,8 +49,15 @@
         [data writeToFile:fileName atomically:YES];
         
     }
+
+    
+    if([[NSFileManager defaultManager] fileExistsAtPath:fileName]){
+        NSLog(@"File exists");
+    }
     
     NSURL *URL = [NSURL fileURLWithPath:fileName];
+    
+    NSLog(@"Opening url: %@", URL);
     
     if (URL) {
         // Initialize Document Interaction Controller

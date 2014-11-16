@@ -52,14 +52,10 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     // Return the number of rows in the section.
-    
-    NSLog(@"Section: %lu", section);
-    
+        
     if(section == 1){
-        NSLog(@"No of files to show: %lu", [self.files count]);
         return [self.files count];
     }else{
-        NSLog(@"Number of directories to show: %lu", [self.directories count]);
         return [self.directories count];
     }
     
@@ -84,7 +80,7 @@
         
         File *file = [self.files objectAtIndex:indexPath.row];
         
-        fileCell.fileNameLabel.text = file.file_url;
+        fileCell.fileNameLabel.text = file.file_name;
         
         cell = fileCell;
         

@@ -20,6 +20,7 @@
 @property (nonatomic, retain) NSString * school;
 @property (nonatomic, retain) NSString * semester;
 @property (nonatomic, retain) NSString * year;
+@property (nonatomic, retain) NSString * module_description;
 @property (nonatomic, retain) NSSet *module_assignments;
 @property (nonatomic, retain) NSSet *module_events;
 @property (nonatomic, retain) NSSet *modules_topics;

@@ -9,6 +9,7 @@
 #import "ModulePageViewController.h"
 #import "ModuleCourseworkTableViewController.h"
 #import "ModuleTopicsTableViewController.h"
+#import "ModuleOverviewViewController.h"
 
 @interface ModulePageViewController ()
 @property (strong, nonatomic) NSArray *myViewControllers;
@@ -22,7 +23,7 @@
     self.delegate = self;
     self.dataSource = self;
         
-    ModuleTopicsTableViewController *p0 = [self.storyboard
+    ModuleOverviewViewController *p0 = [self.storyboard
                                            instantiateViewControllerWithIdentifier:@"Module_Overview"];
     
     ModuleTopicsTableViewController *p1 = [self.storyboard
@@ -30,8 +31,10 @@
     ModuleCourseworkTableViewController *p2 = [self.storyboard
                             instantiateViewControllerWithIdentifier:@"Module_Coursework"];
     
+    p0.module = self.module;
     p1.module = self.module;
     p2.module = self.module;
+    
     
     self.myViewControllers = @[p0, p1, p2];
     

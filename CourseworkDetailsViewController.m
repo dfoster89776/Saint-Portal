@@ -7,6 +7,8 @@
 //
 
 #import "CourseworkDetailsViewController.h"
+#import "File.h"
+#import "OpenStoreHandler.h"
 
 #define UIColorFromRGB(rgbValue) [UIColor colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 green:((float)((rgbValue & 0xFF00) >> 8))/255.0 blue:((float)(rgbValue & 0xFF))/255.0 alpha:1]
 
@@ -109,6 +111,12 @@
 
 - (IBAction)viewCourseworkFile:(UIButton *)sender {
     
+    File* file = (File *)[self.coursework specification];
+    
+    OpenStoreHandler *osh = [[OpenStoreHandler alloc] init];
+    [osh openFile:file withCurrentView:self];
+    
+    /*
     NSString *stringPath = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,   NSUserDomainMask, YES)objectAtIndex:0]stringByAppendingPathComponent:@"Coursework_Folder"];
     // Content_ Folder is your folder name
     NSError *error = nil;
@@ -146,7 +154,7 @@
         // Preview PDF
         [self.documentInteractionController presentPreviewAnimated:YES];
     }
-    
+     */
 }
 
 - (UIViewController *) documentInteractionControllerViewControllerForPreview: (UIDocumentInteractionController *) controller {

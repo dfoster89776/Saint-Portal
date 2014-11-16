@@ -25,7 +25,7 @@
         fvc.file = file;
         [current.navigationController pushViewController:fvc animated:YES];
         
-  
+    
 }
 
 

@@ -53,6 +53,9 @@
         
         NSSet *matches = [directory.files filteredSetUsingPredicate:predicate];
         
+        NSDateFormatter *df = [[NSDateFormatter alloc] init];
+        [df setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+        
         if([matches count] == 0){
             
             NSLog(@"Creating new file");
@@ -62,6 +65,18 @@
             new_file.file_id = [NSNumber numberWithInteger:[[file objectForKey:@"file_id"] integerValue]];
             new_file.file_url = [file objectForKey:@"file_url"];
             new_file.parentDirectory = directory;
+            
+            NSArray *parts = [new_file.file_url componentsSeparatedByString:@"/"];
+            new_file.file_name = [parts lastObject];
+            
+            if(new_file.downloaded){
+                
+                NSDate *updated = [df dateFromString:[file objectForKey:@"last_modified"]];
+                
+                if(updated > new_file.downloaded){
+                    new_file.update_available = [NSNumber numberWithInt:1];
+                }
+            }
             
             NSLog(@"%@", directory);
             
@@ -76,6 +91,18 @@
             new_file.file_id = [NSNumber numberWithInteger:[[file objectForKey:@"file_id"] integerValue]];
             new_file.file_url = [file objectForKey:@"file_url"];
             new_file.parentDirectory = directory;
+            
+            NSArray *parts = [new_file.file_url componentsSeparatedByString:@"/"];
+            new_file.file_name = [parts lastObject];
+            
+            if(new_file.downloaded){
+                
+                NSDate *updated = [df dateFromString:[file objectForKey:@"last_modified"]];
+                
+                if(updated > new_file.downloaded){
+                    new_file.update_available = [NSNumber numberWithInt:1];
+                }
+            }
             
         }
     }
