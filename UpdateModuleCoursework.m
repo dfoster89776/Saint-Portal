@@ -76,14 +76,12 @@
                 new_coursework.coursework_weighting = [NSNumber numberWithInteger:[[assignment objectForKey:@"weighting"] integerValue]];
                 
                 new_coursework.coursework_description = [assignment objectForKey:@"description"];
-                
-                
-                
-                new_coursework.specification = [UpdateModuleCoursework updateCourseworkFile:[assignment objectForKey:@"coursework_file"] withContext:self.context];
 
                 if([assignment objectForKey:@"directory_details"]){
                     [self updateDirectoryForCoursework:new_coursework withData:assignment];
                 }
+                
+                new_coursework.specification = new_coursework.specification = [UpdateModuleCoursework updateCourseworkFile:[assignment objectForKey:@"coursework_file"] withContext:self.context];
                 
                 new_coursework.submitted = [NSNumber numberWithInteger:[[assignment objectForKey:@"submitted"] integerValue]];
                 
@@ -111,14 +109,14 @@
                 
                 new_coursework.submitted = [NSNumber numberWithInteger:[[assignment objectForKey:@"submitted"] integerValue]];
                 
-                new_coursework.specification = new_coursework.specification = [UpdateModuleCoursework updateCourseworkFile:[assignment objectForKey:@"coursework_file"] withContext:self.context];
-                
                 if([assignment objectForKey:@"directory_details"]){
                     [self updateDirectoryForCoursework:new_coursework withData:assignment];
                 }else if (new_coursework.coursework_directory != nil){
                     [self.context deleteObject:new_coursework.coursework_directory];
                     new_coursework.coursework_directory = nil;
                 }
+                
+                new_coursework.specification = new_coursework.specification = [UpdateModuleCoursework updateCourseworkFile:[assignment objectForKey:@"coursework_file"] withContext:self.context];
             }
         }
     }
@@ -254,7 +252,6 @@
     DirectoryUpdate *du = [[DirectoryUpdate alloc] init];
     [du updateCourseworkDirectory:root withData:[data objectForKey:@"directory_details"]];
     
-    [self.context save:&error];
 }
 
 @end
