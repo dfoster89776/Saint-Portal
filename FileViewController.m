@@ -69,7 +69,7 @@
         self.documentInteractionController.name = @"Specification";
         
         // Preview PDF
-        [self.documentInteractionController presentPreviewAnimated:YES];
+        BOOL success = [self.documentInteractionController presentPreviewAnimated:YES];
     }
     
 }

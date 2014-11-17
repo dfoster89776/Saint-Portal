@@ -1,17 +1,17 @@
 //
-//  Specification.m
+//  Coursework_Directory.m
 //  Saint Portal
 //
 //  Created by David Foster on 17/11/2014.
 //  Copyright (c) 2014 David Foster. All rights reserved.
 //
 
-#import "Specification.h"
+#import "Coursework_Directory.h"
 #import "Coursework.h"
 
 
-@implementation Specification
+@implementation Coursework_Directory
 
-@dynamic coursework_item;
+@dynamic directory_coursework;
 
 @end

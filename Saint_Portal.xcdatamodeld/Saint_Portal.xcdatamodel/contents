@@ -14,7 +14,11 @@
         <attribute name="coursework_weighting" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="submitted" optional="YES" attributeType="Boolean" syncable="YES"/>
         <relationship name="assignments_module" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="Modules" inverseName="module_assignments" inverseEntity="Modules" syncable="YES"/>
+        <relationship name="coursework_directory" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Coursework_Directory" inverseName="directory_coursework" inverseEntity="Coursework_Directory" syncable="YES"/>
         <relationship name="specification" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Specification" inverseName="coursework_item" inverseEntity="Specification" syncable="YES"/>
+    </entity>
+    <entity name="Coursework_Directory" representedClassName="Coursework_Directory" parentEntity="Directory" syncable="YES">
+        <relationship name="directory_coursework" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Coursework" inverseName="coursework_directory" inverseEntity="Coursework" syncable="YES"/>
     </entity>
     <entity name="Directory" representedClassName="Directory" syncable="YES">
         <attribute name="directory_id" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
@@ -99,7 +103,7 @@
     <entity name="Tutorials" representedClassName="Tutorials" parentEntity="Event" syncable="YES"/>
     <elements>
         <element name="Buildings" positionX="-3323" positionY="-1753" width="128" height="88"/>
-        <element name="Coursework" positionX="-4169" positionY="-1827" width="128" height="178"/>
+        <element name="Coursework" positionX="-4169" positionY="-1827" width="128" height="193"/>
         <element name="Directory" positionX="-3476" positionY="-1314" width="128" height="118"/>
         <element name="Event" positionX="-3755" positionY="-1818" width="128" height="133"/>
         <element name="Examples" positionX="-3665" positionY="-1153" width="128" height="73"/>
@@ -113,5 +117,6 @@
         <element name="Topics" positionX="-4122" positionY="-1585" width="128" height="133"/>
         <element name="Tutorials" positionX="-3843" positionY="-1618" width="128" height="43"/>
         <element name="Specification" positionX="-3800" positionY="-1507" width="128" height="58"/>
+        <element name="Coursework_Directory" positionX="-3476" positionY="-1575" width="128" height="58"/>
     </elements>
 </model>

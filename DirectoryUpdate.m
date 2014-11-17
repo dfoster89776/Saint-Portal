@@ -21,14 +21,25 @@
     
     [self updateFilesinDirectory:example withData:[data objectForKey:@"files"] withContext:(NSManagedObjectContext *)context];
     
-    //Update directories
-    
-    
-    NSLog(@"Example: %@", example);
     
     NSError *error;
     
     [context save:&error];
+}
+
+-(void)updateCourseworkDirectory:(Coursework_Directory *)directory withData:(NSDictionary *)data{
+    
+    NSManagedObjectContext *context = [(AppDelegate *)[[UIApplication sharedApplication] delegate] managedObjectContext];
+    
+    [self updateDirectoriesInDirectory:directory withData:[data objectForKey:@"subdirectories"] withContext:(NSManagedObjectContext *)context];
+    
+    [self updateFilesinDirectory:directory withData:[data objectForKey:@"files"] withContext:(NSManagedObjectContext *)context];
+    
+    
+    NSError *error;
+    
+    [context save:&error];
+    
 }
 
 -(void)updateDirectory:(Directory *)directory withData:(NSDictionary *)data withContext:(NSManagedObjectContext *)context{

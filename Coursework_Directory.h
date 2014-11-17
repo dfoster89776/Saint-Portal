@@ -1,5 +1,5 @@
 //
-//  Specification.h
+//  Coursework_Directory.h
 //  Saint Portal
 //
 //  Created by David Foster on 17/11/2014.
@@ -8,12 +8,12 @@
 
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
-#import "File.h"
+#import "Directory.h"
 
 @class Coursework;
 
-@interface Specification : File
+@interface Coursework_Directory : Directory
 
-@property (nonatomic, retain) Coursework *coursework_item;
+@property (nonatomic, retain) Coursework *directory_coursework;
 
 @end

@@ -9,6 +9,7 @@
 #import "CourseworkDetailsViewController.h"
 #import "File.h"
 #import "OpenStoreHandler.h"
+#import "Specification.h"
 
 #define UIColorFromRGB(rgbValue) [UIColor colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 green:((float)((rgbValue & 0xFF00) >> 8))/255.0 blue:((float)(rgbValue & 0xFF))/255.0 alpha:1]
 
@@ -111,54 +112,23 @@
 
 - (IBAction)viewCourseworkFile:(UIButton *)sender {
     
-    File* file = (File *)[self.coursework specification];
+    NSLog(@"Opening file: %@", self.coursework.specification.file_url);
+    
+    File* file = (File *)self.coursework.specification;
     
     OpenStoreHandler *osh = [[OpenStoreHandler alloc] init];
     [osh openFile:file withCurrentView:self];
     
-    /*
-    NSString *stringPath = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,   NSUserDomainMask, YES)objectAtIndex:0]stringByAppendingPathComponent:@"Coursework_Folder"];
-    // Content_ Folder is your folder name
-    NSError *error = nil;
-    
-    if (![[NSFileManager defaultManager] fileExistsAtPath:stringPath])
-        [[NSFileManager defaultManager] createDirectoryAtPath:stringPath  withIntermediateDirectories:NO attributes:nil error:&error];
-    //This will create a new folder if content folder is not exist
-    
-    NSString *fileName = [stringPath stringByAppendingFormat:@"/cwk_1.pdf"];
-    
-    if (![[NSFileManager defaultManager] fileExistsAtPath:fileName]) {
-
-        NSLog(@"Downloading");
-        
-        NSString *str = self.coursework.coursework_file;
-        
-        str = [str stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-        NSLog(@"embed %@",str);
-        NSData *data = [NSData dataWithContentsOfURL:[NSURL  URLWithString:str]];
-        [data writeToFile:fileName atomically:YES];
-
-    }
-
-    NSURL *URL = [NSURL fileURLWithPath:fileName];
-    
-    if (URL) {
-        // Initialize Document Interaction Controller
-        self.documentInteractionController = [UIDocumentInteractionController interactionControllerWithURL:URL];
-        
-        // Configure Document Interaction Controller
-        [self.documentInteractionController setDelegate:self];
-        
-        self.documentInteractionController.name = @"Specification";
-        
-        // Preview PDF
-        [self.documentInteractionController presentPreviewAnimated:YES];
-    }
-     */
 }
 
-- (UIViewController *) documentInteractionControllerViewControllerForPreview: (UIDocumentInteractionController *) controller {
-    return self;
+- (IBAction)viewCourseworkDirectory:(id)sender {
+
+    Directory *directory = (Directory *)self.coursework.coursework_directory;
+    
+    OpenStoreHandler *osh = [[OpenStoreHandler alloc] init];
+    [osh openDirectory:directory withCurrentView:self];
+    
+
 }
 
 /*
