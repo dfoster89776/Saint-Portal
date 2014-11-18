@@ -2,7 +2,7 @@
 //  Posts.m
 //  Saint Portal
 //
-//  Created by David Foster on 13/11/2014.
+//  Created by David Foster on 17/11/2014.
 //  Copyright (c) 2014 David Foster. All rights reserved.
 //
 
@@ -21,5 +21,6 @@
 @dynamic posts_examples;
 @dynamic posts_slides;
 @dynamic posts_topic;
+@dynamic posts_readings;
 
 @end

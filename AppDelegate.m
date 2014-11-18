@@ -11,11 +11,13 @@
 #import "UpdateAllModuleData.h"
 #import "CourseworkDetailsViewController.h"
 #import "CourseworkModalViewController.h"
+#import "StAndrewsLocationManager.h"
 
 #define UIColorFromRGB(rgbValue) [UIColor colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 green:((float)((rgbValue & 0xFF00) >> 8))/255.0 blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
 
 @interface AppDelegate () <UpdateAllModuleDataDelegate>
 @property (nonatomic, copy) void (^completionHandler)(UIBackgroundFetchResult fetchResult);
+@property (nonatomic, strong) StAndrewsLocationManager *salm;
 @end
 
 @implementation AppDelegate
@@ -58,8 +60,9 @@
     self.window.rootViewController = homeScreenVC;
     [self.window makeKeyAndVisible];
     
-    
-    
+    self.salm = [[StAndrewsLocationManager alloc] init];
+    [self.salm setupLocationManager];
+
     return YES;
 }
 
@@ -242,12 +245,6 @@
         }
         
     }
-    
-    
-    
-    /*if (url != nil && [url isFileURL]) {
-        
-    }*/
      
     return YES;
 }
@@ -294,6 +291,5 @@
     NSLog(@"Module Data Update Failure");
     self.completionHandler(UIBackgroundFetchResultFailed);
 }
-
 
 @end

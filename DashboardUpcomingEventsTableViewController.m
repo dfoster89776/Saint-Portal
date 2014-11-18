@@ -119,12 +119,12 @@
     
     if(indexPath.section == 0){
         if([self.todayEvents count] == 0){
-            return 50;
+            return 70;
         }else{
             return 100;        }
     }else{
         if([self.tomorrowEvents count] == 0){
-            return 50;
+            return 70;
         }else{
             return 100;
         }
