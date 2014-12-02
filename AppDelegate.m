@@ -12,23 +12,24 @@
 #import "CourseworkDetailsViewController.h"
 #import "CourseworkModalViewController.h"
 #import "StAndrewsLocationManager.h"
+#import "PushNotificationManager.h"
+#import "RemoteNotificationReceiver.h"
 
 #define UIColorFromRGB(rgbValue) [UIColor colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 green:((float)((rgbValue & 0xFF00) >> 8))/255.0 blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
 
 @interface AppDelegate () <UpdateAllModuleDataDelegate>
 @property (nonatomic, copy) void (^completionHandler)(UIBackgroundFetchResult fetchResult);
 @property (nonatomic, strong) StAndrewsLocationManager *salm;
+@property (nonatomic, strong) PushNotificationManager *pnm;
 @end
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
-    [[UIApplication sharedApplication] registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge) categories:nil]];
-    
     [application setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalMinimum];
-    
-    [[UIApplication sharedApplication] registerForRemoteNotifications];
+
+    self.pnm = [[PushNotificationManager alloc] init];
     
     [[UINavigationBar appearance] setBarTintColor:UIColorFromRGB(0x00539B)];
     
@@ -265,12 +266,13 @@
 
 - (void)application:(UIApplication*)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData*)deviceToken
 {
-    NSLog(@"My token is: %@", deviceToken);
+    
+    [self.pnm registerPushNotificationToken:deviceToken];
 }
 
 - (void)application:(UIApplication*)application didFailToRegisterForRemoteNotificationsWithError:(NSError*)error
 {
-    NSLog(@"Failed to get token, error: %@", error);
+    [self.pnm registerPushNotificationFailure];
 }
 
 -(void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler{
@@ -290,6 +292,21 @@
 -(void)updateAllModuleDataFailure:(NSError *)error{
     NSLog(@"Module Data Update Failure");
     self.completionHandler(UIBackgroundFetchResultFailed);
+}
+
+- (void)           application:(UIApplication *)application
+  didReceiveRemoteNotification:(NSDictionary *)userInfo
+        fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
+{
+    NSLog(@"Remote Notification userInfo is %@", userInfo);
+    
+    RemoteNotificationReceiver *rnr = [[RemoteNotificationReceiver alloc] init];
+    
+    [rnr didReceiveNotification:userInfo withHandler:completionHandler];
+    
+    
+    // Do something with the content ID
+    completionHandler(UIBackgroundFetchResultNewData);
 }
 
 @end

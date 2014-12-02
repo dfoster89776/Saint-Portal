@@ -17,7 +17,7 @@
 
 
 @interface ModuleViewController ()
-@property (strong, nonatomic) IBOutlet UILabel *moduleNameLabel;
+@property (strong, nonatomic) IBOutlet UIView *pageLabelViewContainer;
 @end
 
 @implementation ModuleViewController
@@ -25,10 +25,26 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-
-    self.moduleNameLabel.text = [NSString stringWithFormat:@"%lu", [self.module.module_events count]];
     
+    NSLog(@"View width: %f", self.view.frame.size.width);
+    
+    /*
+    int height = self.pageLabelViewContainer.frame.size.height;
+    
+    UIView *titleView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 375, height)];
+    titleView.backgroundColor = [UIColor greenColor];
+    
+    [self.pageLabelViewContainer addSubview:titleView];
+    */
+                         
+                         
     // Do any additional setup after loading the view.
+}
+
+-(void)viewWillAppear:(BOOL)animated{
+    
+    NSLog(@"Frame width: %f", self.pageLabelViewContainer.frame.size.width);
+    
 }
 
 - (void)didReceiveMemoryWarning {

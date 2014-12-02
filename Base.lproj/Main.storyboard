@@ -1273,21 +1273,13 @@
                                     <segue destination="K1K-eW-B0H" kind="embed" identifier="ModulePageViewControllerEmbed" id="lco-Mx-BZh"/>
                                 </connections>
                             </containerView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RAL-gC-Zj6">
-                                <rect key="frame" x="279" y="79" width="42" height="21"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="RAL-gC-Zj6" firstAttribute="centerX" secondItem="0WD-j3-hZt" secondAttribute="centerX" id="6hY-uR-bvX"/>
                             <constraint firstItem="0WD-j3-hZt" firstAttribute="top" secondItem="WmF-pw-hMi" secondAttribute="bottom" constant="44" id="WAv-ep-DcY"/>
                             <constraint firstItem="rwq-Fl-vfk" firstAttribute="top" secondItem="0WD-j3-hZt" secondAttribute="bottom" id="mGA-rm-5c4"/>
                             <constraint firstItem="0WD-j3-hZt" firstAttribute="leading" secondItem="DmE-pw-Xxw" secondAttribute="leadingMargin" constant="-16" id="wDq-Ur-0dX"/>
                             <constraint firstAttribute="trailingMargin" secondItem="0WD-j3-hZt" secondAttribute="trailing" constant="-16" id="wxK-oc-6bS"/>
-                            <constraint firstItem="0WD-j3-hZt" firstAttribute="top" secondItem="RAL-gC-Zj6" secondAttribute="bottom" constant="8" symbolic="YES" id="yM1-xM-ohH"/>
                             <constraint firstAttribute="bottomMargin" secondItem="0WD-j3-hZt" secondAttribute="bottom" constant="10" id="zhk-fJ-FpW"/>
                         </constraints>
                         <variation key="default">
@@ -1297,7 +1289,6 @@
                         </variation>
                     </view>
                     <connections>
-                        <outlet property="moduleNameLabel" destination="RAL-gC-Zj6" id="ARK-Ce-3Mz"/>
                         <segue destination="s0a-pu-sEr" kind="show" identifier="showCourseworkDetails" id="4oK-1M-LIe"/>
                         <segue destination="d83-sj-Szy" kind="show" identifier="showTopicsPosts" id="X1H-xS-hcU"/>
                         <segue destination="b1t-VC-xij" kind="show" identifier="showAllPosts" id="ME3-Fc-T6r"/>
@@ -2386,11 +2377,11 @@
                         <viewControllerLayoutGuide type="bottom" id="7dH-my-dKl"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="9dF-E5-x7C">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="500"/>
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sxU-16-tbI">
-                                <rect key="frame" x="0.0" y="0.0" width="600" height="500"/>
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="d7s-Gh-eIT">
                                         <rect key="frame" x="0.0" y="0.0" width="600" height="100"/>
@@ -2553,8 +2544,6 @@
                             <constraint firstAttribute="width" secondItem="d7s-Gh-eIT" secondAttribute="width" id="r1C-5f-sqU"/>
                         </constraints>
                     </view>
-                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-                    <size key="freeformSize" width="600" height="500"/>
                     <connections>
                         <outlet property="moduleCodeLabel" destination="TCV-Lf-GiF" id="n4R-hG-0wk"/>
                         <outlet property="moduleDescriptionTextView" destination="qJo-pG-K0C" id="CL5-0v-dgz"/>

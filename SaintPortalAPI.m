@@ -54,7 +54,10 @@
         case UpdateLocationsRequest:
             [self requestLocationsLibrary];
             break;
-            
+        case RegisterDeviceForPushNotifications:
+            [self registerDeviceForPushNotificationsWithData:data];
+            break;
+        
         
     }
     
@@ -233,6 +236,30 @@
     
     // Create url connection, set request and delegate
     conn = [[NSURLConnection alloc] initWithRequest:request delegate:self];
+    
+}
+
+-(BOOL)registerDeviceForPushNotificationsWithData:(NSDictionary *)data{
+    
+    NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+    NSString *accesstoken = [NSString stringWithFormat:@"%@", [prefs valueForKey:@"access_token"]];
+    
+    //URL for authentication API
+    NSURL *url = [NSURL URLWithString:@"https://drf8.host.cs.st-andrews.ac.uk/SaintPortal/API/registerDeviceForPushNotifications.php"];
+    
+    // Create the request.
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url
+                                                           cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData
+                                                       timeoutInterval:40.0];
+    request.HTTPMethod = @"POST";
+    NSString *stringData = [NSString stringWithFormat:@"accesstoken=%@&deviceID=%@&apnstoken=%@", accesstoken, [UIDevice currentDevice].identifierForVendor.UUIDString, [data objectForKey:@"apns_token"]];
+    
+    request.HTTPBody = [stringData dataUsingEncoding:NSUTF8StringEncoding];
+    
+    // Create url connection, set request and delegate
+    conn = [[NSURLConnection alloc] initWithRequest:request delegate:self];
+    
+    return true;
     
 }
 

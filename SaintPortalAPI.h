@@ -17,7 +17,8 @@ enum {
     UpdateModuleEventsRequest = 5,
     UpdateModuleTopicsRequest = 6,
     UpdateTopicPostsRequest = 7,
-    UpdateLocationsRequest = 8
+    UpdateLocationsRequest = 8,
+    RegisterDeviceForPushNotifications = 9
 };
 
 typedef NSUInteger SaintPortalAPIOperation;
