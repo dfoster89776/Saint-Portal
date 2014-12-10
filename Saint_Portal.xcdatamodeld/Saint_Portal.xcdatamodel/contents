@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="6252" systemVersion="14B23" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="6254" systemVersion="14B25" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="Book_Reading" representedClassName="Book_Reading" parentEntity="Reading" syncable="YES">
         <attribute name="isbn" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
@@ -16,7 +16,7 @@
         <attribute name="coursework_name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="coursework_weighting" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="submitted" optional="YES" attributeType="Boolean" syncable="YES"/>
-        <relationship name="assignments_module" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="Modules" inverseName="module_assignments" inverseEntity="Modules" syncable="YES"/>
+        <relationship name="assignments_module" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Modules" inverseName="module_assignments" inverseEntity="Modules" syncable="YES"/>
         <relationship name="coursework_directory" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Coursework_Directory" inverseName="directory_coursework" inverseEntity="Coursework_Directory" syncable="YES"/>
         <relationship name="specification" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Specification" inverseName="coursework_item" inverseEntity="Specification" syncable="YES"/>
     </entity>
@@ -36,7 +36,7 @@
         <attribute name="event_id" attributeType="Integer 64" defaultValueString="0" indexed="YES" syncable="YES"/>
         <attribute name="start_time" optional="YES" attributeType="Date" syncable="YES"/>
         <relationship name="event_location" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Rooms" inverseName="rooms_events" inverseEntity="Rooms" syncable="YES"/>
-        <relationship name="event_module" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="Modules" inverseName="module_events" inverseEntity="Modules" syncable="YES"/>
+        <relationship name="event_module" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Modules" inverseName="module_events" inverseEntity="Modules" syncable="YES"/>
     </entity>
     <entity name="Examples" representedClassName="Examples" parentEntity="Directory" syncable="YES">
         <attribute name="example_id" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
@@ -62,9 +62,9 @@
         <attribute name="school" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="semester" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="year" optional="YES" attributeType="String" syncable="YES"/>
-        <relationship name="module_assignments" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Coursework" inverseName="assignments_module" inverseEntity="Coursework" syncable="YES"/>
-        <relationship name="module_events" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Event" inverseName="event_module" inverseEntity="Event" syncable="YES"/>
-        <relationship name="modules_topics" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Topics" inverseName="topics_module" inverseEntity="Topics" syncable="YES"/>
+        <relationship name="module_assignments" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Coursework" inverseName="assignments_module" inverseEntity="Coursework" syncable="YES"/>
+        <relationship name="module_events" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Event" inverseName="event_module" inverseEntity="Event" syncable="YES"/>
+        <relationship name="modules_topics" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Topics" inverseName="topics_module" inverseEntity="Topics" syncable="YES"/>
     </entity>
     <entity name="Personal_Details" representedClassName="Personal_Details" syncable="YES">
         <attribute name="fee_status" optional="YES" attributeType="String" syncable="YES"/>
@@ -114,25 +114,25 @@
         <attribute name="web_address" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
     <elements>
+        <element name="Book_Reading" positionX="-4392" positionY="-1107" width="128" height="58"/>
         <element name="Buildings" positionX="-3323" positionY="-1753" width="128" height="88"/>
         <element name="Coursework" positionX="-4169" positionY="-1827" width="128" height="193"/>
+        <element name="Coursework_Directory" positionX="-3476" positionY="-1575" width="128" height="58"/>
         <element name="Directory" positionX="-3476" positionY="-1314" width="128" height="118"/>
         <element name="Event" positionX="-3755" positionY="-1818" width="128" height="133"/>
         <element name="Examples" positionX="-3665" positionY="-1153" width="128" height="73"/>
         <element name="File" positionX="-3665" positionY="-1377" width="128" height="148"/>
+        <element name="File_Reading" positionX="-4583" positionY="-1107" width="128" height="43"/>
         <element name="Lectures" positionX="-3690" positionY="-1618" width="128" height="43"/>
-        <element name="Modules" positionX="-3942" positionY="-1863" width="128" height="208"/>
+        <element name="Modules" positionX="-3942" positionY="-1908" width="128" height="208"/>
         <element name="Personal_Details" positionX="-4401" positionY="-1863" width="128" height="133"/>
         <element name="Posts" positionX="-4095" positionY="-1404" width="128" height="163"/>
+        <element name="Reading" positionX="-4383" positionY="-1342" width="128" height="73"/>
         <element name="Rooms" positionX="-3521" positionY="-1782" width="128" height="118"/>
         <element name="Slides" positionX="-3818" positionY="-1399" width="128" height="58"/>
+        <element name="Specification" positionX="-3800" positionY="-1507" width="128" height="58"/>
         <element name="Topics" positionX="-4122" positionY="-1585" width="128" height="133"/>
         <element name="Tutorials" positionX="-3843" positionY="-1618" width="128" height="43"/>
-        <element name="Specification" positionX="-3800" positionY="-1507" width="128" height="58"/>
-        <element name="Coursework_Directory" positionX="-3476" positionY="-1575" width="128" height="58"/>
-        <element name="Reading" positionX="-4383" positionY="-1342" width="128" height="73"/>
-        <element name="Book_Reading" positionX="-4392" positionY="-1107" width="128" height="58"/>
         <element name="Web_Reading" positionX="-4205" positionY="-1107" width="128" height="58"/>
-        <element name="File_Reading" positionX="-4583" positionY="-1107" width="128" height="43"/>
     </elements>
 </model>

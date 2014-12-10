@@ -56,7 +56,7 @@
     
     for(NSMutableDictionary *file in files){
         
-        NSLog(@"ADDING FILES: %@", [file objectForKey:@"file_url"]);
+        //NSLog(@"ADDING FILES: %@", [file objectForKey:@"file_url"]);
         
         [files_list addObject:[NSNumber numberWithInteger:[[file objectForKey:@"file_id"] integerValue]]];
         
@@ -69,7 +69,7 @@
         
         if([matches count] == 0){
             
-            NSLog(@"Creating new file");
+            //NSLog(@"Creating new file");
             
             File *new_file = [NSEntityDescription insertNewObjectForEntityForName:@"File" inManagedObjectContext:context];
             
@@ -89,13 +89,13 @@
                 }
             }
             
-            NSLog(@"%@", directory);
+            //NSLog(@"%@", directory);
             
             [directory addFilesObject:new_file];
             
         }else{
             
-            NSLog(@"Updating file");
+            //NSLog(@"Updating file");
             
             File *new_file = [[matches allObjects] firstObject];
             

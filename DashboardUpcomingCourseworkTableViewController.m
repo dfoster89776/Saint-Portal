@@ -26,11 +26,18 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTableContents:) name:@"courseworkUpdate" object:nil];
+    
     [self.tableView registerNib:[UINib nibWithNibName:@"UpcomingCourseworkTableViewCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"UpcomingCourseworkCell"];
     [self.tableView registerNib:[UINib nibWithNibName:@"UpcomingHeaderCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"UpcomingHeaderCell"];
     
     self.context = [(AppDelegate *)[[UIApplication sharedApplication] delegate] managedObjectContext];
     
+}
+
+-(void)updateTableContents:(NSNotification*) notification
+{
+    [self.tableView reloadData];
 }
 
 - (void)didReceiveMemoryWarning {

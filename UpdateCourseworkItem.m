@@ -1,55 +1,63 @@
 //
-//  UpdateModuleCoursework.m
+//  UpdateCourseworkItem.m
 //  Saint Portal
 //
-//  Created by David Foster on 10/11/2014.
+//  Created by David Foster on 09/12/2014.
 //  Copyright (c) 2014 David Foster. All rights reserved.
 //
 
-#import "UpdateModuleCoursework.h"
+#import "UpdateCourseworkItem.h"
 #import "SaintPortalAPI.h"
 #import "AppDelegate.h"
 #import "Coursework.h"
 #import "Specification.h"
 #import "Coursework_Directory.h"
 #import "DirectoryUpdate.h"
+#import "Modules.h"
 
-@interface UpdateModuleCoursework() <SaintPortalAPIDelegate>
-@property (nonatomic, strong)Modules *module;
-@property (nonatomic, strong)NSManagedObjectContext *context;
-@property (nonatomic, strong)id delegate;
-@property BOOL status;
+
+@interface UpdateCourseworkItem () <SaintPortalAPIDelegate>
+@property (nonatomic, strong) id delegate;
+@property (strong, nonatomic) NSManagedObjectContext* context;
+@property (strong, nonatomic) Modules* module;
 @end
 
-@implementation UpdateModuleCoursework
+@implementation UpdateCourseworkItem
 
--(void)updateCourseworkForModule:(Modules *)module withDelegate:(id)delegate{
+-(void)updateCourseworkItemWithID:(NSNumber *)coursework_id withDelegate:(id)delegate{
     
-    self.module = module;
+    NSLog(@"Updating coursework item for id: %i", [coursework_id intValue]);
+
     self.context = [(AppDelegate *)[[UIApplication sharedApplication] delegate] managedObjectContext];
-    self.delegate = delegate;
-    self.status = false;
     
-    NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
-    [data setValue:self.module.module_id forKey:@"module_id"];
+    self.delegate = delegate;
     
     SaintPortalAPI *api = [[SaintPortalAPI alloc] init];
     
-    [api APIRequest:UpdateModuleCourseworkRequest withData:data withDelegate:self];
+    NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
+    [data setValue:coursework_id forKey:@"coursework_id"];
     
+    [api APIRequest:UpdateCourseworkItemRequest withData:data withDelegate:self];
+        
 }
 
 -(void)APICallbackHandler:(NSDictionary *)data{
- 
-    NSMutableArray *assignment_list = [[NSMutableArray alloc] init];
     
-    //Check all objects are in core data
+    NSLog(@"Callback data: %@", data);
+    
+    NSError *error;
     
     if([[data valueForKey:@"coursework_exists"] boolValue]){
         
         for (NSDictionary *assignment in [data valueForKey:@"coursework_details"]){
             
-            [assignment_list addObject:[NSNumber numberWithInteger:[[assignment objectForKey:@"coursework_id"] integerValue]]];
+            int moduleid = [[assignment objectForKey:@"module_id"] intValue];
+            NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:@"Modules"];
+            request.predicate = [NSPredicate predicateWithFormat:@"module_id = %i", moduleid];
+            
+            NSArray* result = [self.context executeFetchRequest:request error:&error];
+            
+            self.module = [result firstObject];
             
             NSPredicate *predicate = [NSPredicate predicateWithFormat:@"coursework_id == %i", [[assignment objectForKey:@"coursework_id"] integerValue]];
             
@@ -76,12 +84,12 @@
                 new_coursework.coursework_weighting = [NSNumber numberWithInteger:[[assignment objectForKey:@"weighting"] integerValue]];
                 
                 new_coursework.coursework_description = [assignment objectForKey:@"description"];
-
+                
                 if([assignment objectForKey:@"directory_details"]){
                     [self updateDirectoryForCoursework:new_coursework withData:assignment];
                 }
                 
-                new_coursework.specification = new_coursework.specification = [UpdateModuleCoursework updateCourseworkFile:[assignment objectForKey:@"coursework_file"] withContext:self.context];
+                new_coursework.specification = new_coursework.specification = [UpdateCourseworkItem updateCourseworkFile:[assignment objectForKey:@"coursework_file"] withContext:self.context];
                 
                 new_coursework.submitted = [NSNumber numberWithInteger:[[assignment objectForKey:@"submitted"] integerValue]];
                 
@@ -116,44 +124,20 @@
                     new_coursework.coursework_directory = nil;
                 }
                 
-                new_coursework.specification = new_coursework.specification = [UpdateModuleCoursework updateCourseworkFile:[assignment objectForKey:@"coursework_file"] withContext:self.context];
+                new_coursework.specification= [UpdateCourseworkItem updateCourseworkFile:[assignment objectForKey:@"coursework_file"] withContext:self.context];
             }
         }
     }
     
-    //Remove any coursework items no longer on central database
-    NSArray *deleteingAssignmenets = [NSArray arrayWithArray:assignment_list];
-    
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"NOT (coursework_id IN %@)", deleteingAssignmenets];
-    
-    NSSet *assignmentsToDelete = [self.module.module_assignments filteredSetUsingPredicate:predicate];
-    
-    for(Coursework *deleteCoursework in assignmentsToDelete){
-        
-        [self.context deleteObject:deleteCoursework];
-        [self.module removeModule_assignmentsObject:deleteCoursework];
-    }
- 
-    self.status = true;
-    
-    NSError *error;
     [self.context save:&error];
     
-    [self.delegate moduleCourseworkUpdateSuccess];
+    [self.delegate courseworkItemUpdateSuccess];
     
 }
 
--(void) APIErrorHandler:(NSError *)error{
-
-    self.status = true;
+-(void)APIErrorHandler:(NSError *)error{
     
-    [self.delegate moduleCourseworkUpdateFailure:error];
-    
-}
-
--(BOOL)getStatus{
-    
-    return self.status;
+    [self.delegate courseworkItemUpdateSuccess];
     
 }
 
@@ -174,12 +158,12 @@
     if(count == 0){
         
         file = [NSEntityDescription insertNewObjectForEntityForName:@"Specification"
-                                                            inManagedObjectContext:context];
+                                             inManagedObjectContext:context];
         
         file.file_id = [NSNumber numberWithInteger:[[fileData objectForKey:@"file_id"] integerValue]];
         file.file_url = [fileData objectForKey:@"file_url"];
         
-        //NSLog(@"File url: %@", file.file_url);
+        NSLog(@"File url: %@", file.file_url);
         
         NSArray *parts = [file.file_url componentsSeparatedByString:@"/"];
         file.file_name = [parts lastObject];
@@ -197,8 +181,8 @@
     }else{
         NSArray *files = [context executeFetchRequest:request error:&error];
         file = [files firstObject];
-    
-        //NSLog(@"Adding coursework file: %@", [fileData objectForKey:@"file_url"]);
+        
+        NSLog(@"Adding coursework file: %@", [fileData objectForKey:@"file_url"]);
         
         file.file_id = [NSNumber numberWithInteger:[[fileData objectForKey:@"file_id"] integerValue]];
         file.file_url = [fileData objectForKey:@"file_url"];
@@ -214,7 +198,7 @@
                 file.update_available = [NSNumber numberWithInt:1];
             }
         }
-    
+        
     }
     
     return file;
@@ -223,7 +207,7 @@
 
 -(void)updateDirectoryForCoursework:(Coursework *)coursework withData:(NSDictionary *)data{
     
-    //NSLog(@"Updating coursework directory: %@", [data objectForKey:@"directory"]);
+    NSLog(@"Updating coursework directory: %@", [data objectForKey:@"directory"]);
     
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Coursework_Directory"];
     
@@ -237,13 +221,13 @@
     if(count == 0){
         
         root = [NSEntityDescription insertNewObjectForEntityForName:@"Coursework_Directory"
-                                                   inManagedObjectContext:self.context];
+                                             inManagedObjectContext:self.context];
         
     }else if (count == 1){
         
         NSArray *details = [self.context executeFetchRequest:request error:&error];
         root = [details firstObject];
-    
+        
     }
     
     root.directory_id = [NSNumber numberWithInteger:[[data objectForKey:@"directory"] integerValue]];
@@ -254,5 +238,6 @@
     [du updateCourseworkDirectory:root withData:[data objectForKey:@"directory_details"]];
     
 }
+
 
 @end

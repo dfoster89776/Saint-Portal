@@ -22,9 +22,30 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTableContents:) name:@"courseworkUpdate" object:nil];
+
+    
     [self.tableView registerNib:[UINib nibWithNibName:@"ModuleCourseworkTableViewCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"ModuleCourseworkCell"];
-        [self.tableView registerNib:[UINib nibWithNibName:@"CurrentModulesTableViewHeader" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"ModulesHeader"];
-        
+    [self.tableView registerNib:[UINib nibWithNibName:@"CurrentModulesTableViewHeader" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"ModulesHeader"];
+    
+    NSPredicate *pred = [NSPredicate predicateWithFormat:@"submitted == 0"];
+    self.futureCoursework = [[self.module.module_assignments allObjects] filteredArrayUsingPredicate:pred];
+    
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"coursework_due" ascending:YES];
+    
+    self.futureCoursework = [self.futureCoursework sortedArrayUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]];
+    
+    pred = [NSPredicate predicateWithFormat:@"submitted == 1"];
+    self.pastCoursework = [[self.module.module_assignments allObjects] filteredArrayUsingPredicate:pred];
+    self.pastCoursework = [self.pastCoursework
+                           sortedArrayUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]];
+}
+
+-(void)updateTableContents:(NSNotification*) notification
+{
+    
+    NSLog(@"Bla bla black sheep");
+    
     NSPredicate *pred = [NSPredicate predicateWithFormat:@"submitted == 0"];
     self.futureCoursework = [[self.module.module_assignments allObjects] filteredArrayUsingPredicate:pred];
     
@@ -37,6 +58,7 @@
     self.pastCoursework = [self.pastCoursework
                            sortedArrayUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]];
     
+    [self.tableView reloadData];
 }
 
 - (void)didReceiveMemoryWarning {

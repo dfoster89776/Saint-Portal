@@ -43,7 +43,7 @@
 
 -(void)APICallbackHandler:(NSDictionary *)data{
     
-    NSLog(@"POST UDPATED");
+    //NSLog(@"POST UDPATED");
     
     NSMutableArray *post_list = [[NSMutableArray alloc] init];
     
@@ -187,7 +187,7 @@
 
 -(void)updateExamplesForPost:(Posts *)post withData:(NSArray *)data{
     
-    NSLog(@"%@", data);
+    //NSLog(@"%@", data);
     
     NSMutableArray *examples_list = [[NSMutableArray alloc] init];
     

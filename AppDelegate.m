@@ -152,6 +152,7 @@
     
     NSPersistentStoreCoordinator *coordinator = [self persistentStoreCoordinator];
     if (!coordinator) {
+        
         return nil;
     }
     _managedObjectContext = [[NSManagedObjectContext alloc] init];
@@ -298,15 +299,15 @@
   didReceiveRemoteNotification:(NSDictionary *)userInfo
         fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
 {
-    NSLog(@"Remote Notification userInfo is %@", userInfo);
     
+    NSLog(@"Remote Notification received with userinfo: %@", userInfo);
+        
     RemoteNotificationReceiver *rnr = [[RemoteNotificationReceiver alloc] init];
-    
+        
     [rnr didReceiveNotification:userInfo withHandler:completionHandler];
     
     
     // Do something with the content ID
-    completionHandler(UIBackgroundFetchResultNewData);
 }
 
 @end

@@ -9,5 +9,5 @@
 #import <UIKit/UIKit.h>
 
 @interface DashViewController : UIViewController
-
+-(void)titleForIndex:(NSUInteger)index;
 @end

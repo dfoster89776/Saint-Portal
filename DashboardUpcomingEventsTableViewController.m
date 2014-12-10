@@ -35,7 +35,6 @@
 }
 
 -(void)viewWillAppear:(BOOL)animated{
-    NSLog(@"HERE");
     [self.tableView reloadData];
 }
 
@@ -61,14 +60,10 @@
     
     self.todayEvents = [self.context executeFetchRequest:request error:&error];
     
-    NSLog(@"Events today: %lu", [self.todayEvents count]);
-    
     request.predicate = [NSPredicate predicateWithFormat:@"(end_time >= %@) AND (start_time <= %@)", midnight, midnightTomorrow];
     
     self.tomorrowEvents = [self.context executeFetchRequest:request error:&error];
-    
-    NSLog(@"Events tomorrow: %lu", [self.tomorrowEvents count]);
-    
+        
     // Return the number of sections.
     return 2;
 }

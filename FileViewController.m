@@ -10,12 +10,16 @@
 
 @interface FileViewController () <UIDocumentInteractionControllerDelegate>
 @property (strong, nonatomic) UIDocumentInteractionController *documentInteractionController;
+@property (strong, nonatomic) IBOutlet UILabel *documentNameLabel;
 @end
 
 @implementation FileViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    self.documentNameLabel.text = self.file.file_name;
+    
     // Do any additional setup after loading the view.
 }
 

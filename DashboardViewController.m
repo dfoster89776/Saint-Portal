@@ -9,9 +9,11 @@
 #import "DashboardViewController.h"
 #import "CourseworkDetailsViewController.h"
 #import "DashboardUpcomingCourseworkTableViewController.h"
+#import "DashViewController.h"
 
 @interface DashboardViewController ()
 @property (strong, nonatomic) NSArray *myViewControllers;
+@property (strong, nonatomic) UIViewController *transitioningTo;
 @end
 
 @implementation DashboardViewController
@@ -69,6 +71,7 @@
         return nil;
     }else{
         ++currentIndex;
+        
         return [self.myViewControllers objectAtIndex:currentIndex];
     }
 }
@@ -82,7 +85,30 @@
 -(NSInteger)presentationIndexForPageViewController:
 (UIPageViewController *)pageViewController
 {
+    
     return 0;
+}
+
+-(void)pageViewController:(UIPageViewController *)pageViewController
+willTransitionToViewControllers:(NSArray *)pendingViewControllers{
+    
+    self.transitioningTo = [pendingViewControllers firstObject];
+    
+}
+
+- (void)pageViewController:(UIPageViewController *)pageViewController
+        didFinishAnimating:(BOOL)finished
+   previousViewControllers:(NSArray *)previousViewControllers
+       transitionCompleted:(BOOL)completed{
+    
+    if(completed){
+        
+        NSUInteger currentIndex = [self.myViewControllers indexOfObject:self.transitioningTo];
+                
+        [(DashViewController *)self.parentViewController titleForIndex:currentIndex];
+        
+    }
+    
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {

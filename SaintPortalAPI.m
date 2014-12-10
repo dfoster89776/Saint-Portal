@@ -57,6 +57,9 @@
         case RegisterDeviceForPushNotifications:
             [self registerDeviceForPushNotificationsWithData:data];
             break;
+        case UpdateCourseworkItemRequest:
+            [self updateCourseworkItemWithData:data];
+        
         
         
     }
@@ -263,6 +266,29 @@
     
 }
 
+-(void)updateCourseworkItemWithData:(NSDictionary *)data{
+    
+    NSLog(@"Update coursework item API call");
+    
+    NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+    NSString *accesstoken = [NSString stringWithFormat:@"%@", [prefs valueForKey:@"access_token"]];
+    
+    //URL for authentication API
+    NSURL *url = [NSURL URLWithString:@"https://drf8.host.cs.st-andrews.ac.uk/SaintPortal/API/requestCourseworkItemDetails.php"];
+    
+    // Create the request.
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url
+                                                           cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData
+                                                       timeoutInterval:40.0];
+    request.HTTPMethod = @"POST";
+    NSString *stringData = [NSString stringWithFormat:@"accesstoken=%@&deviceID=%@&courseworkid=%@", accesstoken, [UIDevice currentDevice].identifierForVendor.UUIDString, [data objectForKey:@"coursework_id"]];
+    
+    request.HTTPBody = [stringData dataUsingEncoding:NSUTF8StringEncoding];
+    
+    // Create url connection, set request and delegate
+    conn = [[NSURLConnection alloc] initWithRequest:request delegate:self];
+    
+}
 
 
 #pragma mark Connection Did Receive Response
