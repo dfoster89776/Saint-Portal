@@ -10,6 +10,7 @@
 #import "File.h"
 #import "OpenStoreHandler.h"
 #import "Specification.h"
+#import "Feedback.h"
 
 #define UIColorFromRGB(rgbValue) [UIColor colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 green:((float)((rgbValue & 0xFF00) >> 8))/255.0 blue:((float)(rgbValue & 0xFF))/255.0 alpha:1]
 
@@ -29,6 +30,11 @@
 @property (strong, nonatomic) IBOutlet UIView *submissionContainerView;
 @property (strong, nonatomic) IBOutlet UIView *feedbackContainerView;
 @property (strong, nonatomic) UIDocumentInteractionController* documentInteractionController;
+@property (strong, nonatomic) IBOutlet UIView *noFeedbackContainer;
+@property (strong, nonatomic) IBOutlet UIView *yesFeedbackContainer;
+@property (strong, nonatomic) IBOutlet UILabel *gradeAchieved;
+@property (strong, nonatomic) IBOutlet UILabel *feedbackDate;
+@property (strong, nonatomic) IBOutlet UITextView *feedbackComments;
 @end
 
 @implementation CourseworkDetailsViewController 
@@ -117,11 +123,27 @@
     
     if(!self.coursework.coursework_directory){
         
-        
         [self.viewOtherFilesButton removeFromSuperview];
         
-        
     }
+    
+    if([self.coursework.feedback_received boolValue]){
+        NSLog(@"Feedback available");
+        [self.noFeedbackContainer removeFromSuperview];
+        self.gradeAchieved.text = [NSString stringWithFormat:@"%@", self.coursework.feedback.grade];
+        self.feedbackComments.text = self.coursework.feedback.comment;
+        [self.feedbackComments sizeToFit];
+        [self.feedbackComments layoutIfNeeded];
+        
+        NSDateFormatter *df = [[NSDateFormatter alloc] init];
+        [df setDateFormat:@"HH:mm dd/MM/yyyy"];
+        self.feedbackDate.text = [df stringFromDate:self.coursework.feedback.received];
+        
+    }else{
+        NSLog(@"No Feedback available");
+        [self.yesFeedbackContainer removeFromSuperview];
+    }
+    
 }
 
 - (void)didReceiveMemoryWarning {

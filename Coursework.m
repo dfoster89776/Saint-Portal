@@ -2,7 +2,7 @@
 //  Coursework.m
 //  Saint Portal
 //
-//  Created by David Foster on 17/11/2014.
+//  Created by David Foster on 21/12/2014.
 //  Copyright (c) 2014 David Foster. All rights reserved.
 //
 
@@ -10,6 +10,7 @@
 #import "Coursework_Directory.h"
 #import "Modules.h"
 #import "Specification.h"
+#import "Feedback.h"
 
 
 @implementation Coursework
@@ -21,8 +22,10 @@
 @dynamic coursework_name;
 @dynamic coursework_weighting;
 @dynamic submitted;
+@dynamic feedback_received;
 @dynamic assignments_module;
-@dynamic specification;
 @dynamic coursework_directory;
+@dynamic specification;
+@dynamic feedback;
 
 @end

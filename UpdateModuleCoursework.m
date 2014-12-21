@@ -13,6 +13,7 @@
 #import "Specification.h"
 #import "Coursework_Directory.h"
 #import "DirectoryUpdate.h"
+#import "Feedback.h"
 
 @interface UpdateModuleCoursework() <SaintPortalAPIDelegate>
 @property (nonatomic, strong)Modules *module;
@@ -84,6 +85,26 @@
                 new_coursework.specification = new_coursework.specification = [UpdateModuleCoursework updateCourseworkFile:[assignment objectForKey:@"coursework_file"] withContext:self.context];
                 
                 new_coursework.submitted = [NSNumber numberWithInteger:[[assignment objectForKey:@"submitted"] integerValue]];
+                new_coursework.feedback_received = [NSNumber numberWithInteger:[[assignment objectForKey:@"feedback_received"] integerValue]];
+                
+                if(new_coursework.feedback_received){
+                    
+                    NSMutableDictionary *feedbackData = [assignment objectForKey:@"feedback"];
+                    
+                    Feedback* feedback = [NSEntityDescription insertNewObjectForEntityForName:@"Feedback" inManagedObjectContext:self.context];
+                    
+                    new_coursework.feedback = feedback;
+                    
+                    NSDate *feedbackReceived = [df dateFromString:[feedbackData objectForKey:@"feedback_time"]];
+                    feedback.received = feedbackReceived;
+                    
+                    feedback.coursework_item = new_coursework;
+                    feedback.grade = [NSNumber numberWithInteger:[[feedbackData objectForKey:@"grade"] floatValue]];
+                    feedback.comment = [feedbackData objectForKey:@"comment"];
+                    
+                    NSLog(@"Feedback received");
+                    
+                }
                 
                 [self.module addModule_assignmentsObject:new_coursework];
                 
@@ -108,6 +129,33 @@
                 new_coursework.coursework_description = [assignment objectForKey:@"description"];
                 
                 new_coursework.submitted = [NSNumber numberWithInteger:[[assignment objectForKey:@"submitted"] integerValue]];
+                new_coursework.feedback_received = [NSNumber numberWithInteger:[[assignment objectForKey:@"feedback_received"] integerValue]];
+                
+                if(new_coursework.feedback_received){
+                    
+                    NSMutableDictionary *feedbackData = [assignment objectForKey:@"feedback"];
+                    
+                    Feedback* feedback;
+                    
+                    if(new_coursework.feedback == nil){
+                         feedback = [NSEntityDescription insertNewObjectForEntityForName:@"Feedback" inManagedObjectContext:self.context];
+                    }else{
+                        feedback = new_coursework.feedback;
+                    }
+                    
+                    new_coursework.feedback = feedback;
+                    
+                    NSDate *feedbackReceived = [df dateFromString:[feedbackData objectForKey:@"feedback_time"]];
+                    feedback.received = feedbackReceived;
+                    
+                    feedback.coursework_item = new_coursework;
+                    feedback.grade = [NSNumber numberWithInteger:[[feedbackData objectForKey:@"grade"] floatValue]];
+                    feedback.comment = [feedbackData objectForKey:@"comment"];
+                    
+                    NSLog(@"Feedback received");
+                    
+                }
+
                 
                 if([assignment objectForKey:@"directory_details"]){
                     [self updateDirectoryForCoursework:new_coursework withData:assignment];

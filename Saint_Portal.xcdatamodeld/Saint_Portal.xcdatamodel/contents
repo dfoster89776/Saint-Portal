@@ -15,9 +15,11 @@
         <attribute name="coursework_id" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="coursework_name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="coursework_weighting" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="feedback_received" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="submitted" optional="YES" attributeType="Boolean" syncable="YES"/>
         <relationship name="assignments_module" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Modules" inverseName="module_assignments" inverseEntity="Modules" syncable="YES"/>
         <relationship name="coursework_directory" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Coursework_Directory" inverseName="directory_coursework" inverseEntity="Coursework_Directory" syncable="YES"/>
+        <relationship name="feedback" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Feedback" inverseName="coursework_item" inverseEntity="Feedback" syncable="YES"/>
         <relationship name="specification" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Specification" inverseName="coursework_item" inverseEntity="Specification" syncable="YES"/>
     </entity>
     <entity name="Coursework_Directory" representedClassName="Coursework_Directory" parentEntity="Directory" syncable="YES">
@@ -41,6 +43,12 @@
     <entity name="Examples" representedClassName="Examples" parentEntity="Directory" syncable="YES">
         <attribute name="example_id" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <relationship name="examples_post" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Posts" inverseName="posts_examples" inverseEntity="Posts" syncable="YES"/>
+    </entity>
+    <entity name="Feedback" representedClassName="Feedback" syncable="YES">
+        <attribute name="comment" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="grade" optional="YES" attributeType="Float" defaultValueString="0" syncable="YES"/>
+        <attribute name="received" optional="YES" attributeType="Date" syncable="YES"/>
+        <relationship name="coursework_item" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Coursework" inverseName="feedback" inverseEntity="Coursework" syncable="YES"/>
     </entity>
     <entity name="File" representedClassName="File" syncable="YES">
         <attribute name="downloaded" optional="YES" attributeType="Date" syncable="YES"/>
@@ -116,7 +124,7 @@
     <elements>
         <element name="Book_Reading" positionX="-4392" positionY="-1107" width="128" height="58"/>
         <element name="Buildings" positionX="-3323" positionY="-1753" width="128" height="88"/>
-        <element name="Coursework" positionX="-4169" positionY="-1827" width="128" height="193"/>
+        <element name="Coursework" positionX="-4169" positionY="-1827" width="128" height="223"/>
         <element name="Coursework_Directory" positionX="-3476" positionY="-1575" width="128" height="58"/>
         <element name="Directory" positionX="-3476" positionY="-1314" width="128" height="118"/>
         <element name="Event" positionX="-3755" positionY="-1818" width="128" height="133"/>
@@ -134,5 +142,6 @@
         <element name="Topics" positionX="-4122" positionY="-1585" width="128" height="133"/>
         <element name="Tutorials" positionX="-3843" positionY="-1618" width="128" height="43"/>
         <element name="Web_Reading" positionX="-4205" positionY="-1107" width="128" height="58"/>
+        <element name="Feedback" positionX="-4383" positionY="-1636" width="128" height="103"/>
     </elements>
 </model>
