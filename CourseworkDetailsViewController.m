@@ -25,7 +25,9 @@
 
 @property (strong, nonatomic) IBOutlet UIView *overviewView;
 @property (strong, nonatomic) IBOutlet UITextView *courseworkDescriptionTextView;
-
+@property (strong, nonatomic) IBOutlet UIButton *viewOtherFilesButton;
+@property (strong, nonatomic) IBOutlet UIView *submissionContainerView;
+@property (strong, nonatomic) IBOutlet UIView *feedbackContainerView;
 @property (strong, nonatomic) UIDocumentInteractionController* documentInteractionController;
 @end
 
@@ -45,6 +47,15 @@
     bottomBorder.frame = CGRectMake(0, self.overviewView.frame.size.height, self.overviewView.frame.size.width, 1);
     [self.overviewView addSubview:bottomBorder];
 
+    UIView *topBorder = [UIView new];
+    topBorder.backgroundColor = UIColorFromRGB(0x00AEEF);
+    topBorder.frame = CGRectMake(0, 0, self.submissionContainerView.frame.size.width, 1);
+    [self.submissionContainerView addSubview:topBorder];
+    
+    UIView *topBorder2 = [UIView new];
+    topBorder2.backgroundColor = UIColorFromRGB(0x00AEEF);
+    topBorder2.frame = CGRectMake(0, 0, self.feedbackContainerView.frame.size.width, 1);
+    [self.feedbackContainerView addSubview:topBorder2];
     
     self.courseworkNameLabel.text = self.coursework.coursework_name;
     
@@ -103,6 +114,14 @@
     [self.courseworkDescriptionTextView sizeToFit];
     [self.courseworkDescriptionTextView layoutIfNeeded];
     // Do any additional setup after loading the view.
+    
+    if(!self.coursework.coursework_directory){
+        
+        
+        [self.viewOtherFilesButton removeFromSuperview];
+        
+        
+    }
 }
 
 - (void)didReceiveMemoryWarning {

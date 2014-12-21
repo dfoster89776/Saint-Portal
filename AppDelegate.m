@@ -220,29 +220,9 @@
      
         if([[query objectForKey:@"type"] isEqualToString:@"coursework"]){
             
-            NSManagedObjectContext *context = [(AppDelegate *)[[UIApplication sharedApplication] delegate] managedObjectContext];
-            
             NSNumber *coursework_id = [NSNumber numberWithInteger:[[query objectForKey:@"coursework_id"] integerValue]];
-            
-            NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Coursework"];
-            
-            request.predicate = [NSPredicate predicateWithFormat:@"coursework_id == %@", coursework_id];
-            
-            NSError *error = nil;
-            
-            NSArray *items = [context executeFetchRequest:request error:&error];
-
-            
-            UIViewController *root = self.window.rootViewController;
-            
-            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-            
-            CourseworkDetailsViewController *vc = [storyboard instantiateViewControllerWithIdentifier:@"courseworkModal"];
-            
-            CourseworkModalViewController *cmvc = [vc.childViewControllers objectAtIndex:0];
-            cmvc.coursework = [items objectAtIndex:0];
-            
-            [root presentViewController:vc animated:NO completion:nil];
+        
+            [self displayCourseworkItemWithId:coursework_id];
             
         }
         
@@ -300,14 +280,50 @@
         fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
 {
     
-    NSLog(@"Remote Notification received with userinfo: %@", userInfo);
-        
     RemoteNotificationReceiver *rnr = [[RemoteNotificationReceiver alloc] init];
-        
-    [rnr didReceiveNotification:userInfo withHandler:completionHandler];
     
+    if(application.applicationState == UIApplicationStateBackground){
+        
+        NSLog(@"Background notification processing");
+        [rnr didReceiveNotification:userInfo withHandler:completionHandler  isUserOpened:NO];
+        
+    }else if (application.applicationState == UIApplicationStateInactive){
+        
+        NSLog(@"User selected notification");
+        [rnr didReceiveNotification:userInfo withHandler:completionHandler  isUserOpened:YES];
+    }else{
+        
+        [rnr didReceiveNotification:userInfo withHandler:completionHandler isUserOpened:NO];
+        
+    }
+        
     
     // Do something with the content ID
+}
+
+-(void)displayCourseworkItemWithId:(NSNumber *)coursework_id{
+    
+    NSManagedObjectContext *context = [(AppDelegate *)[[UIApplication sharedApplication] delegate] managedObjectContext];
+    
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Coursework"];
+    
+    request.predicate = [NSPredicate predicateWithFormat:@"coursework_id == %@", coursework_id];
+    
+    NSError *error = nil;
+    
+    NSArray *items = [context executeFetchRequest:request error:&error];
+    
+    UIViewController *root = self.window.rootViewController;
+    
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    
+    CourseworkDetailsViewController *vc = [storyboard instantiateViewControllerWithIdentifier:@"courseworkModal"];
+    
+    CourseworkModalViewController *cmvc = [vc.childViewControllers objectAtIndex:0];
+    cmvc.coursework = [items objectAtIndex:0];
+    
+    [root presentViewController:vc animated:NO completion:nil];
+    
 }
 
 @end

@@ -43,7 +43,7 @@
 
 -(void)APICallbackHandler:(NSDictionary *)data{
     
-    NSLog(@"Callback data: %@", data);
+    //NSLog(@"Callback data: %@", data);
     
     NSError *error;
     

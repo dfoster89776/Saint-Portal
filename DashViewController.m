@@ -67,20 +67,7 @@
 
 -(void)titleForIndex:(NSUInteger)index{
     
-    int height = self.headingOuterView.frame.size.height;
     
-    if(index == 0){
-
-        NSLog(@"HERE0");
-        
-        
-        
-    }else if (index == 1){
-        
-        NSLog(@"HERE1");
-        
-        
-    }
 }
 
 #pragma mark - Navigation

@@ -19,6 +19,6 @@
 - (void)saveContext;
 - (NSURL *)applicationDocumentsDirectory;
 -(void)clearPersistentStore;
-
+-(void)displayCourseworkItemWithId:(NSNumber *)coursework_id;
 @end
 

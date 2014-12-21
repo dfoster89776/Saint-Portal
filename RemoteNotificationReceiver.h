@@ -11,6 +11,6 @@
 
 @interface RemoteNotificationReceiver : NSObject
 
--(void)didReceiveNotification:(NSDictionary *)userInfo withHandler:(void (^)(UIBackgroundFetchResult))completionHandler;
+-(void)didReceiveNotification:(NSDictionary *)userInfo withHandler:(void (^)(UIBackgroundFetchResult))completionHandler isUserOpened:(BOOL)userOpened;
 
 @end

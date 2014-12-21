@@ -12,15 +12,18 @@
 #import "Modules.h"
 #import "Coursework.h"
 
-@interface RemoteNotificationReceiver () <UpdateModuleCourseworkDelegate, UpdateCourseworkItemDelegate>
+@interface RemoteNotificationReceiver () <UpdateCourseworkItemDelegate>
 @property (nonatomic, copy) void (^completionHandler)(UIBackgroundFetchResult fetchResult);
 @property (nonatomic, strong) NSManagedObjectContext* context;
+@property (nonatomic) BOOL userOpened;
+@property (nonatomic, strong) NSNumber *item_id;
 @end
 
 @implementation RemoteNotificationReceiver
 
--(void)didReceiveNotification:(NSDictionary *)userInfo withHandler:(void (^)(UIBackgroundFetchResult))completionHandler{
+-(void)didReceiveNotification:(NSDictionary *)userInfo withHandler:(void (^)(UIBackgroundFetchResult))completionHandler isUserOpened:(BOOL)userOpened{
     
+    self.userOpened = userOpened;
     self.completionHandler = completionHandler;
     self.context = [(AppDelegate *)[[UIApplication sharedApplication] delegate] managedObjectContext];
     
@@ -33,22 +36,6 @@
     else if([[userInfo objectForKey:@"type"] isEqualToString:@"new_coursework"]){
         [self newCourseworkNotificationWithData:userInfo];
     }
-    
-    /*
-    
-    UpdateModuleCoursework *umc = [[UpdateModuleCoursework alloc] init];
-     
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Modules"];
-    request.predicate = [NSPredicate predicateWithFormat:@"module_id = %@", [userInfo objectForKey:@"module"]];
-    
-    NSError *error = nil;
-    
-    NSArray *modules = [self.context executeFetchRequest:request error:&error];
-    
-    Modules* module = [modules firstObject];
-    
-    [umc updateCourseworkForModule:module withDelegate:self];
-    */
 }
 
 -(void)deleteCourseworkNotificationWithData:(NSDictionary *)userInfo{
@@ -79,6 +66,7 @@
     NSLog(@"UPDATING COURSEWORK NOTIFICATION");
     
     NSNumber* courseworkid = [[NSNumber alloc] initWithInt:[[userInfo objectForKey:@"courseworkid"] intValue]];
+    self.item_id = courseworkid;
     
     UpdateCourseworkItem *uci = [[UpdateCourseworkItem alloc] init];
     [uci updateCourseworkItemWithID:courseworkid withDelegate:self];
@@ -90,28 +78,23 @@
     NSLog(@"ADDING NEW COURSEWORK NOTIFICATION");
     
     NSNumber* courseworkid = [[NSNumber alloc] initWithInt:[[userInfo objectForKey:@"courseworkid"] intValue]];
+    self.item_id = courseworkid;
     
     UpdateCourseworkItem *uci = [[UpdateCourseworkItem alloc] init];
     [uci updateCourseworkItemWithID:courseworkid withDelegate:self];
     
 }
 
-
--(void)moduleCourseworkUpdateSuccess{
-    
-    self.completionHandler(UIBackgroundFetchResultNewData);
-    
-}
-
--(void)moduleCourseworkUpdateFailure:(NSError *)error{
-    
-    self.completionHandler(UIBackgroundFetchResultNewData);
-    
-}
-
 -(void)courseworkItemUpdateSuccess{
-    self.completionHandler(UIBackgroundFetchResultNewData);
     [[NSNotificationCenter defaultCenter] postNotificationName:@"courseworkUpdate" object:nil];
+    
+    if(self.userOpened){
+        
+        [(AppDelegate *)[[UIApplication sharedApplication] delegate] displayCourseworkItemWithId:self.item_id];
+        
+    }
+    self.completionHandler(UIBackgroundFetchResultNewData);
+    
 }
 
 -(void)courseworkItemUpdateFailure:(NSError *)error{
