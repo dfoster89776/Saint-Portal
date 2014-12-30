@@ -11,10 +11,12 @@
 #import "OpenStoreHandler.h"
 #import "Specification.h"
 #import "Feedback.h"
+#import "CourseworkSubmissionHandler.h"
+#import "Submission.h"
 
 #define UIColorFromRGB(rgbValue) [UIColor colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 green:((float)((rgbValue & 0xFF00) >> 8))/255.0 blue:((float)(rgbValue & 0xFF))/255.0 alpha:1]
 
-@interface CourseworkDetailsViewController () <UIDocumentInteractionControllerDelegate>
+@interface CourseworkDetailsViewController () <UIDocumentInteractionControllerDelegate, UIDocumentPickerDelegate, CourseworkSubmissionDelegate>
 @property (strong, nonatomic) IBOutlet UILabel *courseworkNameLabel;
 @property (strong, nonatomic) IBOutlet UILabel *courseworkToGoUnitLabel;
 @property (strong, nonatomic) IBOutlet UIView *courseworkStatusView;
@@ -35,6 +37,12 @@
 @property (strong, nonatomic) IBOutlet UILabel *gradeAchieved;
 @property (strong, nonatomic) IBOutlet UILabel *feedbackDate;
 @property (strong, nonatomic) IBOutlet UITextView *feedbackComments;
+@property (strong, nonatomic) IBOutlet UILabel *submissionDeadlinePassedLabel;
+@property (strong, nonatomic) IBOutlet UIButton *makeSubmissionButton;
+@property (strong, nonatomic) IBOutlet UIActivityIndicatorView *uploadActivityIndicator;
+@property (strong, nonatomic) IBOutlet UILabel *uploadStatusLabel;
+@property (strong, nonatomic) IBOutlet UILabel *submissionStatusLabel;
+@property (strong, nonatomic) IBOutlet UIButton *viewSubmissionButton;
 @end
 
 @implementation CourseworkDetailsViewController 
@@ -127,9 +135,33 @@
         
     }
     
+    //Submission
+    if([self.coursework.submitted boolValue]){
+     
+        self.submissionStatusLabel.hidden = true;
+        self.viewSubmissionButton.hidden = false;
+        
+        NSDate *now = [[NSDate alloc] init];
+        NSDate *due = self.coursework.coursework_due;
+        
+        if([now compare:due] == NSOrderedAscending) {
+            self.submissionDeadlinePassedLabel.hidden = YES;
+            [self.makeSubmissionButton setTitle:@"Update Submission" forState:UIControlStateNormal];
+        }else{
+            
+            self.makeSubmissionButton.hidden = YES;
+        }
+    }else{
+        
+        self.submissionDeadlinePassedLabel.hidden = YES;
+        
+    }
+    
+    
+    //Feedback
     if([self.coursework.feedback_received boolValue]){
         NSLog(@"Feedback available");
-        [self.noFeedbackContainer removeFromSuperview];
+        self.noFeedbackContainer.hidden = YES;
         self.gradeAchieved.text = [NSString stringWithFormat:@"%@", self.coursework.feedback.grade];
         self.feedbackComments.text = self.coursework.feedback.comment;
         [self.feedbackComments sizeToFit];
@@ -141,7 +173,7 @@
         
     }else{
         NSLog(@"No Feedback available");
-        [self.yesFeedbackContainer removeFromSuperview];
+        self.yesFeedbackContainer.hidden = YES;
     }
     
 }
@@ -161,6 +193,13 @@
     [osh openFile:file withCurrentView:self];
     
 }
+- (IBAction)viewSubmissionFile:(id)sender {
+    
+    File* file = (File *)self.coursework.submission;
+    
+    OpenStoreHandler *osh = [[OpenStoreHandler alloc] init];
+    [osh openFile:file withCurrentView:self];
+}
 
 - (IBAction)viewCourseworkDirectory:(id)sender {
 
@@ -170,6 +209,55 @@
     [osh openDirectory:directory withCurrentView:self];
     
 
+}
+
+- (IBAction)openDocumentPicker:(id)sender {
+    
+    UIDocumentPickerViewController *documentPicker = [[UIDocumentPickerViewController alloc] initWithDocumentTypes:@[@"public.item"]
+                                                                                                            inMode:UIDocumentPickerModeImport];
+    
+    documentPicker.delegate = self;
+    documentPicker.modalPresentationStyle = UIModalPresentationFormSheet;
+    [self presentViewController:documentPicker animated:YES completion:nil];
+    
+}
+
+-(IBAction)documentPicker:(UIDocumentPickerViewController *)controller didPickDocumentAtURL:(NSURL *)url{
+    
+    NSLog(@"URL: %@", url);
+    
+    [self.makeSubmissionButton setHidden:true];
+    [self.uploadActivityIndicator startAnimating];
+    
+    CourseworkSubmissionHandler* csh = [[CourseworkSubmissionHandler alloc] init];
+    
+    [csh submitCourseworkForItem:self.coursework withFile:url withDelegate:self];
+    
+    
+}
+
+-(void)CourseworkUploadSuccess{
+    
+    [self.uploadActivityIndicator stopAnimating];
+    self.uploadStatusLabel.text = @"Successfully Uploaded";
+    [self.uploadStatusLabel setHidden:false];
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 10 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+        [self.uploadStatusLabel setHidden:true];
+        [self.makeSubmissionButton setHidden:false];
+    });
+}
+
+-(void)CourseworkUploadFailure{
+    
+    [self.uploadActivityIndicator stopAnimating];
+    self.uploadStatusLabel.text = @"Failed to Upload";
+    [self.uploadStatusLabel setHidden:false];
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 10 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+        [self.uploadStatusLabel setHidden:true];
+        [self.makeSubmissionButton setHidden:false];
+    });
 }
 
 /*

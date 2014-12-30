@@ -36,6 +36,9 @@
     else if([[userInfo objectForKey:@"type"] isEqualToString:@"new_coursework"]){
         [self newCourseworkNotificationWithData:userInfo];
     }
+    else if([[userInfo objectForKey:@"type"] isEqualToString:@"coursework_feedback"]){
+        [self updateCourseworkNotificationWithData:userInfo];
+    }
 }
 
 -(void)deleteCourseworkNotificationWithData:(NSDictionary *)userInfo{

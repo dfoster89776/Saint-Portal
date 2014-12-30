@@ -8,7 +8,7 @@
 
 #import "FileViewController.h"
 
-@interface FileViewController () <UIDocumentInteractionControllerDelegate>
+@interface FileViewController () <UIDocumentInteractionControllerDelegate, UIDocumentPickerDelegate>
 @property (strong, nonatomic) UIDocumentInteractionController *documentInteractionController;
 @property (strong, nonatomic) IBOutlet UILabel *documentNameLabel;
 @end
@@ -80,6 +80,52 @@
 
 - (UIViewController *) documentInteractionControllerViewControllerForPreview: (UIDocumentInteractionController *) controller {
     return self;
+}
+
+- (IBAction)saveFile:(id)sender {
+    
+    NSString *stringPath = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,   NSUserDomainMask, YES)objectAtIndex:0]stringByAppendingPathComponent:[NSString stringWithFormat:@"Files/%@", self.file.file_id]];
+    // Content_ Folder is your folder name
+    NSError *error = nil;
+    
+    if (![[NSFileManager defaultManager] fileExistsAtPath:stringPath])
+        [[NSFileManager defaultManager] createDirectoryAtPath:stringPath  withIntermediateDirectories:YES attributes:nil error:&error];
+    NSLog(@"Creating file directory");
+    //This will create a new folder if content folder is not exist
+    
+    NSString *fileName = [stringPath stringByAppendingFormat:@"/%@", self.file.file_name];
+    
+    if ((![[NSFileManager defaultManager] fileExistsAtPath:fileName]) || self.file.update_available) {
+        
+        NSLog(@"Downloading");
+        
+        NSString *str = self.file.file_url;
+        
+        str = [str stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+        NSLog(@"embed %@",str);
+        NSData *data = [NSData dataWithContentsOfURL:[NSURL  URLWithString:str]];
+        [data writeToFile:fileName atomically:YES];
+        
+    }
+    
+    
+    if([[NSFileManager defaultManager] fileExistsAtPath:fileName]){
+        NSLog(@"File exists");
+    }
+    
+    NSURL *URL = [NSURL fileURLWithPath:fileName];
+    
+    UIDocumentPickerViewController *documentPicker = [[UIDocumentPickerViewController alloc] initWithURL:URL inMode:UIDocumentPickerModeExportToService];
+    
+    documentPicker.delegate = self;
+    documentPicker.modalPresentationStyle = UIModalPresentationFormSheet;
+    [self presentViewController:documentPicker animated:YES completion:nil];
+    
+}
+
+-(IBAction)documentPicker:(UIDocumentPickerViewController *)controller didPickDocumentAtURL:(NSURL *)url{
+    
+    
 }
 
 /*

@@ -59,9 +59,9 @@
             break;
         case UpdateCourseworkItemRequest:
             [self updateCourseworkItemWithData:data];
-        
-        
-        
+        case UploadCourseworkSubmission:
+            [self uploadCourseworkSubmissionWithData:data];
+            
     }
     
     return YES;
@@ -290,6 +290,33 @@
     
 }
 
+-(void)uploadCourseworkSubmissionWithData:(NSDictionary *)data{
+    
+    NSString* filename = @"index";
+    NSString* extension = @".pdf";
+    
+    NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+    NSString *accesstoken = [NSString stringWithFormat:@"%@", [prefs valueForKey:@"access_token"]];
+    
+    NSLog(@"Uploading coursework submission");
+    
+    //URL for authentication API
+    NSURL *url = [NSURL URLWithString:@"https://drf8.host.cs.st-andrews.ac.uk/SaintPortal/API/uploadCourseworkSubmission.php"];
+    
+    // Create the request.
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url
+                                                           cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData
+                                                       timeoutInterval:40.0];
+    request.HTTPMethod = @"POST";
+    NSString *stringData = [NSString stringWithFormat:@"accesstoken=%@&deviceID=%@&courseworkid=%@", accesstoken, [UIDevice currentDevice].identifierForVendor.UUIDString, [data objectForKey:@"courseworkid"]];
+    
+    request.HTTPBody = [stringData dataUsingEncoding:NSUTF8StringEncoding];
+    
+    // Create url connection, set request and delegate
+    conn = [[NSURLConnection alloc] initWithRequest:request delegate:self];
+    
+}
+
 
 #pragma mark Connection Did Receive Response
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
@@ -313,11 +340,15 @@
 #pragma mark Connection Did Finish Loading
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
     
+    NSString *strData = [[NSString alloc]initWithData:responseData encoding:NSUTF8StringEncoding];
+    
+    NSLog(@"%@", strData);
+    
     // The request is complete and data has been received
     NSError *e = nil;
     
     NSDictionary *json = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingMutableContainers error:&e];
-        
+    
     //If authenticate operation
     if([[json objectForKey:@"api_operation"] isEqualToString:@"authenticate"]){
         
@@ -341,7 +372,11 @@
         }
         else if([[access_token_response objectForKey:@"status"] isEqualToString:@"renew"]){
             
-            NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+            NSUserDefaults *prefs = [[NSUserDefaults alloc] initWithSuiteName:@"group.SaintAndrews"];
+            
+            [prefs setObject:[NSString stringWithFormat:@"%@", [access_token_response valueForKey:@"new_token"]] forKey:@"access_token"];
+            
+            prefs = [NSUserDefaults standardUserDefaults];
             [prefs setObject:[NSString stringWithFormat:@"%@", [access_token_response valueForKey:@"new_token"]] forKey:@"access_token"];
             
             NSDictionary *data = [json objectForKey:@"queryData"];

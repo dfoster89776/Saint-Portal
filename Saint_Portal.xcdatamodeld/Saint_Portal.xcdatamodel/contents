@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="6254" systemVersion="14B25" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="6254" systemVersion="14C81h" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="Book_Reading" representedClassName="Book_Reading" parentEntity="Reading" syncable="YES">
         <attribute name="isbn" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
@@ -21,6 +21,7 @@
         <relationship name="coursework_directory" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Coursework_Directory" inverseName="directory_coursework" inverseEntity="Coursework_Directory" syncable="YES"/>
         <relationship name="feedback" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Feedback" inverseName="coursework_item" inverseEntity="Feedback" syncable="YES"/>
         <relationship name="specification" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Specification" inverseName="coursework_item" inverseEntity="Specification" syncable="YES"/>
+        <relationship name="submission" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Submission" inverseName="coursework_item" inverseEntity="Submission" syncable="YES"/>
     </entity>
     <entity name="Coursework_Directory" representedClassName="Coursework_Directory" parentEntity="Directory" syncable="YES">
         <relationship name="directory_coursework" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Coursework" inverseName="coursework_directory" inverseEntity="Coursework" syncable="YES"/>
@@ -109,6 +110,10 @@
     <entity name="Specification" representedClassName="Specification" parentEntity="File" syncable="YES">
         <relationship name="coursework_item" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Coursework" inverseName="specification" inverseEntity="Coursework" syncable="YES"/>
     </entity>
+    <entity name="Submission" representedClassName="Submission" parentEntity="File" syncable="YES">
+        <attribute name="submission_time" optional="YES" attributeType="Date" syncable="YES"/>
+        <relationship name="coursework_item" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Coursework" inverseName="submission" inverseEntity="Coursework" syncable="YES"/>
+    </entity>
     <entity name="Topics" representedClassName="Topics" syncable="YES">
         <attribute name="topic_description" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="topic_id" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
@@ -124,24 +129,25 @@
     <elements>
         <element name="Book_Reading" positionX="-4392" positionY="-1107" width="128" height="58"/>
         <element name="Buildings" positionX="-3323" positionY="-1753" width="128" height="88"/>
-        <element name="Coursework" positionX="-4169" positionY="-1827" width="128" height="223"/>
+        <element name="Coursework" positionX="-4169" positionY="-1827" width="128" height="238"/>
         <element name="Coursework_Directory" positionX="-3476" positionY="-1575" width="128" height="58"/>
         <element name="Directory" positionX="-3476" positionY="-1314" width="128" height="118"/>
         <element name="Event" positionX="-3755" positionY="-1818" width="128" height="133"/>
         <element name="Examples" positionX="-3665" positionY="-1153" width="128" height="73"/>
+        <element name="Feedback" positionX="-4383" positionY="-1636" width="128" height="103"/>
         <element name="File" positionX="-3665" positionY="-1377" width="128" height="148"/>
-        <element name="File_Reading" positionX="-4583" positionY="-1107" width="128" height="43"/>
-        <element name="Lectures" positionX="-3690" positionY="-1618" width="128" height="43"/>
+        <element name="File_Reading" positionX="-4583" positionY="-1107" width="128" height="45"/>
+        <element name="Lectures" positionX="-3690" positionY="-1618" width="128" height="45"/>
         <element name="Modules" positionX="-3942" positionY="-1908" width="128" height="208"/>
         <element name="Personal_Details" positionX="-4401" positionY="-1863" width="128" height="133"/>
         <element name="Posts" positionX="-4095" positionY="-1404" width="128" height="163"/>
         <element name="Reading" positionX="-4383" positionY="-1342" width="128" height="73"/>
         <element name="Rooms" positionX="-3521" positionY="-1782" width="128" height="118"/>
         <element name="Slides" positionX="-3818" positionY="-1399" width="128" height="58"/>
-        <element name="Specification" positionX="-3800" positionY="-1507" width="128" height="58"/>
+        <element name="Specification" positionX="-3710" positionY="-1507" width="128" height="58"/>
         <element name="Topics" positionX="-4122" positionY="-1585" width="128" height="133"/>
-        <element name="Tutorials" positionX="-3843" positionY="-1618" width="128" height="43"/>
+        <element name="Tutorials" positionX="-3843" positionY="-1618" width="128" height="45"/>
         <element name="Web_Reading" positionX="-4205" positionY="-1107" width="128" height="58"/>
-        <element name="Feedback" positionX="-4383" positionY="-1636" width="128" height="103"/>
+        <element name="Submission" positionX="-3861" positionY="-1480" width="128" height="73"/>
     </elements>
 </model>

@@ -90,6 +90,10 @@
     //If successful, store access token in UserDefaults, and segue to setup view
     if(success){
         
+        NSUserDefaults *prefs = [[NSUserDefaults alloc] initWithSuiteName:@"group.SaintAndrews"];
+        
+        [prefs setObject:[NSString stringWithFormat:@"%@", [data valueForKey:@"access_token"]] forKey:@"access_token"];
+        
         [[NSUserDefaults standardUserDefaults] setObject:[NSString stringWithFormat:@"%@", [data valueForKey:@"access_token"]] forKey:@"access_token"];
         
         [self performSegueWithIdentifier:@"Login Success" sender:self];
