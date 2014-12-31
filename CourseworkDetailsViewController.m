@@ -245,6 +245,8 @@
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 10 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
         [self.uploadStatusLabel setHidden:true];
         [self.makeSubmissionButton setHidden:false];
+        [self.viewSubmissionButton setHidden:false];
+        [self.submissionStatusLabel setHidden:true];
     });
 }
 
