@@ -56,6 +56,7 @@
 
 -(void)moduleCourseworkUpdateSuccess{
     
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"courseworkUpdate" object:nil];
     [self updateStatus];
 }
 

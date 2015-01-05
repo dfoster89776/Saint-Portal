@@ -50,6 +50,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateView:) name:@"courseworkUpdate" object:nil];
+    
     UIView *leftBorder = [UIView new];
     leftBorder.backgroundColor = [UIColor whiteColor];
     leftBorder.frame = CGRectMake(0, 0, 1, self.courseworkStatusView.frame.size.height);
@@ -71,6 +73,12 @@
     topBorder2.frame = CGRectMake(0, 0, self.feedbackContainerView.frame.size.width, 1);
     [self.feedbackContainerView addSubview:topBorder2];
     
+    [self updateView:nil];
+    
+}
+
+-(void)updateView:(NSNotification*) notification{
+    
     self.courseworkNameLabel.text = self.coursework.coursework_name;
     
     if(!self.coursework.submitted.intValue){
@@ -81,7 +89,7 @@
         NSCalendar *calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
         
         NSDateComponents *difference = [calendar components:(NSCalendarUnitDay | NSCalendarUnitHour | NSCalendarUnitMinute) fromDate:now toDate:due options:0];
-                
+        
         if([difference day] > 0){
             
             self.courseworkToGoValueLabel.text = [NSString stringWithFormat:@"%lu", [difference day]];
@@ -120,7 +128,7 @@
     self.courseworkDueDateLabel.text = [df stringFromDate:self.coursework.coursework_due];
     
     self.courseworkFeedbackDateLabel.text = [df stringFromDate:self.coursework.coursework_feedback_date];
-
+    
     
     self.courseworkDescriptionTextView.text = self.coursework.coursework_description;
     [self.courseworkDescriptionTextView setFont:[UIFont systemFontOfSize:15]];
@@ -137,7 +145,7 @@
     
     //Submission
     if([self.coursework.submitted boolValue]){
-     
+        
         self.submissionStatusLabel.hidden = true;
         self.viewSubmissionButton.hidden = false;
         
@@ -160,7 +168,6 @@
     
     //Feedback
     if([self.coursework.feedback_received boolValue]){
-        NSLog(@"Feedback available");
         self.noFeedbackContainer.hidden = YES;
         self.gradeAchieved.text = [NSString stringWithFormat:@"%@", self.coursework.feedback.grade];
         self.feedbackComments.text = self.coursework.feedback.comment;

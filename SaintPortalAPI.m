@@ -393,9 +393,9 @@
 #pragma mark Connection Did Finish Loading
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
     
-    NSString *strData = [[NSString alloc]initWithData:responseData encoding:NSUTF8StringEncoding];
+    //NSString *strData = [[NSString alloc]initWithData:responseData encoding:NSUTF8StringEncoding];
     
-    NSLog(@"%@", strData);
+    //NSLog(@"%@", strData);
     
     // The request is complete and data has been received
     NSError *e = nil;

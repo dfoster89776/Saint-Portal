@@ -153,7 +153,7 @@
                     feedback.grade = [NSNumber numberWithInteger:[[feedbackData objectForKey:@"grade"] floatValue]];
                     feedback.comment = [feedbackData objectForKey:@"comment"];
                     
-                    NSLog(@"Feedback received");
+                    //NSLog(@"Feedback received");
                     
                 }
                 
@@ -377,6 +377,12 @@
     
     DirectoryUpdate *du = [[DirectoryUpdate alloc] init];
     [du updateCourseworkDirectory:root withData:[data objectForKey:@"directory_details"]];
+    
+}
+
+-(void)updateLocalNotificationsForCoursework:(Coursework *)coursework{
+    
+    
     
 }
 

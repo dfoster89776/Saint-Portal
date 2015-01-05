@@ -27,7 +27,7 @@
 
 -(void)viewDidLayoutSubviews{
     
-    NSLog(@"Container width: %f", self.headingOuterView.frame.size.width);
+    //NSLog(@"Container width: %f", self.headingOuterView.frame.size.width);
     
     int width = self.headingOuterView.frame.size.width;
     

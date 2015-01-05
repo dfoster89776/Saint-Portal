@@ -51,13 +51,17 @@
         
         for(NSDictionary *topic in [data valueForKey:@"topics_details"]){
             
-            int moduleid = [[data objectForKey:@"module_id"] intValue];
+            NSLog(@"ADD TOPIC DATA: %@", topic);
+            
+            int moduleid = [[topic objectForKey:@"module_id"] intValue];
             NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:@"Modules"];
             request.predicate = [NSPredicate predicateWithFormat:@"module_id = %i", moduleid];
             
             NSArray* result = [self.context executeFetchRequest:request error:&error];
             
             self.module = [result firstObject];
+            
+            NSLog(@"ADDING TOPIC TO MODULE: %@", self.module);
             
             [topic_list addObject:[NSNumber numberWithInteger:[[topic objectForKey:@"topic_id"] integerValue]]];
             

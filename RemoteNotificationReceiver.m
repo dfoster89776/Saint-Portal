@@ -14,6 +14,7 @@
 #import "UpdateTopicItem.h"
 #import "UpdatePostItem.h"
 #import "Posts.h"
+#import "Topics.h"
 
 @interface RemoteNotificationReceiver () <UpdateCourseworkItemDelegate, UpdateTopicItemDelegate, UpdatePostItemDelegate>
 @property (nonatomic, copy) void (^completionHandler)(UIBackgroundFetchResult fetchResult);
@@ -143,18 +144,31 @@
 
 -(void)deleteTopicNotificationWithData:(NSDictionary *)userInfo{
     
+    NSError *error = nil;
+
+    
+    NSFetchRequest *allRequest = [NSFetchRequest fetchRequestWithEntityName:@"Topics"];
+    NSArray *allResults = [self.context executeFetchRequest:allRequest error:&error];
+    
+    for(Topics *topic in allResults){
+        NSLog(@"Topic with id: %@", topic.topic_id);
+    }
+    
+    NSLog(@"%@", userInfo);
+    
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Topics"];
     request.predicate = [NSPredicate predicateWithFormat:@"topic_id = %@", [userInfo objectForKey:@"topicid"]];
     
-    NSError *error = nil;
-    
     NSUInteger count = [self.context countForFetchRequest:request error:&error];
-    if(count == 1) {
+    if(count >= 1) {
         //Handle error
         
         NSArray* result = [self.context executeFetchRequest:request error:&error];
         
-        [self.context deleteObject:[result firstObject]];
+        for(Topics* topic in result){
+         
+            [self.context deleteObject:topic];
+        }
         
         NSLog(@"Deleteing topic");
         

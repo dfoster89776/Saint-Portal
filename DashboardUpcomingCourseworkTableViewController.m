@@ -49,12 +49,19 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     
+    NSDateComponents *dayComponent = [[NSDateComponents alloc] init];
+    dayComponent.day = 14;
+    
+    NSCalendar *theCalendar = [NSCalendar currentCalendar];
+    NSDate *now = [NSDate date];
+    NSDate *nextDate = [theCalendar dateByAddingComponents:dayComponent toDate:now options:0];
+    
     self.courseworkItems = [[NSMutableDictionary alloc] init];
     self.sections = [[NSMutableArray alloc] init];
     
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Coursework"];
     
-    request.predicate = [NSPredicate predicateWithFormat:@"submitted == 0"];
+    request.predicate = [NSPredicate predicateWithFormat:@"(coursework_due < %@) && ((coursework_due > %@) || (submitted == 0))", nextDate, now];
     
     NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"coursework_due" ascending:YES];
     
@@ -62,6 +69,10 @@
     NSError *error = nil;
     
     NSArray *items = [self.context executeFetchRequest:request error:&error];
+    
+    if([items count] == 0){
+        return 1;
+    }
     
     NSDateFormatter *df = [[NSDateFormatter alloc] init];
     [df setDateFormat:@"yyyy-MM-dd"];
@@ -88,6 +99,10 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     // Return the number of rows in the section.
     
+    if([self.sections count] == 0){
+        return 1;
+    }
+    
     NSArray *items = [self.courseworkItems objectForKey:[self.sections objectAtIndex:section]];
     
     return [items count];
@@ -96,6 +111,11 @@
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    if([self.sections count] == 0){
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NoUpcomingCourseworkCell" forIndexPath:indexPath];
+        return cell;
+    }
     
     UpcomingCourseworkTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"UpcomingCourseworkCell" forIndexPath:indexPath];
     
@@ -123,12 +143,7 @@
         cell.courseworkToGoNumberLabel.text = [NSString stringWithFormat:@"%lu", [difference day]];
         cell.courseworkToGoUnitsLabel.text = @"Days";
         
-        if([difference day] < 7){
-            
-            cell.courseworkToGoNumberLabel.textColor = [UIColor yellowColor];
-            cell.courseworkToGoUnitsLabel.textColor = [UIColor yellowColor];
-            
-        }else if ([difference day] < 3){
+        if ([difference day] < 3){
             
             cell.courseworkToGoNumberLabel.textColor = [UIColor orangeColor];
             cell.courseworkToGoUnitsLabel.textColor = [UIColor orangeColor];
@@ -172,29 +187,37 @@
     }
     
     //Coursework *coursework = [self.courseworkItems objectAtIndex:section];
+    if([self.sections count] == 0){
+        headerView.UpcomingCourseworkHeaderLabel.text = @"Next 14 Days";
+    }else{
     
-    NSString *sectionDate = [self.sections objectAtIndex:section];
-    
-    
-    NSDateFormatter *df = [[NSDateFormatter alloc] init];
-    [df setDateFormat:@"yyyy-MM-dd"];
-    
-    NSDate *date = [df dateFromString:sectionDate];
-    
-    [df setDateFormat:@"EEEE dd MMMM yyyy"];
-    
+        NSString *sectionDate = [self.sections objectAtIndex:section];
+        
+        NSDateFormatter *df = [[NSDateFormatter alloc] init];
+        [df setDateFormat:@"yyyy-MM-dd"];
+        
+        NSDate *date = [df dateFromString:sectionDate];
+        
+        [df setDateFormat:@"EEEE dd MMMM yyyy"];
+        
         headerView.UpcomingCourseworkHeaderLabel.text = [df stringFromDate:date];
-    
+    }
     return headerView;
     
 }
 
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    
     return 35;
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+    
+    if([self.sections count] == 0){
+        return 70;
+    }
+    
     return 100;
 }
 
@@ -213,49 +236,6 @@
     
     return self.selectedCourseworkItem;
     
-}
-
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
-}
-*/
-
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    } else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
-}
-*/
-
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
-}
-*/
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
-
-
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
 }
 
 

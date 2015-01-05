@@ -71,6 +71,8 @@
         
         NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
         [prefs setObject:[NSString stringWithFormat:@"true"] forKey:@"setup_complete"];
+        [[UIApplication sharedApplication] cancelAllLocalNotifications];
+        [prefs setObject:[NSNumber numberWithInt:1] forKey:@"local_notification_id"];
     }
     
 }

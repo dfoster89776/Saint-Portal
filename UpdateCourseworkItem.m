@@ -111,7 +111,7 @@
                     feedback.grade = [NSNumber numberWithInteger:[[feedbackData objectForKey:@"grade"] floatValue]];
                     feedback.comment = [feedbackData objectForKey:@"comment"];
                     
-                    NSLog(@"Feedback received");
+                    //NSLog(@"Feedback received");
                     
                 }
                 

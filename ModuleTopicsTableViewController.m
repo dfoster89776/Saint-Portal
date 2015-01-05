@@ -24,7 +24,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTableContents:) name:@"topicUpdate" object:nil];
     
     [self.tableView registerNib:[UINib nibWithNibName:@"CurrentModulesTableViewHeader" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"ModulesHeader"];
-
+    
     NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"topic_order" ascending:YES];
     
     self.topics = [[self.module.modules_topics allObjects] sortedArrayUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]];
@@ -37,6 +37,10 @@
 }
 
 -(void)updateTableContents:(NSNotification*) notification{
+
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"topic_order" ascending:YES];
+    
+    self.topics = [[self.module.modules_topics allObjects] sortedArrayUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]];
     
     [self.tableView reloadData];
     
@@ -98,6 +102,8 @@
     if(indexPath.section == 0){
         
         UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"viewAllTopics" forIndexPath:indexPath];
+        
+        cell.textLabel.text = @"View Posts For All Topics";
         
         return cell;
         
