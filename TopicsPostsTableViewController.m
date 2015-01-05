@@ -21,6 +21,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTableContents:) name:@"postUpdate" object:nil];
+    
     [self.tableView registerNib:[UINib nibWithNibName:@"PostTableViewCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"PostCell"];
     
     self.posts = [self.topic.topics_posts allObjects];
@@ -30,6 +32,12 @@
     
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+}
+
+-(void)updateTableContents:(NSNotification*) notification{
+    
+    [self.tableView reloadData];
+    
 }
 
 - (void)didReceiveMemoryWarning {

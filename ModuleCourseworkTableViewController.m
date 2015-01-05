@@ -43,9 +43,7 @@
 
 -(void)updateTableContents:(NSNotification*) notification
 {
-    
-    NSLog(@"Bla bla black sheep");
-    
+        
     NSPredicate *pred = [NSPredicate predicateWithFormat:@"submitted == 0"];
     self.futureCoursework = [[self.module.module_assignments allObjects] filteredArrayUsingPredicate:pred];
     

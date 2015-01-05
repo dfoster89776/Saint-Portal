@@ -24,11 +24,21 @@
     
     [self.tableView registerNib:[UINib nibWithNibName:@"CurrentModulesTableViewHeader" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"ModulesHeader"];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTableContents:) name:@"postUpdate" object:nil];
+    
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
     
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+}
+
+-(void)updateTableContents:(NSNotification*) notification{
+    
+    NSLog(@"Reloading table data");
+    
+    [self.tableView reloadData];
+    
 }
 
 - (void)didReceiveMemoryWarning {

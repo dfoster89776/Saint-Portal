@@ -20,7 +20,9 @@ enum {
     UpdateLocationsRequest = 8,
     RegisterDeviceForPushNotifications = 9,
     UpdateCourseworkItemRequest = 10,
-    UploadCourseworkSubmission = 11
+    UploadCourseworkSubmission = 11,
+    UpdateTopicItemRequest = 12,
+    UpdatePostItemRequest = 13
 };
 
 typedef NSUInteger SaintPortalAPIOperation;

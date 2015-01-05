@@ -1,47 +1,47 @@
 //
-//  UpdateModuleTopics.m
+//  UpdateTopicItem.m
 //  Saint Portal
 //
-//  Created by David Foster on 10/11/2014.
-//  Copyright (c) 2014 David Foster. All rights reserved.
+//  Created by David Foster on 03/01/2015.
+//  Copyright (c) 2015 David Foster. All rights reserved.
 //
 
-#import "UpdateModuleTopics.h"
-#import "SaintPortalAPI.h"
+#import "UpdateTopicItem.h"
 #import "AppDelegate.h"
+#import "SaintPortalAPI.h"
 #import "Topics.h"
 #import "UpdateTopicPosts.h"
+#import "Modules.h"
 
-@interface UpdateModuleTopics () <SaintPortalAPIDelegate, UpdateTopicPostsDelegate>
-@property (nonatomic, strong)Modules *module;
-@property (nonatomic, strong)NSManagedObjectContext *context;
-@property (nonatomic, strong)id delegate;
-@property BOOL status;
-@property (nonatomic) NSInteger topicsCount;
-@property (nonatomic) NSInteger topicsReturned;
+@interface UpdateTopicItem ()
+@property (strong, nonatomic) id delegate;
+@property (strong, nonatomic) NSManagedObjectContext* context;
+@property (strong, nonatomic) Modules* module;
 @end
 
-@implementation UpdateModuleTopics
+@implementation UpdateTopicItem
 
--(void)updateTopicsForModule:(Modules *)module withDelegate:(id)delegate{
+-(void)updateTopicItemWithID:(NSNumber *)topic_id withDelegate:(id)delegate{
     
-    self.module = module;
+    NSLog(@"Updating post item for id: %i", [topic_id intValue]);
+    
     self.context = [(AppDelegate *)[[UIApplication sharedApplication] delegate] managedObjectContext];
+    
     self.delegate = delegate;
-    self.status = false;
-    
-    self.topicsReturned = 0;
-    
-    NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
-    [data setValue:self.module.module_id forKey:@"module_id"];
     
     SaintPortalAPI *api = [[SaintPortalAPI alloc] init];
     
-    [api APIRequest:UpdateModuleTopicsRequest withData:data withDelegate:self];
+    NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
+    [data setValue:topic_id forKey:@"topic_id"];
     
+    [api APIRequest:UpdateTopicItemRequest withData:data withDelegate:self];
 }
 
+
+
 -(void)APICallbackHandler:(NSDictionary *)data{
+    
+    NSError* error;
     
     NSMutableArray *topic_list = [[NSMutableArray alloc] init];
     
@@ -50,6 +50,14 @@
     if([[data valueForKey:@"topics_exist"] boolValue]){
         
         for(NSDictionary *topic in [data valueForKey:@"topics_details"]){
+            
+            int moduleid = [[data objectForKey:@"module_id"] intValue];
+            NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:@"Modules"];
+            request.predicate = [NSPredicate predicateWithFormat:@"module_id = %i", moduleid];
+            
+            NSArray* result = [self.context executeFetchRequest:request error:&error];
+            
+            self.module = [result firstObject];
             
             [topic_list addObject:[NSNumber numberWithInteger:[[topic objectForKey:@"topic_id"] integerValue]]];
             
@@ -93,22 +101,7 @@
         
     }
     
-    //Remove any events not on core database
-    NSArray *deletingTopics = [NSArray arrayWithArray:topic_list];
-    
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"NOT (topic_id IN %@)", deletingTopics];
-    
-    NSSet *topicsToDelete = [self.module.modules_topics filteredSetUsingPredicate:predicate];
-    
-    for(Topics *topic in topicsToDelete){
-        [self.context deleteObject:topic];
-        [self.module removeModules_topicsObject:topic];
-    }
-    
-    NSError *error;
     [self.context save:&error];
-    
-    self.topicsCount = [topic_list count];
     
     NSArray *topics_array = [NSArray arrayWithArray:topics];
     
@@ -117,49 +110,23 @@
         UpdateTopicPosts *utp = [[UpdateTopicPosts alloc] init];
         [utp updatePostsForTopic:topic withDelegate:self];
     }
-    
-    if(self.topicsCount == self.topicsReturned){
-        self.status = true;
-        [self.delegate moduleTopicsUpdateSuccess];
-    }
-    
 }
 
--(void) APIErrorHandler:(NSError *)error{
+-(void)APIErrorHandler:(NSError *)error{
     
-    self.status = true;
-    
-    [self.delegate moduleTopicsUpdateFailure:error];
+    [self.delegate topicItemUpdateFailure:error];
     
 }
 
 -(void)topicPostsUpdateSuccess{
     
-    self.topicsReturned++;
     
-    if(self.topicsReturned == self.topicsCount){
-        
-        self.status = true;
-        [self.delegate moduleTopicsUpdateSuccess];
-    }
-    
+    [self.delegate topicItemUpdateSuccess];
 }
 
 -(void)topicPostsUpdateFailure:(NSError *)error{
     
-    self.topicsReturned++;
-    
-    if(self.topicsReturned == self.topicsCount){
-        
-        self.status = true;
-        [self.delegate moduleTopicsUpdateSuccess];
-    }
-    
-}
-
--(BOOL)getStatus{
-    
-    return self.status;
+    [self.delegate topicPostsUpdateFailure:error];
     
 }
 

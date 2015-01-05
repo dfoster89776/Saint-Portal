@@ -59,9 +59,16 @@
             break;
         case UpdateCourseworkItemRequest:
             [self updateCourseworkItemWithData:data];
+            break;
         case UploadCourseworkSubmission:
             [self uploadCourseworkSubmissionWithData:data];
-            
+            break;
+        case UpdateTopicItemRequest:
+            [self updateTopicItemWithData:data];
+            break;
+        case UpdatePostItemRequest:
+            [self updatePostItemWithData:data];
+            break;
     }
     
     return YES;
@@ -108,7 +115,6 @@
     conn = [[NSURLConnection alloc] initWithRequest:request delegate:self];
     
 }
-
 
 #pragma mark Request Personal Details API Call
 -(void)requestEnrolledModulesCall{
@@ -315,6 +321,53 @@
     // Create url connection, set request and delegate
     conn = [[NSURLConnection alloc] initWithRequest:request delegate:self];
     
+}
+
+-(void)updateTopicItemWithData:(NSDictionary *)data{
+
+    NSLog(@"Update topic item API call");
+    
+    NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+    NSString *accesstoken = [NSString stringWithFormat:@"%@", [prefs valueForKey:@"access_token"]];
+    
+    //URL for authentication API
+    NSURL *url = [NSURL URLWithString:@"https://drf8.host.cs.st-andrews.ac.uk/SaintPortal/API/requestTopicItemDetails.php"];
+    
+    // Create the request.
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url
+                                                           cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData
+                                                       timeoutInterval:40.0];
+    request.HTTPMethod = @"POST";
+    NSString *stringData = [NSString stringWithFormat:@"accesstoken=%@&deviceID=%@&topicid=%@", accesstoken, [UIDevice currentDevice].identifierForVendor.UUIDString, [data objectForKey:@"topic_id"]];
+    
+    request.HTTPBody = [stringData dataUsingEncoding:NSUTF8StringEncoding];
+    
+    // Create url connection, set request and delegate
+    conn = [[NSURLConnection alloc] initWithRequest:request delegate:self];
+    
+}
+
+-(void)updatePostItemWithData:(NSDictionary *)data{
+    
+    NSLog(@"Update post item API call");
+    
+    NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+    NSString *accesstoken = [NSString stringWithFormat:@"%@", [prefs valueForKey:@"access_token"]];
+    
+    //URL for authentication API
+    NSURL *url = [NSURL URLWithString:@"https://drf8.host.cs.st-andrews.ac.uk/SaintPortal/API/requestPostItemDetails.php"];
+    
+    // Create the request.
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url
+                                                           cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData
+                                                       timeoutInterval:40.0];
+    request.HTTPMethod = @"POST";
+    NSString *stringData = [NSString stringWithFormat:@"accesstoken=%@&deviceID=%@&postid=%@", accesstoken, [UIDevice currentDevice].identifierForVendor.UUIDString, [data objectForKey:@"post_id"]];
+    
+    request.HTTPBody = [stringData dataUsingEncoding:NSUTF8StringEncoding];
+    
+    // Create url connection, set request and delegate
+    conn = [[NSURLConnection alloc] initWithRequest:request delegate:self];
 }
 
 

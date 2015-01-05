@@ -11,8 +11,11 @@
 #import "UpdateCourseworkItem.h"
 #import "Modules.h"
 #import "Coursework.h"
+#import "UpdateTopicItem.h"
+#import "UpdatePostItem.h"
+#import "Posts.h"
 
-@interface RemoteNotificationReceiver () <UpdateCourseworkItemDelegate>
+@interface RemoteNotificationReceiver () <UpdateCourseworkItemDelegate, UpdateTopicItemDelegate, UpdatePostItemDelegate>
 @property (nonatomic, copy) void (^completionHandler)(UIBackgroundFetchResult fetchResult);
 @property (nonatomic, strong) NSManagedObjectContext* context;
 @property (nonatomic) BOOL userOpened;
@@ -38,6 +41,24 @@
     }
     else if([[userInfo objectForKey:@"type"] isEqualToString:@"coursework_feedback"]){
         [self updateCourseworkNotificationWithData:userInfo];
+    }
+    else if([[userInfo objectForKey:@"type"] isEqualToString:@"new_topic"]){
+        [self newTopicNotificationWithData:userInfo];
+    }
+    else if([[userInfo objectForKey:@"type"] isEqualToString:@"updated_topic"]){
+        [self updateTopicNotificationWithData:userInfo];
+    }
+    else if([[userInfo objectForKey:@"type"] isEqualToString:@"deleted_topic"]){
+        [self deleteTopicNotificationWithData:userInfo];
+    }
+    else if([[userInfo objectForKey:@"type"] isEqualToString:@"new_post"]){
+        [self newPostNotificationWithData:userInfo];
+    }
+    else if([[userInfo objectForKey:@"type"] isEqualToString:@"updated_post"]){
+        [self updatePostNotificationWithData:userInfo];
+    }
+    else if([[userInfo objectForKey:@"type"] isEqualToString:@"deleted_post"]){
+        [self deletePostNotificationWithData:userInfo];
     }
 }
 
@@ -66,8 +87,6 @@
 
 -(void)updateCourseworkNotificationWithData:(NSDictionary *)userInfo{
     
-    NSLog(@"UPDATING COURSEWORK NOTIFICATION");
-    
     NSNumber* courseworkid = [[NSNumber alloc] initWithInt:[[userInfo objectForKey:@"courseworkid"] intValue]];
     self.item_id = courseworkid;
     
@@ -77,8 +96,6 @@
 }
 
 -(void)newCourseworkNotificationWithData:(NSDictionary *)userInfo{
-
-    NSLog(@"ADDING NEW COURSEWORK NOTIFICATION");
     
     NSNumber* courseworkid = [[NSNumber alloc] initWithInt:[[userInfo objectForKey:@"courseworkid"] intValue]];
     self.item_id = courseworkid;
@@ -104,5 +121,149 @@
     self.completionHandler(UIBackgroundFetchResultNewData);
 }
 
+-(void)newTopicNotificationWithData:(NSDictionary *)userInfo{
+    
+    NSNumber* topicid = [[NSNumber alloc] initWithInt:[[userInfo objectForKey:@"topicid"] intValue]];
+    self.item_id = topicid;
+    
+    UpdateTopicItem *uti = [[UpdateTopicItem alloc] init];
+    [uti updateTopicItemWithID:topicid withDelegate:self];
+    
+}
+
+-(void)updateTopicNotificationWithData:(NSDictionary *)userInfo{
+    
+    NSNumber* topicid = [[NSNumber alloc] initWithInt:[[userInfo objectForKey:@"topicid"] intValue]];
+    self.item_id = topicid;
+    
+    UpdateTopicItem *uti = [[UpdateTopicItem alloc] init];
+    [uti updateTopicItemWithID:topicid withDelegate:self];
+    
+}
+
+-(void)deleteTopicNotificationWithData:(NSDictionary *)userInfo{
+    
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Topics"];
+    request.predicate = [NSPredicate predicateWithFormat:@"topic_id = %@", [userInfo objectForKey:@"topicid"]];
+    
+    NSError *error = nil;
+    
+    NSUInteger count = [self.context countForFetchRequest:request error:&error];
+    if(count == 1) {
+        //Handle error
+        
+        NSArray* result = [self.context executeFetchRequest:request error:&error];
+        
+        [self.context deleteObject:[result firstObject]];
+        
+        NSLog(@"Deleteing topic");
+        
+    }
+    
+    [self.context save:&error];
+    
+    self.completionHandler(UIBackgroundFetchResultNewData);
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"topicUpdate" object:nil];
+    
+}
+
+-(void)topicItemUpdateSuccess{
+    
+    NSError *error;
+    [self.context save:&error];
+    
+    if(self.userOpened){
+        
+        
+        
+    }
+    
+     NSLog(@"Update Topic Item Success");
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"topicUpdate" object:nil];
+    
+    self.completionHandler(UIBackgroundFetchResultNewData);
+    
+}
+
+-(void)topicItemUpdateFailure:(NSError *)error{
+    
+    [self.context save:&error];
+    
+    self.completionHandler(UIBackgroundFetchResultNewData);
+    
+}
+
+-(void)deletePostNotificationWithData:(NSDictionary *)userInfo{
+    
+    NSLog(@"%@", userInfo);
+    
+    
+    
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Posts"];
+    request.predicate = [NSPredicate predicateWithFormat:@"post_id = %@", [userInfo objectForKey:@"postid"]];
+    
+    NSError *error = nil;
+    
+    NSUInteger count = [self.context countForFetchRequest:request error:&error];
+    
+    NSLog(@"%@", error.userInfo);
+    
+    if(count == 1) {
+        //Handle error
+        
+        NSArray* result = [self.context executeFetchRequest:request error:&error];
+        
+        [self.context deleteObject:[result firstObject]];
+        NSLog(@"DELETING POST");
+    }
+    
+    [self.context save:&error];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"postUpdate" object:nil];
+    self.completionHandler(UIBackgroundFetchResultNewData);
+}
+
+-(void)newPostNotificationWithData:(NSDictionary *)userInfo{
+    
+    NSNumber* postid = [[NSNumber alloc] initWithInt:[[userInfo objectForKey:@"postid"] intValue]];
+    self.item_id = postid;
+    
+    UpdatePostItem *upi = [[UpdatePostItem alloc] init];
+    [upi updatePostItemWithID:postid withDelegate:self];
+    
+}
+
+-(void)updatePostNotificationWithData:(NSDictionary *)userInfo{
+    
+    NSNumber* postid = [[NSNumber alloc] initWithInt:[[userInfo objectForKey:@"postid"] intValue]];
+    self.item_id = postid;
+    
+    UpdatePostItem *upi = [[UpdatePostItem alloc] init];
+    [upi updatePostItemWithID:postid withDelegate:self];
+    
+}
+
+-(void)postItemUpdateSuccess{
+    
+    NSLog(@"Update Post Item Success");
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"postUpdate" object:nil];
+    
+    if(self.userOpened){
+        
+        
+        
+    }
+    
+    self.completionHandler(UIBackgroundFetchResultNewData);
+    
+}
+
+-(void)postItemUpdateFailure:(NSError *)error{
+    
+    self.completionHandler(UIBackgroundFetchResultNewData);
+    
+}
 
 @end
