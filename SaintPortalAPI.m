@@ -298,8 +298,8 @@
 
 -(void)uploadCourseworkSubmissionWithData:(NSDictionary *)data{
     
-    NSString* filename = @"index";
-    NSString* extension = @".pdf";
+    //NSString* filename = @"index";
+    //NSString* extension = @".pdf";
     
     NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
     NSString *accesstoken = [NSString stringWithFormat:@"%@", [prefs valueForKey:@"access_token"]];

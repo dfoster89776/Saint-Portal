@@ -109,6 +109,8 @@
                 
                 [self.module addModule_assignmentsObject:new_coursework];
                 
+                [self updateLocalNotificationsForCoursework:new_coursework];
+                
             }else if([matches count] > 0){
                 
                 Coursework *new_coursework = [[matches allObjects] firstObject];
@@ -174,6 +176,8 @@
                 }
                 
                 new_coursework.specification = [UpdateModuleCoursework updateCourseworkFile:[assignment objectForKey:@"coursework_file"] withContext:self.context];
+                
+                [self updateLocalNotificationsForCoursework:new_coursework];
             }
         }
     }
@@ -382,7 +386,261 @@
 
 -(void)updateLocalNotificationsForCoursework:(Coursework *)coursework{
     
+    NSDateFormatter *df = [[NSDateFormatter alloc] init];
+    [df setDateFormat:@"HH:mm EEE dd/MM/yyyy"];
     
+    //Delete old notifications
+    [UpdateModuleCoursework deleteLocalNotificationWithID:coursework.notification_48];
+    
+    [UpdateModuleCoursework deleteLocalNotificationWithID:coursework.notification_24];
+    
+    [UpdateModuleCoursework deleteLocalNotificationWithID:coursework.notification_12];
+    
+    [UpdateModuleCoursework deleteLocalNotificationWithID:coursework.notification_6];
+    
+    [UpdateModuleCoursework deleteLocalNotificationWithID:coursework.notification_2];
+    
+    [UpdateModuleCoursework deleteLocalNotificationWithID:coursework.notification_10];
+    
+    //Set new notification id's
+    NSDate *now = [NSDate date];
+    
+    //Current notification_id
+    int notification_id = [[[NSUserDefaults standardUserDefaults] objectForKey:@"local_notification_id"] intValue];
+    
+    if([coursework.submitted boolValue]){
+        
+        if([[NSDate dateWithTimeIntervalSinceNow:600] compare:coursework.coursework_due] == NSOrderedAscending){
+            
+            NSLog(@"Local Notification Created For: %@", coursework.coursework_name);
+            NSDate *fireDate = [NSDate dateWithTimeInterval:-600 sinceDate:coursework.coursework_due];
+            NSLog(@"Fire Date: %@", [df stringFromDate:fireDate]);
+            
+            
+            UILocalNotification *localNotif = [[UILocalNotification alloc] init];
+            
+            localNotif.fireDate = fireDate;
+            localNotif.alertBody = [NSString stringWithFormat:@"You have 10 minutes to make any changes to your submission for %@: %@", coursework.assignments_module.module_code, coursework.coursework_name];
+            localNotif.timeZone = [NSTimeZone defaultTimeZone];
+            localNotif.soundName = UILocalNotificationDefaultSoundName;
+            NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
+            int localNotifId;
+            if(coursework.notification_10 == nil) {
+                localNotifId = notification_id;
+                coursework.notification_10 = [NSNumber numberWithInt:localNotifId];
+                notification_id++;
+            }else{
+                localNotifId = [coursework.notification_10 intValue];
+            }
+            [dict setValue:[NSNumber numberWithInt:localNotifId] forKey:@"id"];
+            [dict setValue:coursework.coursework_id forKey:@"coursework_id"];
+            [dict setValue:@"coursework_reminder" forKey:@"type"];
+            localNotif.userInfo = dict;
+            [[UIApplication sharedApplication] scheduleLocalNotification:localNotif];
+        }
+    }else{
+        
+        //Set 10 minute notification
+        if([[NSDate dateWithTimeIntervalSinceNow:600] compare:coursework.coursework_due] == NSOrderedAscending){
+            
+            NSLog(@"Local Notification Created For: %@", coursework.coursework_name);
+            NSDate *fireDate = [NSDate dateWithTimeInterval:-600 sinceDate:coursework.coursework_due];
+            NSLog(@"Fire Date: %@", [df stringFromDate:fireDate]);
+            
+            UILocalNotification *localNotif = [[UILocalNotification alloc] init];
+            
+            localNotif.fireDate = [NSDate dateWithTimeInterval:-600 sinceDate:coursework.coursework_due];
+            localNotif.alertBody = [NSString stringWithFormat:@"You have 10 minutes till the submission deadline for %@: %@", coursework.assignments_module.module_code, coursework.coursework_name];
+            localNotif.timeZone = [NSTimeZone defaultTimeZone];
+            localNotif.soundName = UILocalNotificationDefaultSoundName;
+            NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
+            int localNotifId;
+            if(coursework.notification_10 == nil) {
+                localNotifId = notification_id;
+                coursework.notification_10 = [NSNumber numberWithInt:localNotifId];
+                notification_id++;
+            }else{
+                localNotifId = [coursework.notification_10 intValue];
+            }
+            [dict setValue:[NSNumber numberWithInt:localNotifId] forKey:@"id"];
+            [dict setValue:coursework.coursework_id forKey:@"coursework_id"];
+            [dict setValue:@"coursework_reminder" forKey:@"type"];
+            localNotif.userInfo = dict;
+            [[UIApplication sharedApplication] scheduleLocalNotification:localNotif];
+        }
+        
+        if([[NSDate dateWithTimeIntervalSinceNow:7200] compare:coursework.coursework_due] == NSOrderedAscending){
+            
+            NSLog(@"Local Notification Created For: %@", coursework.coursework_name);
+            NSDate *fireDate = [NSDate dateWithTimeInterval:-7200 sinceDate:coursework.coursework_due];
+            NSLog(@"Fire Date: %@", [df stringFromDate:fireDate]);
+            
+            UILocalNotification *localNotif = [[UILocalNotification alloc] init];
+            
+            localNotif.fireDate = [NSDate dateWithTimeInterval:-7200 sinceDate:coursework.coursework_due];
+            localNotif.alertBody = [NSString stringWithFormat:@"You have 2 hours till the submission deadline for %@: %@", coursework.assignments_module.module_code, coursework.coursework_name];
+            localNotif.timeZone = [NSTimeZone defaultTimeZone];
+            localNotif.soundName = UILocalNotificationDefaultSoundName;
+            NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
+            int localNotifId;
+            if(coursework.notification_2 == nil) {
+                localNotifId = notification_id;
+                coursework.notification_2 = [NSNumber numberWithInt:localNotifId];
+                notification_id++;
+            }else{
+                localNotifId = [coursework.notification_2 intValue];
+            }
+            [dict setValue:[NSNumber numberWithInt:localNotifId] forKey:@"id"];
+            [dict setValue:coursework.coursework_id forKey:@"coursework_id"];
+            [dict setValue:@"coursework_reminder" forKey:@"type"];
+            localNotif.userInfo = dict;
+            [[UIApplication sharedApplication] scheduleLocalNotification:localNotif];
+        }
+        
+        if([[NSDate dateWithTimeIntervalSinceNow:21600] compare:coursework.coursework_due] == NSOrderedAscending){
+            
+            NSLog(@"Local Notification Created For: %@", coursework.coursework_name);
+            NSDate *fireDate = [NSDate dateWithTimeInterval:-21600 sinceDate:coursework.coursework_due];
+            NSLog(@"Fire Date: %@", [df stringFromDate:fireDate]);
+            
+            UILocalNotification *localNotif = [[UILocalNotification alloc] init];
+            
+            localNotif.fireDate = [NSDate dateWithTimeInterval:-21600 sinceDate:coursework.coursework_due];
+            localNotif.alertBody = [NSString stringWithFormat:@"You have 6 hours till the submission deadline for %@: %@", coursework.assignments_module.module_code, coursework.coursework_name];
+            localNotif.timeZone = [NSTimeZone defaultTimeZone];
+            localNotif.soundName = UILocalNotificationDefaultSoundName;
+            NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
+            int localNotifId;
+            if(coursework.notification_6 == nil) {
+                localNotifId = notification_id;
+                coursework.notification_6 = [NSNumber numberWithInt:localNotifId];
+                notification_id++;
+            }else{
+                localNotifId = [coursework.notification_6 intValue];
+            }
+            [dict setValue:[NSNumber numberWithInt:localNotifId] forKey:@"id"];
+            [dict setValue:coursework.coursework_id forKey:@"coursework_id"];
+            [dict setValue:@"coursework_reminder" forKey:@"type"];
+            localNotif.userInfo = dict;
+            [[UIApplication sharedApplication] scheduleLocalNotification:localNotif];
+        }
+        
+        if([[NSDate dateWithTimeIntervalSinceNow:43200] compare:coursework.coursework_due] == NSOrderedAscending){
+            
+            NSLog(@"Local Notification Created For: %@", coursework.coursework_name);
+            NSDate *fireDate = [NSDate dateWithTimeInterval:-43200 sinceDate:coursework.coursework_due];
+            NSLog(@"Fire Date: %@", [df stringFromDate:fireDate]);
+            
+            UILocalNotification *localNotif = [[UILocalNotification alloc] init];
+            
+            localNotif.fireDate = [NSDate dateWithTimeInterval:-43200 sinceDate:coursework.coursework_due];
+            localNotif.alertBody = [NSString stringWithFormat:@"You have 12 hours till the submission deadline for %@: %@", coursework.assignments_module.module_code, coursework.coursework_name];
+            localNotif.timeZone = [NSTimeZone defaultTimeZone];
+            localNotif.soundName = UILocalNotificationDefaultSoundName;
+            NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
+            int localNotifId;
+            if(coursework.notification_12 == nil) {
+                localNotifId = notification_id;
+                coursework.notification_12 = [NSNumber numberWithInt:localNotifId];
+                notification_id++;
+            }else{
+                localNotifId = [coursework.notification_12 intValue];
+            }
+            [dict setValue:[NSNumber numberWithInt:localNotifId] forKey:@"id"];
+            [dict setValue:coursework.coursework_id forKey:@"coursework_id"];
+            [dict setValue:@"coursework_reminder" forKey:@"type"];
+            localNotif.userInfo = dict;
+            [[UIApplication sharedApplication] scheduleLocalNotification:localNotif];
+        }
+        
+        if([[NSDate dateWithTimeIntervalSinceNow:86400] compare:coursework.coursework_due] == NSOrderedAscending){
+            
+            NSLog(@"Local Notification Created For: %@", coursework.coursework_name);
+            NSDate *fireDate = [NSDate dateWithTimeInterval:-86400 sinceDate:coursework.coursework_due];
+            NSLog(@"Fire Date: %@", [df stringFromDate:fireDate]);
+            
+            UILocalNotification *localNotif = [[UILocalNotification alloc] init];
+            
+            localNotif.fireDate = [NSDate dateWithTimeInterval:-86400 sinceDate:coursework.coursework_due];
+            localNotif.alertBody = [NSString stringWithFormat:@"You have 1 day till the submission deadline for %@: %@", coursework.assignments_module.module_code, coursework.coursework_name];
+            localNotif.timeZone = [NSTimeZone defaultTimeZone];
+            localNotif.soundName = UILocalNotificationDefaultSoundName;
+            NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
+            int localNotifId;
+            if(coursework.notification_24 == nil) {
+                localNotifId = notification_id;
+                coursework.notification_24 = [NSNumber numberWithInt:localNotifId];
+                notification_id++;
+            }else{
+                localNotifId = [coursework.notification_24 intValue];
+            }
+            [dict setValue:[NSNumber numberWithInt:localNotifId] forKey:@"id"];
+            [dict setValue:coursework.coursework_id forKey:@"coursework_id"];
+            [dict setValue:@"coursework_reminder" forKey:@"type"];
+            localNotif.userInfo = dict;
+            [[UIApplication sharedApplication] scheduleLocalNotification:localNotif];
+        }
+        
+        if([[NSDate dateWithTimeIntervalSinceNow:172800] compare:coursework.coursework_due] == NSOrderedAscending){
+            
+            NSLog(@"Local Notification Created For: %@", coursework.coursework_name);
+            NSDate *fireDate = [NSDate dateWithTimeInterval:-172800 sinceDate:coursework.coursework_due];
+            NSLog(@"Fire Date: %@", [df stringFromDate:fireDate]);
+            
+            UILocalNotification *localNotif = [[UILocalNotification alloc] init];
+            
+            localNotif.fireDate = [NSDate dateWithTimeInterval:-172800 sinceDate:coursework.coursework_due];
+            localNotif.alertBody = [NSString stringWithFormat:@"You have 2 days till the submission deadline for %@: %@", coursework.assignments_module.module_code, coursework.coursework_name];
+            localNotif.timeZone = [NSTimeZone defaultTimeZone];
+            localNotif.soundName = UILocalNotificationDefaultSoundName;
+            NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
+            int localNotifId;
+            if(coursework.notification_48 == nil) {
+                localNotifId = notification_id;
+                coursework.notification_48 = [NSNumber numberWithInt:localNotifId];
+                notification_id++;
+            }else{
+                localNotifId = [coursework.notification_48 intValue];
+            }
+            [dict setValue:[NSNumber numberWithInt:localNotifId] forKey:@"id"];
+            [dict setValue:coursework.coursework_id forKey:@"coursework_id"];
+            [dict setValue:@"coursework_reminder" forKey:@"type"];
+            localNotif.userInfo = dict;
+            [[UIApplication sharedApplication] scheduleLocalNotification:localNotif];
+        }
+    }
+    
+    [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithInt:notification_id] forKey:@"local_notification_id"];
+    
+}
+
++(void)deleteLocalNotificationWithID:(NSNumber *)notificationid{
+    
+    if(notificationid != nil){
+    
+        UILocalNotification *notificationToDelete = [UpdateModuleCoursework getNotificationWithID:notificationid];
+        
+        if(notificationToDelete != nil){
+            [[UIApplication sharedApplication] cancelLocalNotification:notificationToDelete];
+        }
+    }
+}
+
++(UILocalNotification *)getNotificationWithID:(NSNumber *)notification_id{
+
+    if(notification_id != nil){
+        NSArray *allNotifications = [[UIApplication sharedApplication] scheduledLocalNotifications];
+    
+        for (UILocalNotification *notification in allNotifications){
+            
+            if ([[notification.userInfo objectForKey:@"id"] intValue] == [notification_id intValue]){
+                return notification;
+            }
+            
+        }
+    }
+
+    return nil;
     
 }
 

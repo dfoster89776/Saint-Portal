@@ -2,14 +2,14 @@
 //  Posts.h
 //  Saint Portal
 //
-//  Created by David Foster on 17/11/2014.
-//  Copyright (c) 2014 David Foster. All rights reserved.
+//  Created by David Foster on 06/01/2015.
+//  Copyright (c) 2015 David Foster. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
-@class Examples, Slides, Topics;
+@class Event, Examples, Reading, Slides, Topics;
 
 @interface Posts : NSManagedObject
 
@@ -18,9 +18,10 @@
 @property (nonatomic, retain) NSString * post_name;
 @property (nonatomic, retain) NSNumber * post_order;
 @property (nonatomic, retain) NSSet *posts_examples;
+@property (nonatomic, retain) Reading *posts_readings;
 @property (nonatomic, retain) NSSet *posts_slides;
 @property (nonatomic, retain) Topics *posts_topic;
-@property (nonatomic, retain) NSManagedObject *posts_readings;
+@property (nonatomic, retain) NSSet *posts_events;
 @end
 
 @interface Posts (CoreDataGeneratedAccessors)
@@ -34,5 +35,10 @@
 - (void)removePosts_slidesObject:(Slides *)value;
 - (void)addPosts_slides:(NSSet *)values;
 - (void)removePosts_slides:(NSSet *)values;
+
+- (void)addPosts_eventsObject:(Event *)value;
+- (void)removePosts_eventsObject:(Event *)value;
+- (void)addPosts_events:(NSSet *)values;
+- (void)removePosts_events:(NSSet *)values;
 
 @end

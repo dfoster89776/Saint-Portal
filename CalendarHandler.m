@@ -9,8 +9,6 @@
 #import "CalendarHandler.h"
 #import "Modules.h"
 #import <EventKit/EventKit.h>
-#import "Lectures.h"
-#import "Tutorials.h"
 #import "Rooms.h"
 #import "Buildings.h"
 
@@ -88,13 +86,7 @@
     
     EKCalendar *calendar = [[CalendarHandler sharedStore] calendarWithIdentifier:[prefs objectForKey:@"calender_id"]];
     
-    NSString* eventType;
-    
-    if([newEvent isKindOfClass:[Lectures class]]){
-        eventType = @"Lecture";
-    }else if ([newEvent isKindOfClass:[Tutorials class]]){
-        eventType = @"Tutorial";
-    }
+    NSString* eventType = newEvent.event_type;
     
     if(newEvent.event_calendar_identifier == nil){
         

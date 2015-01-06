@@ -69,6 +69,11 @@
                 
                 newBuilding.building_name = [building objectForKey:@"building_name"];
                 newBuilding.major_value = [building objectForKey:@"major_id"];
+                newBuilding.lattitude = [[NSDecimalNumber alloc] initWithDouble:[[building objectForKey:@"lattitude"] doubleValue]];
+                newBuilding.longitude = [[NSDecimalNumber alloc] initWithDouble:[[building objectForKey:@"lattitude"] doubleValue]];
+            
+                
+            
             }
             
             //Else update building

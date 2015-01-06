@@ -8,8 +8,6 @@
 
 #import "SetEventDetails.h"
 #import "AppDelegate.h"
-#import "Lectures.h"
-#import "Tutorials.h"
 #import "Modules.h"
 #import "UpdateLocationsHandler.h"
 #import "CalendarHandler.h"
@@ -30,29 +28,19 @@
     self.context = [(AppDelegate *)[[UIApplication sharedApplication] delegate] managedObjectContext];
     self.delegate = delegate;
     
-    if([[event valueForKey:@"event_type"] isEqualToString:@"lecture"]){
-        
-        Lectures *new_lecture = [NSEntityDescription insertNewObjectForEntityForName:@"Lectures" inManagedObjectContext:self.context];
-        
-        NSDateFormatter *df = [[NSDateFormatter alloc] init];
-        [df setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
-        
-        new_lecture.start_time = [df dateFromString:[event objectForKey:@"event_start"]];
-        new_lecture.end_time = [df dateFromString:[event objectForKey:@"event_end"]];
-        new_lecture.event_id = [NSNumber numberWithInteger:[[event objectForKey:@"event_id"] integerValue]];;
-        new_lecture.event_module = module;
-        
-        new_event = new_lecture;
-        self.event = new_event;
-        
-        self.location_id = [[event objectForKey:@"location"] intValue];
-        
-        
-        
-    }else if ([[event valueForKey:@"event_type"] isEqualToString:@"tutorial"]){
-        
-        
-    }
+    new_event = [NSEntityDescription insertNewObjectForEntityForName:@"Event" inManagedObjectContext:self.context];
+    
+    NSDateFormatter *df = [[NSDateFormatter alloc] init];
+    [df setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+    
+    new_event.start_time = [df dateFromString:[event objectForKey:@"event_start"]];
+    new_event.end_time = [df dateFromString:[event objectForKey:@"event_end"]];
+    new_event.event_id = [NSNumber numberWithInteger:[[event objectForKey:@"event_id"] integerValue]];;
+    new_event.event_module = module;
+    
+    self.event = new_event;
+    
+    self.location_id = [[event objectForKey:@"location"] intValue];
     
     [module addModule_eventsObject:new_event];
     
@@ -85,25 +73,17 @@
     self.delegate = delegate;
     self.event = new_event;
     
-    if([[event valueForKey:@"event_type"] isEqualToString:@"lecture"]){
-        
-        Lectures *new_lecture = (Lectures *)new_event;
-        
-        NSDateFormatter *df = [[NSDateFormatter alloc] init];
-        [df setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
-        
-        new_lecture.start_time = [df dateFromString:[event objectForKey:@"event_start"]];
-        new_lecture.end_time = [df dateFromString:[event objectForKey:@"event_end"]];
-        new_lecture.event_id = [NSNumber numberWithInteger:[[event objectForKey:@"event_id"] integerValue]];;
-        new_lecture.event_module = module;
-        
-        new_event = new_lecture;
-        
-        self.location_id = [[event objectForKey:@"location"] intValue];
-        
-    }else if ([[event valueForKey:@"event_type"] isEqualToString:@"tutorial"]){
-        
-    }
+    NSDateFormatter *df = [[NSDateFormatter alloc] init];
+    [df setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+    
+    new_event.start_time = [df dateFromString:[event objectForKey:@"event_start"]];
+    new_event.end_time = [df dateFromString:[event objectForKey:@"event_end"]];
+    new_event.event_id = [NSNumber numberWithInteger:[[event objectForKey:@"event_id"] integerValue]];;
+    new_event.event_module = module;
+    new_event.event_type = [event valueForKey:@"event_type"];
+
+    self.location_id = [[event objectForKey:@"location"] intValue];
+    
     
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Rooms"];
     

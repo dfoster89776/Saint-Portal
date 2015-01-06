@@ -63,7 +63,7 @@
     
     self.salm = [[StAndrewsLocationManager alloc] init];
     [self.salm setupLocationManager];
-
+    
     return YES;
 }
 
@@ -299,6 +299,20 @@
         
     
     // Do something with the content ID
+}
+
+-(void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification{
+    
+    NSDictionary *userInfo = notification.userInfo;
+    
+    if(application.applicationState == UIApplicationStateInactive){
+    
+        if([[userInfo objectForKey:@"type"] isEqualToString:@"coursework_reminder"]){
+            
+            [self displayCourseworkItemWithId:[userInfo objectForKey:@"coursework_id"]];
+            
+        }
+    }
 }
 
 -(void)displayCourseworkItemWithId:(NSNumber *)coursework_id{

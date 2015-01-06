@@ -10,8 +10,6 @@
 #import "SaintPortalAPI.h"
 #import "AppDelegate.h"
 #import "Event.h"
-#import "Lectures.h"
-#import "Tutorials.h"
 #import "SetEventDetails.h"
 #import "CalendarHandler.h"
 

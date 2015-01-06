@@ -11,8 +11,6 @@
 #import "ModuleEventTableViewCell.h"
 #import "AppDelegate.h"
 #import "Event.h"
-#import "Lectures.h"
-#import "Tutorials.h"
 #import "Modules.h"
 #import "Buildings.h"
 #import "Rooms.h"
@@ -150,14 +148,7 @@
             cell.eventStartTimeLabel.text = [df stringFromDate:event.start_time];
             cell.eventEndTimeLabel.text = [df stringFromDate:event.end_time];
             
-            if([event isKindOfClass:[Tutorials class]])
-            {
-                cell.eventTypeLabel.text = @"Tutorial";
-            }
-            else if([event isKindOfClass:[Lectures class]])
-            {
-                cell.eventTypeLabel.text = @"Lecture";
-            }
+            cell.eventTypeLabel.text = event.event_type;
             
             cell.eventBuildingLabel.text = event.event_location.room_name;
             cell.eventRoomLabel.text = event.event_location.rooms_building.building_name;
@@ -183,14 +174,7 @@
             cell.eventStartTimeLabel.text = [df stringFromDate:event.start_time];
             cell.eventEndTimeLabel.text = [df stringFromDate:event.end_time];
             
-            if([event isKindOfClass:[Tutorials class]])
-            {
-                cell.eventTypeLabel.text = @"Tutorial";
-            }
-            else if([event isKindOfClass:[Lectures class]])
-            {
-                cell.eventTypeLabel.text = @"Lecture";
-            }
+            cell.eventTypeLabel.text = event.event_type;
             
             NSLog(@"ROOM NUMBER: %@", event.event_location.location_id);
 
