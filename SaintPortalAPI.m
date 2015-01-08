@@ -69,6 +69,9 @@
         case UpdatePostItemRequest:
             [self updatePostItemWithData:data];
             break;
+        case UpdateModuleStaffRequest:
+            [self requestModuleStaffCallWithData:data];
+            break;
     }
     
     return YES;
@@ -167,6 +170,28 @@
     
     //URL for authentication API
     NSURL *url = [NSURL URLWithString:@"https://drf8.host.cs.st-andrews.ac.uk/SaintPortal/API/requestModuleEvents.php"];
+    
+    // Create the request.
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url
+                                                           cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData
+                                                       timeoutInterval:40.0];
+    request.HTTPMethod = @"POST";
+    NSString *stringData = [NSString stringWithFormat:@"accesstoken=%@&deviceID=%@&module_id=%@", accesstoken, [UIDevice currentDevice].identifierForVendor.UUIDString, [data objectForKey:@"module_id"]];
+    
+    request.HTTPBody = [stringData dataUsingEncoding:NSUTF8StringEncoding];
+    
+    // Create url connection, set request and delegate
+    conn = [[NSURLConnection alloc] initWithRequest:request delegate:self];
+    
+}
+
+-(void)requestModuleStaffCallWithData:(NSDictionary *)data{
+    
+    NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+    NSString *accesstoken = [NSString stringWithFormat:@"%@", [prefs valueForKey:@"access_token"]];
+    
+    //URL for authentication API
+    NSURL *url = [NSURL URLWithString:@"https://drf8.host.cs.st-andrews.ac.uk/SaintPortal/API/requestModuleStaff.php"];
     
     // Create the request.
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url

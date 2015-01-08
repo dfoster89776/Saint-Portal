@@ -10,18 +10,21 @@
 #import "UpdateModuleCoursework.h"
 #import "UpdateModuleTopics.h"
 #import "UpdateModuleEvents.h"
+#import "UpdateModuleStaff.h"
 
-@interface UpdateModuleData () <UpdateModuleCourseworkDelegate>
+@interface UpdateModuleData () <UpdateModuleCourseworkDelegate, UpdateModuleTopicsDelegate, UpdateModuleEventsDelegate, UpdateModuleStaffDelegate>
 @property (strong, nonatomic) Modules* module;
 @property (strong, nonatomic) id delegate;
 
 @property (strong, nonatomic) UpdateModuleCoursework* umc;
 @property (strong, nonatomic) UpdateModuleTopics* umt;
 @property (strong, nonatomic) UpdateModuleEvents* ume;
+@property (strong, nonatomic) UpdateModuleStaff* ums;
 
 @property BOOL umcStatus;
 @property BOOL umtStatus;
 @property BOOL umeStatus;
+@property BOOL umsStatus;
 @end
 
 @implementation UpdateModuleData 
@@ -39,6 +42,9 @@
     
     self.ume = [[UpdateModuleEvents alloc] init];
     [self.ume updateEventsForModule:self.module withDelegate:self];
+    
+    self.ums = [[UpdateModuleStaff alloc] init];
+    [self.ums updateStaffForModule:self.module withDelegate:self];
         
 }
 
@@ -47,8 +53,9 @@
     self.umcStatus = [self.umc getStatus];
     self.umtStatus = [self.umt getStatus];
     self.umeStatus = [self.ume getStatus];
+    self.umsStatus = [self.ums getStatus];
     
-    if(self.umcStatus && self.umtStatus && self.umeStatus){
+    if(self.umcStatus && self.umtStatus && self.umeStatus && self.umsStatus){
         [self.delegate moduleDataUpdateSuccess];
     }
     
@@ -83,4 +90,13 @@
     [self updateStatus];
 }
 
+-(void)moduleStaffUpdateSuccess{
+    
+    [self updateStatus];
+}
+
+-(void)moduleStaffUpdateFailure:(NSError *)error{
+    
+    [self updateStatus];
+}
 @end

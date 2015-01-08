@@ -71,6 +71,11 @@
         <relationship name="parentDirectory" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Directory" inverseName="files" inverseEntity="Directory" syncable="YES"/>
     </entity>
     <entity name="File_Reading" representedClassName="File_Reading" parentEntity="Reading" syncable="YES"/>
+    <entity name="Module_Staff" representedClassName="Module_Staff" syncable="YES">
+        <attribute name="role" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="module" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Modules" inverseName="staff" inverseEntity="Modules" syncable="YES"/>
+        <relationship name="staff" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Staff" inverseName="modules" inverseEntity="Staff" syncable="YES"/>
+    </entity>
     <entity name="Modules" representedClassName="Modules" syncable="YES">
         <attribute name="current" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="module_code" optional="YES" attributeType="String" maxValueString="10" syncable="YES"/>
@@ -83,6 +88,7 @@
         <relationship name="module_assignments" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Coursework" inverseName="assignments_module" inverseEntity="Coursework" syncable="YES"/>
         <relationship name="module_events" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Event" inverseName="event_module" inverseEntity="Event" syncable="YES"/>
         <relationship name="modules_topics" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Topics" inverseName="topics_module" inverseEntity="Topics" syncable="YES"/>
+        <relationship name="staff" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Module_Staff" inverseName="module" inverseEntity="Module_Staff" syncable="YES"/>
     </entity>
     <entity name="Personal_Details" representedClassName="Personal_Details" syncable="YES">
         <attribute name="fee_status" optional="YES" attributeType="String" syncable="YES"/>
@@ -120,6 +126,14 @@
     <entity name="Specification" representedClassName="Specification" parentEntity="File" syncable="YES">
         <relationship name="coursework_item" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Coursework" inverseName="specification" inverseEntity="Coursework" syncable="YES"/>
     </entity>
+    <entity name="Staff" representedClassName="Staff" syncable="YES">
+        <attribute name="email" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="firstname" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="phone_number" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="staff_id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="surname" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="modules" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Module_Staff" inverseName="staff" inverseEntity="Module_Staff" syncable="YES"/>
+    </entity>
     <entity name="Submission" representedClassName="Submission" parentEntity="File" syncable="YES">
         <attribute name="submission_time" optional="YES" attributeType="Date" syncable="YES"/>
         <relationship name="coursework_item" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Coursework" inverseName="submission" inverseEntity="Coursework" syncable="YES"/>
@@ -146,7 +160,7 @@
         <element name="Feedback" positionX="-4383" positionY="-1636" width="128" height="103"/>
         <element name="File" positionX="-3665" positionY="-1377" width="128" height="148"/>
         <element name="File_Reading" positionX="-4583" positionY="-1107" width="128" height="45"/>
-        <element name="Modules" positionX="-3942" positionY="-1908" width="128" height="208"/>
+        <element name="Modules" positionX="-3942" positionY="-1908" width="128" height="223"/>
         <element name="Personal_Details" positionX="-4401" positionY="-1863" width="128" height="133"/>
         <element name="Posts" positionX="-4095" positionY="-1404" width="128" height="178"/>
         <element name="Reading" positionX="-4383" positionY="-1342" width="128" height="73"/>
@@ -156,5 +170,7 @@
         <element name="Submission" positionX="-3861" positionY="-1480" width="128" height="73"/>
         <element name="Topics" positionX="-4016" positionY="-1575" width="128" height="133"/>
         <element name="Web_Reading" positionX="-4205" positionY="-1107" width="128" height="58"/>
+        <element name="Staff" positionX="-4169" positionY="-2070" width="128" height="133"/>
+        <element name="Module_Staff" positionX="-3944" positionY="-2043" width="128" height="88"/>
     </elements>
 </model>

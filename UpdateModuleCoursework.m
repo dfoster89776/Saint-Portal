@@ -401,10 +401,7 @@
     [UpdateModuleCoursework deleteLocalNotificationWithID:coursework.notification_2];
     
     [UpdateModuleCoursework deleteLocalNotificationWithID:coursework.notification_10];
-    
-    //Set new notification id's
-    NSDate *now = [NSDate date];
-    
+        
     //Current notification_id
     int notification_id = [[[NSUserDefaults standardUserDefaults] objectForKey:@"local_notification_id"] intValue];
     

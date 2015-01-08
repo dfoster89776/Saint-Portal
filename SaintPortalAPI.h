@@ -22,7 +22,8 @@ enum {
     UpdateCourseworkItemRequest = 10,
     UploadCourseworkSubmission = 11,
     UpdateTopicItemRequest = 12,
-    UpdatePostItemRequest = 13
+    UpdatePostItemRequest = 13,
+    UpdateModuleStaffRequest = 14
 };
 
 typedef NSUInteger SaintPortalAPIOperation;

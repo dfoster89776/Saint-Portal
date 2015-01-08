@@ -8,8 +8,11 @@
 
 #import "DashViewController.h"
 #import "Coursework.h"
+#import "Event.h"
 #import "CourseworkDetailsViewController.h"
+#import "EventDetailsViewController.h"
 #import "DashboardUpcomingCourseworkTableViewController.h"
+#import "DashboardUpcomingEventsTableViewController.h"
 
 @interface DashViewController ()
 @property (strong, nonatomic) IBOutlet UIView *headingOuterView;
@@ -83,6 +86,16 @@
         
         destination.coursework = openCoursework;
         destination.title = @"Coursework";
+        
+    }
+    else if([segue.identifier isEqualToString:@"showEventDetails"]){
+        
+        Event *openEvent = [(DashboardUpcomingEventsTableViewController *)sender getSelectedEvent];
+        
+        EventDetailsViewController *destination = segue.destinationViewController;
+        
+        destination.event = openEvent;
+        destination.title = @"Event";
         
     }
     

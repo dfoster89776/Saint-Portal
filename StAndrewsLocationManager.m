@@ -21,10 +21,33 @@
     self.locationManager.delegate = self;
     [self.locationManager requestAlwaysAuthorization];
     
+    [self.locationManager startMonitoringSignificantLocationChanges];
+}
+
+-(void)applicationEnteredForeground{
+    
+    [self.locationManager stopMonitoringSignificantLocationChanges];
+    [self.locationManager startUpdatingLocation];
+    
+}
+
+-(void)applicationEnteredBackground{
+    
+    [self.locationManager stopUpdatingLocation];
+    [self.locationManager startMonitoringSignificantLocationChanges];
+    
+}
+
+-(void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations{
+    
+    NSLog(@"Location updated");
+    
 }
 
 - (void)locationManager:(CLLocationManager *)manager didDetermineState:(CLRegionState)state forRegion:(CLRegion *)region
 {
+    
+    NSLog(@"%@", region);
     
     NSLog(@"Region entered");
     
@@ -57,11 +80,12 @@
         NSLog(@"Couldn't turn on ranging: Location services are not enabled.");
     }
     
-    else if (([CLLocationManager authorizationStatus] != kCLAuthorizationStatusAuthorizedAlways) || ([CLLocationManager authorizationStatus] != kCLAuthorizationStatusAuthorizedWhenInUse)) {
+    else if (([CLLocationManager authorizationStatus] != kCLAuthorizationStatusAuthorizedAlways) && ([CLLocationManager authorizationStatus] != kCLAuthorizationStatusAuthorizedWhenInUse)) {
         NSLog(@"Couldn't turn on monitoring: Location services not authorised.");
     }
-    
-    else if (([CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedAlways) || ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedWhenInUse)) {
+    else if(([CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedAlways) || ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedWhenInUse)) {
+        
+        NSLog(@"Locations services enabled");
         
         NSUUID *uuid = [[NSUUID alloc] initWithUUIDString:@"2F234454-CF6D-4A0F-ADF2-F4911BA9FFA6"];
         

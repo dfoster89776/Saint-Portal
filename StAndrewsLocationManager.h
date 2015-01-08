@@ -14,4 +14,8 @@
 
 -(void)setupLocationManager;
 
+-(void)applicationEnteredForeground;
+
+-(void)applicationEnteredBackground;
+
 @end

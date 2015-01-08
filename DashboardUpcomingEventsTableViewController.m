@@ -19,6 +19,7 @@
 @property (strong, nonatomic) NSArray *todayEvents;
 @property (strong, nonatomic) NSArray *tomorrowEvents;
 @property (strong, nonatomic) NSManagedObjectContext *context;
+@property (strong, nonatomic) Event *selectedEvent;
 @end
 
 @implementation DashboardUpcomingEventsTableViewController
@@ -144,11 +145,24 @@
             
             Event *event = [self.todayEvents objectAtIndex:indexPath.row];
             
-            cell.eventModuleLabel.text = event.event_module.module_code;
-            cell.eventStartTimeLabel.text = [df stringFromDate:event.start_time];
-            cell.eventEndTimeLabel.text = [df stringFromDate:event.end_time];
+            if([event.start_time compare:[NSDate date]] == NSOrderedAscending){
+                
+                [cell.eventStartTimeLabel setHidden:true];
+                [cell.eventEndTimeLabel setHidden:true];
+                [cell.eventNowLabel setHidden:false];
+            }else{
+                cell.eventStartTimeLabel.text = [df stringFromDate:event.start_time];
+                cell.eventEndTimeLabel.text = [df stringFromDate:event.end_time];
+                [cell.eventStartTimeLabel setHidden:false];
+                [cell.eventEndTimeLabel setHidden:false];
+                [cell.eventNowLabel setHidden:true];
+            }
             
-            cell.eventTypeLabel.text = event.event_type;
+            cell.eventModuleLabel.text = event.event_module.module_code;
+            
+            
+            cell.eventTypeLabel.text = [event.event_type stringByReplacingCharactersInRange:NSMakeRange(0,1)
+                                                                                 withString:[[event.event_type substringToIndex:1] capitalizedString]];
             
             cell.eventBuildingLabel.text = event.event_location.room_name;
             cell.eventRoomLabel.text = event.event_location.rooms_building.building_name;
@@ -171,6 +185,7 @@
             Event *event = [self.tomorrowEvents objectAtIndex:indexPath.row];
             
             cell.eventModuleLabel.text = event.event_module.module_code;
+            
             cell.eventStartTimeLabel.text = [df stringFromDate:event.start_time];
             cell.eventEndTimeLabel.text = [df stringFromDate:event.end_time];
             
@@ -185,6 +200,35 @@
 
         }
     }
+}
+
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    
+    self.selectedEvent = nil;
+    
+    if(indexPath.section == 0){
+        if([self.todayEvents count] != 0){
+        
+            self.selectedEvent = [self.todayEvents objectAtIndex:indexPath.row];
+            
+        }
+    }else{
+        if([self.tomorrowEvents count] != 0){
+            
+            self.selectedEvent = [self.tomorrowEvents objectAtIndex:indexPath.row];
+
+        }
+    }
+    
+    if(self.selectedEvent != nil){
+        [self.parentViewController.parentViewController performSegueWithIdentifier:@"showEventDetails" sender:self];
+    }
+}
+
+-(Event *)getSelectedEvent{
+    
+    return self.selectedEvent;
+    
 }
 
 

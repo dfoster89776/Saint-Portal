@@ -44,6 +44,12 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (IBAction)showModuleStaff:(id)sender {
+
+    [self.parentViewController.parentViewController performSegueWithIdentifier:@"showModuleStaff" sender:self];
+
+}
+
 /*
 #pragma mark - Navigation
 

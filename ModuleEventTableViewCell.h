@@ -17,4 +17,5 @@
 @property (strong, nonatomic) IBOutlet UILabel *eventTypeLabel;
 @property (strong, nonatomic) IBOutlet UILabel *eventRoomLabel;
 @property (strong, nonatomic) IBOutlet UILabel *eventBuildingLabel;
+@property (strong, nonatomic) IBOutlet UILabel *eventNowLabel;
 @end

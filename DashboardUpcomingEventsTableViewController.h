@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Event.h"
 
 @interface DashboardUpcomingEventsTableViewController : UITableViewController
-
+-(Event *)getSelectedEvent;
 @end

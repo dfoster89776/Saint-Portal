@@ -14,6 +14,7 @@
 #import "ModuleTopicsTableViewController.h"
 #import "TopicsPostsTableViewController.h"
 #import "AllPostsTableViewController.h"
+#import "ModuleStaffTableViewController.h"
 
 
 @interface ModuleViewController ()
@@ -26,7 +27,18 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    NSLog(@"View width: %f", self.view.frame.size.width);
+    NSManagedObjectContext *context = [(AppDelegate *)[[UIApplication sharedApplication] delegate] managedObjectContext];
+    
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Staff"];
+    
+    //request.predicate = [NSPredicate predicateWithFormat:@"staff_id == %i", [[data objectForKey:@"staff_id"] integerValue]];
+    
+    NSError *error = nil;
+    NSUInteger count = [context countForFetchRequest:request error:&error];
+    
+    NSLog(@"STAFF COUNT: %lu : %lu", count, (unsigned long)[self.module.staff count]);
+    
+    //NSLog(@"View width: %f", self.view.frame.size.width);
     
     /*
     int height = self.pageLabelViewContainer.frame.size.height;
@@ -94,6 +106,11 @@
         
         destination.module = self.module;
         
+    }else if ([segue.identifier isEqualToString:@"showModuleStaff"]){
+        
+        ModuleStaffTableViewController *destination = segue.destinationViewController;
+        destination.module = self.module;
+        destination.title = @"Staff";
     }
     
 }

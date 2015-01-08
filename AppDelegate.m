@@ -14,6 +14,8 @@
 #import "StAndrewsLocationManager.h"
 #import "PushNotificationManager.h"
 #import "RemoteNotificationReceiver.h"
+#import "EventDetailsViewController.h"
+#import "EventModalViewController.h"
 
 #define UIColorFromRGB(rgbValue) [UIColor colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 green:((float)((rgbValue & 0xFF00) >> 8))/255.0 blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
 
@@ -75,10 +77,13 @@
 - (void)applicationDidEnterBackground:(UIApplication *)application {
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+    
+    [self.salm applicationEnteredBackground];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
+    [self.salm applicationEnteredForeground];
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
@@ -195,8 +200,7 @@
     }
 }
 
-- (BOOL)addSkipBackupAttributeToItemAtURL:(NSURL *)URL
-{
+- (BOOL)addSkipBackupAttributeToItemAtURL:(NSURL *)URL{
     NSError *error = nil;
     [URL setResourceValue:[NSNumber numberWithBool:YES] forKey:NSURLIsExcludedFromBackupKey error:&error];
     return error == nil;
@@ -226,6 +230,14 @@
             
         }
         
+        if([[query objectForKey:@"type"] isEqualToString:@"event"]){
+            
+            NSNumber *event_id = [NSNumber numberWithInteger:[[query objectForKey:@"event_id"] integerValue]];
+            
+            [self displayEventItemWithId:event_id];
+            
+        }
+        
     }
      
     return YES;
@@ -245,14 +257,12 @@
     
 }
 
-- (void)application:(UIApplication*)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData*)deviceToken
-{
+- (void)application:(UIApplication*)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData*)deviceToken{
     
     [self.pnm registerPushNotificationToken:deviceToken];
 }
 
-- (void)application:(UIApplication*)application didFailToRegisterForRemoteNotificationsWithError:(NSError*)error
-{
+- (void)application:(UIApplication*)application didFailToRegisterForRemoteNotificationsWithError:(NSError*)error{
     [self.pnm registerPushNotificationFailure];
 }
 
@@ -277,8 +287,7 @@
 
 - (void)           application:(UIApplication *)application
   didReceiveRemoteNotification:(NSDictionary *)userInfo
-        fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
-{
+        fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler{
     
     RemoteNotificationReceiver *rnr = [[RemoteNotificationReceiver alloc] init];
     
@@ -336,8 +345,33 @@
     CourseworkModalViewController *cmvc = [vc.childViewControllers objectAtIndex:0];
     cmvc.coursework = [items objectAtIndex:0];
     
-    [root presentViewController:vc animated:NO completion:nil];
+    [root presentViewController:vc animated:YES completion:nil];
     
+}
+
+-(void)displayEventItemWithId:(NSNumber *)event_id{
+        
+    NSManagedObjectContext *context = [(AppDelegate *)[[UIApplication sharedApplication] delegate] managedObjectContext];
+    
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Event"];
+    
+    request.predicate = [NSPredicate predicateWithFormat:@"event_id == %@", event_id];
+    
+    NSError *error = nil;
+    
+    NSArray *items = [context executeFetchRequest:request error:&error];
+    
+    UIViewController *root = self.window.rootViewController;
+    
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    
+    EventModalViewController *emvc = [storyboard instantiateViewControllerWithIdentifier:@"eventModal"];
+    
+    EventDetailsViewController *edvc = [emvc.childViewControllers objectAtIndex:0];
+    edvc.event = [items objectAtIndex:0];
+    
+    [root presentViewController:emvc animated:YES completion:nil];
+
 }
 
 @end
