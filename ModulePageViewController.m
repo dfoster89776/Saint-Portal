@@ -10,9 +10,11 @@
 #import "ModuleCourseworkTableViewController.h"
 #import "ModuleTopicsTableViewController.h"
 #import "ModuleOverviewViewController.h"
+#import "ModuleViewController.h"
 
 @interface ModulePageViewController ()
 @property (strong, nonatomic) NSArray *myViewControllers;
+@property (nonatomic) int currentIndex;
 @end
 
 @implementation ModulePageViewController
@@ -40,7 +42,7 @@
     
     [self setViewControllers:@[p0]
                    direction:UIPageViewControllerNavigationDirectionForward
-                    animated:NO completion:nil];
+                    animated:YES completion:nil];
     
     // Do any additional setup after loading the view.
 }
@@ -58,28 +60,43 @@
 -(UIViewController *)pageViewController:(UIPageViewController *)pageViewController
      viewControllerBeforeViewController:(UIViewController *)viewController
 {
-    NSUInteger currentIndex = [self.myViewControllers indexOfObject:viewController];
+    self.currentIndex = (int)[self.myViewControllers indexOfObject:viewController];
     
-    if(currentIndex == 0){
+    if(self.currentIndex == 0){
         return nil;
     }else{
-        --currentIndex;
-        currentIndex = currentIndex % (self.myViewControllers.count);
-        return [self.myViewControllers objectAtIndex:currentIndex];
+        --self.currentIndex;
+        self.currentIndex = self.currentIndex % (self.myViewControllers.count);
+        return [self.myViewControllers objectAtIndex:self.currentIndex];
     }
 }
 
 -(UIViewController *)pageViewController:(UIPageViewController *)pageViewController
       viewControllerAfterViewController:(UIViewController *)viewController
 {
-    NSUInteger currentIndex = [self.myViewControllers indexOfObject:viewController];
+    self.currentIndex = (int)[self.myViewControllers indexOfObject:viewController];
  
-    if(currentIndex == (self.myViewControllers.count - 1)){
+    if(self.currentIndex == (self.myViewControllers.count - 1)){
         return nil;
     }else{
-        ++currentIndex;
-        currentIndex = currentIndex % (self.myViewControllers.count);
-        return [self.myViewControllers objectAtIndex:currentIndex];
+        ++self.currentIndex;
+        self.currentIndex = self.currentIndex % (self.myViewControllers.count);
+        return [self.myViewControllers objectAtIndex:self.currentIndex];
+    }
+}
+
+- (void)pageViewController:(UIPageViewController *)pageViewController
+        didFinishAnimating:(BOOL)finished
+   previousViewControllers:(NSArray *)previousViewControllers
+       transitionCompleted:(BOOL)completed{
+    
+    if(completed){
+        
+        UIViewController *currentView = [pageViewController.viewControllers objectAtIndex:0];
+        
+        int index = (int)[self.myViewControllers indexOfObject:currentView];
+            
+        [(ModuleViewController *)self.parentViewController titleForIndex:index];
     }
 }
 

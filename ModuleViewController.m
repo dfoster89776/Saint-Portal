@@ -16,9 +16,11 @@
 #import "AllPostsTableViewController.h"
 #import "ModuleStaffTableViewController.h"
 
+#define UIColorFromRGB(rgbValue) [UIColor colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 green:((float)((rgbValue & 0xFF00) >> 8))/255.0 blue:((float)(rgbValue & 0xFF))/255.0 alpha:1]
 
 @interface ModuleViewController ()
-@property (strong, nonatomic) IBOutlet UIView *pageLabelViewContainer;
+@property (strong, nonatomic) IBOutlet UIScrollView *headerScrollView;
+@property (nonatomic) int width;
 @end
 
 @implementation ModuleViewController
@@ -37,25 +39,39 @@
     NSUInteger count = [context countForFetchRequest:request error:&error];
     
     NSLog(@"STAFF COUNT: %lu : %lu", count, (unsigned long)[self.module.staff count]);
-    
-    //NSLog(@"View width: %f", self.view.frame.size.width);
-    
-    /*
-    int height = self.pageLabelViewContainer.frame.size.height;
-    
-    UIView *titleView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 375, height)];
-    titleView.backgroundColor = [UIColor greenColor];
-    
-    [self.pageLabelViewContainer addSubview:titleView];
-    */
-                         
-                         
-    // Do any additional setup after loading the view.
 }
 
--(void)viewWillAppear:(BOOL)animated{
+-(void)viewDidLayoutSubviews{
     
-    NSLog(@"Frame width: %f", self.pageLabelViewContainer.frame.size.width);
+    NSArray *headerArray = [NSArray arrayWithObjects:@"Overview",@"Topics & Posts", @"Coursework", nil];
+    
+    self.width = self.headerScrollView.frame.size.width;
+    
+    int contentWidth = (self.width) * (([headerArray count]/2) + 0.5);
+    int height = self.headerScrollView.frame.size.height;
+    
+    self.headerScrollView.contentSize = CGSizeMake(contentWidth, height);
+    
+    UIView *innerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, contentWidth, height)];
+    
+    [self.headerScrollView addSubview:innerView];
+    
+    
+    for(NSString *header in headerArray){
+        
+        int index = (int)[headerArray indexOfObject:header];
+        
+        int eventXCoordinate = (self.width/4) + ((self.width/2)*index);
+        
+        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(eventXCoordinate, 0, self.width/2, height)];
+        
+        [label setText:header];
+        [label setTextColor:UIColorFromRGB(0x00539B)];
+        
+        [label setFont:[UIFont fontWithName: @"HelveticaNeue-Light" size: 20.0f]];
+        label.textAlignment = NSTextAlignmentCenter;
+        [innerView addSubview:label];
+    }
     
 }
 
@@ -64,9 +80,11 @@
     // Dispose of any resources that can be recreated.
 }
 
--(void)segueToCourseworkViewFor:(Coursework *)coursework{
+-(void)titleForIndex:(NSUInteger)index{
     
+    int xoffset = 0 + (int)(index * self.width/2);
     
+    [self.headerScrollView setContentOffset:CGPointMake(xoffset, 0) animated:YES];
     
 }
 

@@ -15,17 +15,30 @@
 #import "UpdatePostItem.h"
 #import "Posts.h"
 #import "Topics.h"
+#import "Notification.h"
+#import "UpdateNotificationsListHandler.h"
 
-@interface RemoteNotificationReceiver () <UpdateCourseworkItemDelegate, UpdateTopicItemDelegate, UpdatePostItemDelegate>
+@interface RemoteNotificationReceiver () <UpdateCourseworkItemDelegate, UpdateTopicItemDelegate, UpdatePostItemDelegate, UpdateNotificationsDelegate>
 @property (nonatomic, copy) void (^completionHandler)(UIBackgroundFetchResult fetchResult);
 @property (nonatomic, strong) NSManagedObjectContext* context;
 @property (nonatomic) BOOL userOpened;
 @property (nonatomic, strong) NSNumber *item_id;
+@property (nonatomic) BOOL dataUpdate;
+@property (nonatomic) BOOL notificationUpdate;
 @end
 
 @implementation RemoteNotificationReceiver
 
 -(void)didReceiveNotification:(NSDictionary *)userInfo withHandler:(void (^)(UIBackgroundFetchResult))completionHandler isUserOpened:(BOOL)userOpened{
+    
+    self.dataUpdate = false;
+    self.notificationUpdate = false;
+    
+    NSLog(@"%@", userInfo);
+    
+    NSString *message = [[userInfo objectForKey:@"aps"] objectForKey:@"alert"];
+    
+    [self createNotificationWithMessage:message];
     
     self.userOpened = userOpened;
     self.completionHandler = completionHandler;
@@ -80,9 +93,14 @@
         
     }
     
-    [self.context save:&error];
+    self.dataUpdate = true;
     
-    self.completionHandler(UIBackgroundFetchResultNewData);
+    if(self.notificationUpdate){
+        self.completionHandler(UIBackgroundFetchResultNewData);
+        [self.context save:&error];
+    }
+    
+    
     [[NSNotificationCenter defaultCenter] postNotificationName:@"courseworkUpdate" object:nil];
 }
 
@@ -114,12 +132,24 @@
         [(AppDelegate *)[[UIApplication sharedApplication] delegate] displayCourseworkItemWithId:self.item_id];
         
     }
-    self.completionHandler(UIBackgroundFetchResultNewData);
+    
+    self.dataUpdate = true;
+    
+    if(self.notificationUpdate){
+        self.completionHandler(UIBackgroundFetchResultNewData);
+        NSError *error;
+        [self.context save:&error];
+    }
     
 }
 
 -(void)courseworkItemUpdateFailure:(NSError *)error{
-    self.completionHandler(UIBackgroundFetchResultNewData);
+    self.dataUpdate = true;
+    
+    if(self.notificationUpdate){
+        self.completionHandler(UIBackgroundFetchResultNewData);
+        [self.context save:&error];
+    }
 }
 
 -(void)newTopicNotificationWithData:(NSDictionary *)userInfo{
@@ -174,17 +204,17 @@
         
     }
     
-    [self.context save:&error];
+    self.dataUpdate = true;
     
-    self.completionHandler(UIBackgroundFetchResultNewData);
+    if(self.notificationUpdate){
+        self.completionHandler(UIBackgroundFetchResultNewData);
+        [self.context save:&error];
+    }
     [[NSNotificationCenter defaultCenter] postNotificationName:@"topicUpdate" object:nil];
     
 }
 
 -(void)topicItemUpdateSuccess{
-    
-    NSError *error;
-    [self.context save:&error];
     
     if(self.userOpened){
         
@@ -196,15 +226,24 @@
     
     [[NSNotificationCenter defaultCenter] postNotificationName:@"topicUpdate" object:nil];
     
-    self.completionHandler(UIBackgroundFetchResultNewData);
+    self.dataUpdate = true;
+    
+    NSError *error;
+    if(self.notificationUpdate){
+        self.completionHandler(UIBackgroundFetchResultNewData);
+        [self.context save:&error];
+    }
     
 }
 
 -(void)topicItemUpdateFailure:(NSError *)error{
     
-    [self.context save:&error];
+    self.dataUpdate = true;
     
-    self.completionHandler(UIBackgroundFetchResultNewData);
+    if(self.notificationUpdate){
+        self.completionHandler(UIBackgroundFetchResultNewData);
+        [self.context save:&error];
+    }
     
 }
 
@@ -232,10 +271,13 @@
         NSLog(@"DELETING POST");
     }
     
-    [self.context save:&error];
-    
     [[NSNotificationCenter defaultCenter] postNotificationName:@"postUpdate" object:nil];
-    self.completionHandler(UIBackgroundFetchResultNewData);
+    self.dataUpdate = true;
+    
+    if(self.notificationUpdate){
+        self.completionHandler(UIBackgroundFetchResultNewData);
+        [self.context save:&error];
+    }
 }
 
 -(void)newPostNotificationWithData:(NSDictionary *)userInfo{
@@ -270,14 +312,62 @@
         
     }
     
-    self.completionHandler(UIBackgroundFetchResultNewData);
+    self.dataUpdate = true;
+    
+    if(self.notificationUpdate){
+        self.completionHandler(UIBackgroundFetchResultNewData);
+        NSError *error;
+        [self.context save:&error];
+    }
     
 }
 
 -(void)postItemUpdateFailure:(NSError *)error{
     
-    self.completionHandler(UIBackgroundFetchResultNewData);
+    self.dataUpdate = true;
+    
+    if(self.notificationUpdate){
+        self.completionHandler(UIBackgroundFetchResultNewData);
+        [self.context save:&error];
+    }
     
 }
+
+-(void)createNotificationWithMessage:(NSString *)message{
+    
+    NSLog(@"Updating notifications list");
+    
+    UpdateNotificationsListHandler *unlh = [[UpdateNotificationsListHandler alloc] init];
+    [unlh updateNotificationsWithDelegate:self];
+
+}
+
+-(void)notificationsUpdateSuccess{
+    
+    self.notificationUpdate = true;
+    
+    if(self.dataUpdate){
+        
+        self.completionHandler(UIBackgroundFetchResultNewData);
+        NSError *error;
+        [self.context save:&error];
+
+    }
+    
+}
+
+-(void)notificationsUpdateFailure:(NSError *)error{
+    
+    self.notificationUpdate = true;
+    
+    if(self.dataUpdate){
+        
+        self.completionHandler(UIBackgroundFetchResultNewData);
+        [self.context save:&error];
+
+    }
+    
+}
+
 
 @end

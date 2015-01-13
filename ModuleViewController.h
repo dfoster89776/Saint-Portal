@@ -14,4 +14,6 @@
 @property (strong, nonatomic) NSString *moduleName;
 @property (strong, nonatomic) Modules *module;
 
+-(void)titleForIndex:(NSUInteger)index;
+
 @end

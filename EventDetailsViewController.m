@@ -78,8 +78,7 @@
     double latitude = [self.event.event_location.rooms_building.lattitude doubleValue];
     double longitude = [self.event.event_location.rooms_building.longitude doubleValue];
     
-    latitude = 56.340274;
-    longitude = -2.808708;
+    NSLog(@"Coordinates: %f, %f", latitude, longitude);
     
     self.coordinates = CLLocationCoordinate2DMake(latitude, longitude);
     MKCoordinateRegion region;

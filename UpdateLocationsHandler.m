@@ -50,6 +50,8 @@
         //For each building in list
         for (NSDictionary *building in [data valueForKey:@"buildings_details"]){
             
+            NSLog(@"Building: %@", building);
+            
             [building_list addObject:[building objectForKey:@"building_name"]];
             
             NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Buildings"];
@@ -70,10 +72,8 @@
                 newBuilding.building_name = [building objectForKey:@"building_name"];
                 newBuilding.major_value = [building objectForKey:@"major_id"];
                 newBuilding.lattitude = [[NSDecimalNumber alloc] initWithDouble:[[building objectForKey:@"lattitude"] doubleValue]];
-                newBuilding.longitude = [[NSDecimalNumber alloc] initWithDouble:[[building objectForKey:@"lattitude"] doubleValue]];
-            
-                
-            
+                newBuilding.longitude = [[NSDecimalNumber alloc] initWithDouble:[[building objectForKey:@"longitude"] doubleValue]];
+                        
             }
             
             //Else update building
@@ -84,6 +84,8 @@
                 
                 newBuilding.building_name = [building objectForKey:@"building_name"];
                 newBuilding.major_value = [building objectForKey:@"major_id"];
+                newBuilding.lattitude = [[NSDecimalNumber alloc] initWithDouble:[[building objectForKey:@"lattitude"] doubleValue]];
+                newBuilding.longitude = [[NSDecimalNumber alloc] initWithDouble:[[building objectForKey:@"longitude"] doubleValue]];
             }
             
             for(NSDictionary *room in [building objectForKey:@"rooms"]){

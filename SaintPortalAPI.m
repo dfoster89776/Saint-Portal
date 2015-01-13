@@ -72,6 +72,9 @@
         case UpdateModuleStaffRequest:
             [self requestModuleStaffCallWithData:data];
             break;
+        case UpdateNotificationsList:
+            [self requestNewNotificationsWithData:data];
+            break;
     }
     
     return YES;
@@ -395,6 +398,34 @@
     conn = [[NSURLConnection alloc] initWithRequest:request delegate:self];
 }
 
+-(void)requestNewNotificationsWithData:(NSDictionary *)data{
+    
+    NSLog(@"HERE1");
+
+    
+    NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+    NSString *accesstoken = [NSString stringWithFormat:@"%@", [prefs valueForKey:@"access_token"]];
+    
+    int lastNotification = [[[NSUserDefaults standardUserDefaults] objectForKey:@"last_notification"] intValue];
+    
+    //URL for authentication API
+    NSURL *url = [NSURL URLWithString:@"https://drf8.host.cs.st-andrews.ac.uk/SaintPortal/API/requestNewNotifications.php"];
+    
+    // Create the request.
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url
+                                                           cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData
+                                                       timeoutInterval:40.0];
+    request.HTTPMethod = @"POST";
+    NSString *stringData = [NSString stringWithFormat:@"accesstoken=%@&deviceID=%@&lastnotification=%i", accesstoken, [UIDevice currentDevice].identifierForVendor.UUIDString, lastNotification];
+    
+    request.HTTPBody = [stringData dataUsingEncoding:NSUTF8StringEncoding];
+    
+    // Create url connection, set request and delegate
+    conn = [[NSURLConnection alloc] initWithRequest:request delegate:self];
+    
+    NSLog(@"HERE2");
+}
+
 
 #pragma mark Connection Did Receive Response
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
@@ -418,9 +449,9 @@
 #pragma mark Connection Did Finish Loading
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
     
-    //NSString *strData = [[NSString alloc]initWithData:responseData encoding:NSUTF8StringEncoding];
+    NSString *strData = [[NSString alloc]initWithData:responseData encoding:NSUTF8StringEncoding];
     
-    //NSLog(@"%@", strData);
+    NSLog(@"%@", strData);
     
     // The request is complete and data has been received
     NSError *e = nil;

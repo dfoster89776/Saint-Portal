@@ -9,6 +9,8 @@
 #import "StaffDetailsViewController.h"
 #import <MessageUI/MessageUI.h>
 #import "LargeMapViewController.h"
+#import "Rooms.h"
+#import "Buildings.h"
 
 #define UIColorFromRGB(rgbValue) [UIColor colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 green:((float)((rgbValue & 0xFF00) >> 8))/255.0 blue:((float)(rgbValue & 0xFF))/255.0 alpha:1]
 
@@ -37,16 +39,16 @@
         
     }
     
+    self.roomLabel.text = self.staff.office_location.room_name;
+    self.buildingLabel.text = self.staff.office_location.rooms_building.building_name;
+    
     UIView *bottomBorder = [UIView new];
     bottomBorder.backgroundColor = UIColorFromRGB(0x00AEEF);
     bottomBorder.frame = CGRectMake(0, self.contactDetailsView.frame.size.height, self.contactDetailsView.frame.size.width, 1);
     [self.contactDetailsView addSubview:bottomBorder];
     
-    double latitude;
-    double longitude;
-    
-    latitude = 56.340274;
-    longitude = -2.808708;
+    double latitude = [self.staff.office_location.rooms_building.lattitude doubleValue];
+    double longitude = [self.staff.office_location.rooms_building.longitude doubleValue];
     
     self.coordinates = CLLocationCoordinate2DMake(latitude, longitude);
     

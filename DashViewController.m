@@ -14,10 +14,11 @@
 #import "DashboardUpcomingCourseworkTableViewController.h"
 #import "DashboardUpcomingEventsTableViewController.h"
 
+#define UIColorFromRGB(rgbValue) [UIColor colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 green:((float)((rgbValue & 0xFF00) >> 8))/255.0 blue:((float)(rgbValue & 0xFF))/255.0 alpha:1]
+
 @interface DashViewController ()
-@property (strong, nonatomic) IBOutlet UIView *headingOuterView;
-@property (strong, nonatomic) UIView *headingInnerView;
-@property (nonatomic) int x;
+@property (strong, nonatomic) IBOutlet UIScrollView *headerScrollView;
+@property (nonatomic) int width;
 @end
 
 @implementation DashViewController
@@ -30,36 +31,35 @@
 
 -(void)viewDidLayoutSubviews{
     
-    //NSLog(@"Container width: %f", self.headingOuterView.frame.size.width);
+    NSArray *headerArray = [NSArray arrayWithObjects:@"Events",@"Coursework",nil];
     
-    int width = self.headingOuterView.frame.size.width;
+    self.width = self.headerScrollView.frame.size.width;
     
-    self.x = (width / 2) - 100;
-    int height = self.headingOuterView.frame.size.height;
+    int contentWidth = (self.width) * (([headerArray count]/2) + 0.5);
+    int height = self.headerScrollView.frame.size.height;
     
-    UIView* headingInnerContainer = [[UIView alloc] initWithFrame:CGRectMake(self.x, 0, 400, height)];
+    self.headerScrollView.contentSize = CGSizeMake(contentWidth, height);
     
-    [headingInnerContainer setBackgroundColor:[UIColor greenColor]];
-    [self.headingOuterView addSubview:headingInnerContainer];
+    UIView *innerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, contentWidth, height)];
     
-    UILabel *eventsLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 200, height)];
+    [self.headerScrollView addSubview:innerView];
     
-    [eventsLabel setText:@"Events"];
-    [eventsLabel setTextColor:[UIColor blackColor]];
-    [eventsLabel setBackgroundColor:[UIColor clearColor]];
-    [eventsLabel setFont:[UIFont fontWithName: @"Helvatica Neue" size: 20.0f]];
-    eventsLabel.textAlignment = NSTextAlignmentCenter;
     
-    UILabel *courseworkLabel = [[UILabel alloc] initWithFrame:CGRectMake(200, 0, 200, height)];
-    
-    [courseworkLabel setText:@"Coursework"];
-    [courseworkLabel setTextColor:[UIColor blackColor]];
-    [courseworkLabel setBackgroundColor:[UIColor clearColor]];
-    [courseworkLabel setFont:[UIFont fontWithName: @"Helvatica Neue" size: 20.0f]];
-    courseworkLabel.textAlignment = NSTextAlignmentCenter;
-    
-    [headingInnerContainer addSubview:eventsLabel];
-    [headingInnerContainer addSubview:courseworkLabel];
+    for(NSString *header in headerArray){
+        
+        int index = (int)[headerArray indexOfObject:header];
+        
+        int eventXCoordinate = (self.width/4) + ((self.width/2)*index);
+        
+        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(eventXCoordinate, 0, self.width/2, height)];
+        
+        [label setText:header];
+        [label setTextColor:UIColorFromRGB(0x00539B)];
+        
+        [label setFont:[UIFont fontWithName: @"HelveticaNeue-Light" size: 20.0f]];
+        label.textAlignment = NSTextAlignmentCenter;
+        [innerView addSubview:label];
+    }
     
 }
 
@@ -70,7 +70,9 @@
 
 -(void)titleForIndex:(NSUInteger)index{
     
+    int xoffset = 0 + (int)(index * self.width/2);
     
+    [self.headerScrollView setContentOffset:CGPointMake(xoffset, 0) animated:YES];
 }
 
 #pragma mark - Navigation

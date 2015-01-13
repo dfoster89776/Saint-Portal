@@ -188,11 +188,11 @@
             
             cell.eventStartTimeLabel.text = [df stringFromDate:event.start_time];
             cell.eventEndTimeLabel.text = [df stringFromDate:event.end_time];
+            [cell.eventNowLabel setHidden:true];
             
-            cell.eventTypeLabel.text = event.event_type;
+            cell.eventTypeLabel.text = [event.event_type stringByReplacingCharactersInRange:NSMakeRange(0,1)
+                                                                                 withString:[[event.event_type substringToIndex:1] capitalizedString]];
             
-            NSLog(@"ROOM NUMBER: %@", event.event_location.location_id);
-
             cell.eventBuildingLabel.text = event.event_location.room_name;
             cell.eventRoomLabel.text = event.event_location.rooms_building.building_name;
             

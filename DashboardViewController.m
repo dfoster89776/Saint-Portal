@@ -104,7 +104,7 @@ willTransitionToViewControllers:(NSArray *)pendingViewControllers{
     if(completed){
         
         NSUInteger currentIndex = [self.myViewControllers indexOfObject:self.transitioningTo];
-                
+        
         [(DashViewController *)self.parentViewController titleForIndex:currentIndex];
         
     }

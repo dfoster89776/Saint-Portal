@@ -11,6 +11,8 @@
 @interface FileViewController () <UIDocumentInteractionControllerDelegate, UIDocumentPickerDelegate>
 @property (strong, nonatomic) UIDocumentInteractionController *documentInteractionController;
 @property (strong, nonatomic) IBOutlet UILabel *documentNameLabel;
+@property (strong, nonatomic) IBOutlet UIActivityIndicatorView *downloadActivityIndicator;
+@property (strong, nonatomic) IBOutlet UIButton *downloadButton;
 @end
 
 @implementation FileViewController
@@ -20,7 +22,7 @@
     
     self.documentNameLabel.text = self.file.file_name;
     
-    // Do any additional setup after loading the view.
+    
 }
 
 - (void)didReceiveMemoryWarning {
@@ -78,6 +80,8 @@
     
 }
 
+
+
 - (UIViewController *) documentInteractionControllerViewControllerForPreview: (UIDocumentInteractionController *) controller {
     return self;
 }
@@ -127,15 +131,5 @@
     
     
 }
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

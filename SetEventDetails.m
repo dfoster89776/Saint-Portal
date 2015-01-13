@@ -126,6 +126,9 @@
     
     self.event.event_location = room;
     
+    NSError* error;
+    [self.context save:&error];
+    
     [self UpdateEventInCalender];
     
     

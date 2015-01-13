@@ -11,12 +11,14 @@
 #import "AppDelegate.h"
 #import "Staff.h"
 #import "Module_Staff.h"
+#import "SetStaffLocation.h"
 
 @interface UpdateModuleStaff () <SaintPortalAPIDelegate>
 @property (nonatomic, strong)Modules *module;
 @property (nonatomic, strong)NSManagedObjectContext *context;
 @property (nonatomic, strong)id delegate;
 @property BOOL status;
+@property (nonatomic) int location_id;
 @end
 
 @implementation UpdateModuleStaff
@@ -110,6 +112,9 @@
         staff.phone_number = [data objectForKey:@"phone_number"];
         staff.email = [data objectForKey:@"email"];
         
+        
+        
+        
     }else{
         
         //Update staff member
@@ -120,10 +125,17 @@
         staff.email = [data objectForKey:@"email"];
         staff = [result firstObject];
         
-        
-        
     }
     
+    if([data objectForKey:@"location"]){
+        int location_id = [[data objectForKey:@"location"] intValue];
+    
+        SetStaffLocation* ssl = [[SetStaffLocation alloc] init];
+        [ssl setLocationForStaff:staff withLocationID:location_id];
+
+    }
+    
+        
     [self.context save:&error];
     
     //Return staff member

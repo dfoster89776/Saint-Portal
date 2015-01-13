@@ -16,6 +16,7 @@
 #import "RemoteNotificationReceiver.h"
 #import "EventDetailsViewController.h"
 #import "EventModalViewController.h"
+#import "Notification.h"
 
 #define UIColorFromRGB(rgbValue) [UIColor colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 green:((float)((rgbValue & 0xFF00) >> 8))/255.0 blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
 
@@ -41,6 +42,15 @@
                                                            [UIFont fontWithName:@"HelveticaNeue-Light" size:21.0], NSFontAttributeName, nil]];
     
     [[UINavigationBar appearance] setTintColor:[UIColor whiteColor]];
+    
+    if([[NSUserDefaults standardUserDefaults] objectForKey:@"badge_count"] == nil) {
+        [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithInt:0] forKey:@"badge_count"];
+    }
+    
+    if([[NSUserDefaults standardUserDefaults] objectForKey:@"last_notification"] == nil) {
+        [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithInt:0] forKey:@"last_notification"];
+    }
+    
     
     // Load Main App Screen
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
@@ -77,7 +87,7 @@
 - (void)applicationDidEnterBackground:(UIApplication *)application {
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
-    
+    [self saveContext];
     [self.salm applicationEnteredBackground];
 }
 
@@ -88,6 +98,9 @@
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+    
+    [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithInt:0] forKey:@"badge_count"];
+    [self updateBadge];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
@@ -152,6 +165,8 @@
 - (NSManagedObjectContext *)managedObjectContext {
     // Returns the managed object context for the application (which is already bound to the persistent store coordinator for the application.)
     if (_managedObjectContext != nil) {
+        
+        NSLog(@"Managed object context: %@", _managedObjectContext);
         return _managedObjectContext;
     }
     
@@ -162,6 +177,8 @@
     }
     _managedObjectContext = [[NSManagedObjectContext alloc] init];
     [_managedObjectContext setPersistentStoreCoordinator:coordinator];
+    
+    NSLog(@"Managed object context: %@", _managedObjectContext);
     return _managedObjectContext;
 }
 
@@ -312,7 +329,11 @@
 
 -(void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification{
     
+    NSString *message =notification.alertBody;
+    
     NSDictionary *userInfo = notification.userInfo;
+    
+    [self createNotificationWithMessage:message];
     
     if(application.applicationState == UIApplicationStateInactive){
     
@@ -322,6 +343,44 @@
             
         }
     }
+}
+
+-(void)createNotificationWithMessage:(NSString *)message{
+    
+    NSManagedObjectContext *context = [self managedObjectContext];
+    
+    Notification* notification = [NSEntityDescription insertNewObjectForEntityForName:@"Notification" inManagedObjectContext:context];
+    
+    notification.message = message;
+    
+    notification.received = [NSDate date];
+    
+    notification.read = [NSNumber numberWithBool:NO];
+    
+    NSError *error;
+    [context save:&error];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"NotificationsUpdate" object:nil];
+    
+    if([UIApplication sharedApplication].applicationState == UIApplicationStateBackground){
+        
+        NSNumber *badge_count = [[NSUserDefaults standardUserDefaults] objectForKey:@"badge_count"];
+        
+        badge_count = [NSNumber numberWithInt:([badge_count intValue] + 1)];
+    
+        [self updateBadge];
+    }
+    
+}
+
+-(void)updateBadge{
+    
+    NSNumber *badgeNumber = [[NSUserDefaults standardUserDefaults] objectForKey:@"badge_count"];
+    
+    
+    
+    [[UIApplication sharedApplication] setApplicationIconBadgeNumber:[badgeNumber integerValue]];
+    
 }
 
 -(void)displayCourseworkItemWithId:(NSNumber *)coursework_id{
