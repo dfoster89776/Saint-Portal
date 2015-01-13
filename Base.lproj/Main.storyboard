@@ -239,7 +239,62 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="xJN-I2-KHJ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="7927" y="3140"/>
+            <point key="canvasLocation" x="7827" y="3128"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="DIs-gv-rOx">
+            <objects>
+                <navigationController storyboardIdentifier="postModal" id="9li-Bj-iUI" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="N6W-YM-t2F">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="9X8-Z2-Xfc" kind="relationship" relationship="rootViewController" id="N8F-yq-Qd4"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="JUa-s5-nib" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="9277" y="2124"/>
+        </scene>
+        <!--Post Modal View Controller-->
+        <scene sceneID="Y9F-Ns-hvQ">
+            <objects>
+                <viewController automaticallyAdjustsScrollViewInsets="NO" id="9X8-Z2-Xfc" customClass="PostModalViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="HdJ-kr-eag"/>
+                        <viewControllerLayoutGuide type="bottom" id="NL8-91-vZ6"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="Co1-xZ-Qr7">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="emo-RR-lHA">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                                <connections>
+                                    <segue destination="7lD-5X-pL7" kind="embed" identifier="postEmbed" id="0j5-Ff-xtP"/>
+                                </connections>
+                            </containerView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="trailingMargin" secondItem="emo-RR-lHA" secondAttribute="trailing" constant="-16" id="9jS-fL-OoJ"/>
+                            <constraint firstItem="emo-RR-lHA" firstAttribute="leading" secondItem="Co1-xZ-Qr7" secondAttribute="leadingMargin" constant="-16" id="WsG-Wv-mfk"/>
+                            <constraint firstItem="emo-RR-lHA" firstAttribute="top" secondItem="Co1-xZ-Qr7" secondAttribute="topMargin" id="e6B-vu-c3s"/>
+                            <constraint firstItem="NL8-91-vZ6" firstAttribute="top" secondItem="emo-RR-lHA" secondAttribute="bottom" id="oTj-XI-MVd"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="AMp-P1-Op4">
+                        <barButtonItem key="leftBarButtonItem" title="Close" id="8qt-Ct-ate">
+                            <connections>
+                                <action selector="closeModal:" destination="9X8-Z2-Xfc" id="cR8-Hy-b7h"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="bKY-5R-bNt" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="9271" y="3155"/>
         </scene>
         <!--User Login-->
         <scene sceneID="Hf2-6R-QA8">
@@ -1127,10 +1182,10 @@
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="2d7-O7-kDP" id="RxC-gc-MdK">
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Label" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ybp-ew-gzP">
-                                            <rect key="frame" x="48" y="17" width="536" height="11"/>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ybp-ew-gzP">
+                                            <rect key="frame" x="48" y="16" width="536" height="11"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cbR-yI-e3R">
@@ -1578,7 +1633,7 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4dt-0b-Fdf">
-                                <rect key="frame" x="0.0" y="64" width="600" height="1487"/>
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="1600"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KII-LN-Frx">
                                         <rect key="frame" x="0.0" y="0.0" width="600" height="1169"/>
@@ -2587,7 +2642,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cPH-xZ-mKg">
-                                <rect key="frame" x="0.0" y="64" width="600" height="1887"/>
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="2000"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="LAt-QE-HZk">
                                         <rect key="frame" x="0.0" y="0.0" width="600" height="70"/>
@@ -2825,6 +2880,7 @@
                             </mask>
                         </variation>
                     </view>
+                    <navigationItem key="navigationItem" id="i7i-S5-HKC"/>
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
                     <size key="freeformSize" width="600" height="2000"/>
                     <connections>
@@ -2992,7 +3048,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="910-Ha-I4z" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="8849" y="5670"/>
+            <point key="canvasLocation" x="8803" y="6440"/>
         </scene>
         <!--Post Slides-->
         <scene sceneID="wd2-lV-sX2">
@@ -3291,11 +3347,11 @@
                         <viewControllerLayoutGuide type="bottom" id="MeW-oR-Sk2"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="jsw-YI-LHv">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="1000"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="hybrid" showsUserLocation="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Cjp-Tq-ny7">
-                                <rect key="frame" x="0.0" y="64" width="600" height="536"/>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" mapType="hybrid" showsUserLocation="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Cjp-Tq-ny7">
+                                <rect key="frame" x="0.0" y="64" width="600" height="936"/>
                             </mapView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -3326,7 +3382,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="1000"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="hybrid" pitchEnabled="NO" showsUserLocation="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Utu-KO-4XQ">
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" mapType="hybrid" pitchEnabled="NO" showsUserLocation="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Utu-KO-4XQ">
                                 <rect key="frame" x="0.0" y="164" width="600" height="150"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="150" id="2LK-9C-ZXM"/>
@@ -3338,7 +3394,7 @@
                                     </mask>
                                 </variation>
                             </mapView>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Sew-6V-ade">
+                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Sew-6V-ade">
                                 <rect key="frame" x="0.0" y="64" width="600" height="100"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JJd-Ae-rny">
@@ -3426,7 +3482,7 @@
                                     <constraint firstItem="8Sr-a3-LVy" firstAttribute="top" secondItem="Sew-6V-ade" secondAttribute="top" constant="8" id="yg0-XK-7n0"/>
                                 </constraints>
                             </view>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="HJw-Fo-AV5">
+                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="HJw-Fo-AV5">
                                 <rect key="frame" x="0.0" y="314" width="600" height="66"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qgX-aF-PoW">
@@ -3513,6 +3569,16 @@
                                     </mask>
                                 </variation>
                             </view>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LPa-YC-rSx">
+                                <rect key="frame" x="233" y="413" width="111" height="30"/>
+                                <state key="normal" title="View Event Post">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="openEventPost:" destination="8aa-H1-8YD" eventType="touchUpInside" id="275-Rb-hfX"/>
+                                    <segue destination="9li-Bj-iUI" kind="presentation" identifier="showPostModal" id="Xnm-dz-xwn"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
@@ -3534,6 +3600,7 @@
                         <outlet property="endTimeLabel" destination="0F3-pE-M5q" id="WB4-RJ-EPa"/>
                         <outlet property="eventLocation" destination="Oz5-LI-S4b" id="MiZ-dr-up9"/>
                         <outlet property="eventNowLabel" destination="gUR-rB-g9w" id="mgK-3o-KsK"/>
+                        <outlet property="eventPostButton" destination="LPa-YC-rSx" id="pgo-iS-DlW"/>
                         <outlet property="eventTypeLabel" destination="tpr-qM-pIa" id="Rjq-s9-NXP"/>
                         <outlet property="leaveByHeaderLabel" destination="Gz1-5x-Q1T" id="6vh-0R-PXF"/>
                         <outlet property="leaveByLabel" destination="byT-Yq-NZy" id="csE-7J-HBr"/>
@@ -3594,7 +3661,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="YLN-01-BFb" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="7689" y="1411"/>
+            <point key="canvasLocation" x="7669" y="715"/>
         </scene>
         <!--Coursework Modal Navigation Controller-->
         <scene sceneID="OkG-mj-6mp">
@@ -3612,7 +3679,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="HbD-07-lgf" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="7927" y="2165"/>
+            <point key="canvasLocation" x="7871" y="2309"/>
         </scene>
         <!--Notifications Navigation Controller-->
         <scene sceneID="xQ6-dE-I84">
@@ -3649,7 +3716,25 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="j9b-rM-Dtl" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="7689" y="673"/>
+            <point key="canvasLocation" x="7689" y="5"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="fWL-jz-GMx">
+            <objects>
+                <viewController automaticallyAdjustsScrollViewInsets="NO" id="UJO-03-24j" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="FEP-e9-b4O"/>
+                        <viewControllerLayoutGuide type="bottom" id="D4d-xT-AE9"/>
+                    </layoutGuides>
+                    <view key="view" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="rcq-Zd-dJo">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <toolbarItems/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="aJO-cs-dto" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
         </scene>
     </scenes>
     <resources>
@@ -3659,10 +3744,10 @@
         <image name="ModuleImage" width="14" height="15"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="Ffh-gW-37I"/>
         <segue reference="Ypf-0a-t1m"/>
-        <segue reference="4oK-1M-LIe"/>
-        <segue reference="YyI-5y-AP7"/>
-        <segue reference="mYT-I1-MkU"/>
+        <segue reference="p50-WC-e15"/>
+        <segue reference="0j5-Ff-xtP"/>
+        <segue reference="cwu-NK-0So"/>
+        <segue reference="2hh-ca-STQ"/>
     </inferredMetricsTieBreakers>
 </document>

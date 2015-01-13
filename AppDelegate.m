@@ -17,6 +17,7 @@
 #import "EventDetailsViewController.h"
 #import "EventModalViewController.h"
 #import "Notification.h"
+#import "PostModalViewController.h"
 
 #define UIColorFromRGB(rgbValue) [UIColor colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 green:((float)((rgbValue & 0xFF00) >> 8))/255.0 blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
 
@@ -431,6 +432,38 @@
     
     [root presentViewController:emvc animated:YES completion:nil];
 
+}
+
+-(void)displayPostItemWithId:(NSNumber *)post_id{
+    
+    NSManagedObjectContext *context = [(AppDelegate *)[[UIApplication sharedApplication] delegate] managedObjectContext];
+    
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Posts"];
+    
+    request.predicate = [NSPredicate predicateWithFormat:@"post_id == %@", post_id];
+    
+    NSError *error = nil;
+    
+    if([context countForFetchRequest:request error:&error]){
+        
+        NSArray *items = [context executeFetchRequest:request error:&error];
+        
+        UIViewController *root = self.window.rootViewController;
+        
+        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+        
+        UINavigationController *nc = [storyboard instantiateViewControllerWithIdentifier:@"postModal"];
+
+        PostModalViewController *pmvc = [nc.childViewControllers objectAtIndex:0];
+        
+        pmvc.post = [items objectAtIndex:0];
+        
+        
+        [root presentViewController:nc animated:YES completion:nil];
+        
+    }
+    
+    
 }
 
 @end

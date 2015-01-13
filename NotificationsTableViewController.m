@@ -140,6 +140,8 @@
     
     Notification* notification = [self.notifications objectAtIndex:indexPath.row];
     
+    
+    
     if(notification.type != nil){
         
         if([notification.type isEqualToString:@"coursework"]){
@@ -154,8 +156,22 @@
             
         }
         
+        else if([notification.type isEqualToString:@"post"]){
+            
+            [(AppDelegate *)[[UIApplication sharedApplication] delegate] displayPostItemWithId:notification.linked_id];
+            
+        }
+        
+        
     }
     
+    notification.read = [NSNumber numberWithBool:YES];
+    
+    NSError* error;
+    
+    [self.context save:&error];
+    
+    [self.tableView reloadData];
 }
 
 /*

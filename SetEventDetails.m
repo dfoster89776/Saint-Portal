@@ -11,12 +11,15 @@
 #import "Modules.h"
 #import "UpdateLocationsHandler.h"
 #import "CalendarHandler.h"
+#import "UpdatePostItem.h"
+#import "Posts.h"
 
-@interface SetEventDetails () <UpdateLocationsDelegate>
+@interface SetEventDetails () <UpdateLocationsDelegate, UpdatePostItemDelegate>
 @property (strong, nonatomic) NSManagedObjectContext *context;
 @property (strong, nonatomic) id delegate;
 @property (strong, nonatomic) Event *event;
 @property (nonatomic) NSInteger location_id;
+@property (nonatomic, strong) NSNumber *post_id;
 @end
 
 @implementation SetEventDetails
@@ -39,6 +42,12 @@
     new_event.event_module = module;
     
     self.event = new_event;
+    
+    if([event objectForKey:@"linked_post"] != [NSNull null]){
+        
+        [self setEventPost:[NSNumber numberWithInteger:[[event objectForKey:@"linked_post"] integerValue]]];
+        
+    }
     
     self.location_id = [[event objectForKey:@"location"] intValue];
     
@@ -82,6 +91,12 @@
     new_event.event_module = module;
     new_event.event_type = [event valueForKey:@"event_type"];
 
+    if([event objectForKey:@"linked_post"] != [NSNull null]){
+        
+        [self setEventPost:[NSNumber numberWithInteger:[[event objectForKey:@"linked_post"] integerValue]]];
+        
+    }
+    
     self.location_id = [[event objectForKey:@"location"] intValue];
     
     
@@ -139,6 +154,68 @@
     [CalendarHandler addEventToCalendar:self.event];
     
     [self.delegate setEventDetailsSuccess];
+}
+
+-(void)setEventPost:(NSNumber *)post_id{
+    
+    self.post_id = post_id;
+    
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Posts"];
+    
+    request.predicate = [NSPredicate predicateWithFormat:@"post_id == %@", post_id];
+    
+    NSError* error;
+    
+    int count = (int)[self.context countForFetchRequest:request error:&error];
+    
+    if(count == 0){
+        UpdatePostItem *upi = [[UpdatePostItem alloc] init];
+        [upi updatePostItemWithID:post_id withDelegate:self];
+    }else if (count == 1){
+        
+        NSArray* results = [self.context executeFetchRequest:request error:&error];
+        
+        Posts* post = [results firstObject];
+        
+        self.event.event_post = post;
+        
+    }
+    
+    [self.context save:&error];
+}
+
+-(void)postItemUpdateSuccess{
+    
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Posts"];
+    
+    request.predicate = [NSPredicate predicateWithFormat:@"post_id == %@", self.post_id];
+    
+    NSError* error;
+    
+    int count = (int)[self.context countForFetchRequest:request error:&error];
+    
+    if (count == 1){
+        
+        NSArray* results = [self.context executeFetchRequest:request error:&error];
+        
+        Posts* post = [results firstObject];
+        
+        self.event.event_post = post;
+        
+        [self.context save:&error];
+        
+    }else{
+        self.event.event_post = nil;
+    }
+    
+    [self.context save:&error];
+    
+}
+
+-(void)postItemUpdateFailure:(NSError *)error{
+    
+    self.event.event_post = nil;
+    [self.context save:&error];
 }
 
 

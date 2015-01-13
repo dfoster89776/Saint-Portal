@@ -14,6 +14,8 @@
 #import "LargeMapViewController.h"
 #import "AppDelegate.h"
 #import "Event.h"
+#import "Posts.h"
+#import "PostViewController.h"
 
 #define UIColorFromRGB(rgbValue) [UIColor colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 green:((float)((rgbValue & 0xFF00) >> 8))/255.0 blue:((float)(rgbValue & 0xFF))/255.0 alpha:1]
 
@@ -35,6 +37,7 @@
 @property (strong, nonatomic) IBOutlet UILabel *walkingTimeLabel;
 @property (strong, nonatomic) IBOutlet UILabel *leaveByLabel;
 @property (strong, nonatomic) IBOutlet UIView *calculatingTravelTimeView;
+@property (strong, nonatomic) IBOutlet UIButton *eventPostButton;
 @end
 
 @implementation EventDetailsViewController
@@ -106,6 +109,10 @@
     }else{
         [self.travelTimeView removeFromSuperview];
     }
+    
+    if(self.event.event_post == nil){
+        [self.eventPostButton removeFromSuperview];
+    }
 }
 
 - (void)didReceiveMemoryWarning {
@@ -117,21 +124,6 @@
     
     [self performSegueWithIdentifier:@"showLargeMap" sender:self];
     
-}
-
-
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    
-    if([segue.identifier isEqualToString:@"showLargeMap"]){
-        
-        LargeMapViewController *lmvc = segue.destinationViewController;
-        lmvc.coordinates = self.coordinates;
-        lmvc.event = self.event;
-        
-    }
 }
 
 -(void)calculateDirections{
@@ -207,6 +199,39 @@
 {
     NSInteger minutes = floor(duration/60);
     return [NSString stringWithFormat:@"%ld Minutes", (long)minutes];
+}
+- (IBAction)openEventPost:(id)sender {
+    
+    NSLog(@"Opening post: %@", self.event.event_post.post_id);
+    
+}
+
+
+#pragma mark - Navigation
+
+// In a storyboard-based application, you will often want to do a little preparation before navigation
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    
+    if([segue.identifier isEqualToString:@"showLargeMap"]){
+        
+        LargeMapViewController *lmvc = segue.destinationViewController;
+        lmvc.coordinates = self.coordinates;
+        lmvc.event = self.event;
+        
+    }
+    
+    if([segue.identifier isEqualToString:@"showPostModal"]){
+        
+        PostViewController *pvc = [[segue.destinationViewController childViewControllers] objectAtIndex:0];
+        pvc.post = self.event.event_post;
+        
+    }
+}
+
+-(void)closeModalView{
+    
+    
+    
 }
 
 @end
