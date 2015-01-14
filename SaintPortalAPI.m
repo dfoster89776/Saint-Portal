@@ -565,7 +565,7 @@
     NSLog(@"Logged Out");
     
     //Clear persistent store
-    [(AppDelegate *)[[UIApplication sharedApplication] delegate] clearPersistentStore];
+    //[(AppDelegate *)[[UIApplication sharedApplication] delegate] clearPersistentStore];
     
     //Remove NSUserDefault preferences - Access token
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"access_token"];

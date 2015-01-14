@@ -17,9 +17,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    NSLog(@"Tab bar did load");
-    
+        
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateBadgeCount:) name:@"NotificationsUpdate" object:nil];
     
     self.context = [(AppDelegate *)[[UIApplication sharedApplication] delegate] managedObjectContext];
@@ -36,19 +34,13 @@
 
 -(void)updateBadgeCount:(NSNotification *)notification{
     
-    NSLog(@"Updating badge count");
-    
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Notification"];
     
     request.predicate = [NSPredicate predicateWithFormat:@"read == NO"];
     
     NSError *error;
     
-    
-    
     int count = (int)[self.context countForFetchRequest:request error:&error];
-    NSLog(@"%@", error.userInfo);
-    NSLog(@"Count: %i", count);
     
     UITabBarItem *tbItem = [self.tabBar.items objectAtIndex:2];
     
