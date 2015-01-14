@@ -13,12 +13,13 @@
 #import "Coursework.h"
 #import "UpdateTopicItem.h"
 #import "UpdatePostItem.h"
+#import "UpdateEventItem.h"
 #import "Posts.h"
 #import "Topics.h"
 #import "Notification.h"
 #import "UpdateNotificationsListHandler.h"
 
-@interface RemoteNotificationReceiver () <UpdateCourseworkItemDelegate, UpdateTopicItemDelegate, UpdatePostItemDelegate, UpdateNotificationsDelegate>
+@interface RemoteNotificationReceiver () <UpdateCourseworkItemDelegate, UpdateTopicItemDelegate, UpdatePostItemDelegate, UpdateNotificationsDelegate, UpdateEventItemDelegate>
 @property (nonatomic, copy) void (^completionHandler)(UIBackgroundFetchResult fetchResult);
 @property (nonatomic, strong) NSManagedObjectContext* context;
 @property (nonatomic) BOOL userOpened;
@@ -73,6 +74,15 @@
     }
     else if([[userInfo objectForKey:@"type"] isEqualToString:@"deleted_post"]){
         [self deletePostNotificationWithData:userInfo];
+    }
+    else if([[userInfo objectForKey:@"type"] isEqualToString:@"new_event"]){
+        [self newEventNotificationWithData:userInfo];
+    }
+    else if([[userInfo objectForKey:@"type"] isEqualToString:@"updated_event"]){
+        [self updateEventNotificationWithData:userInfo];
+    }
+    else if ([[userInfo objectForKey:@"type"] isEqualToString:@"deleted_event"]){
+        [self deleteEventNotificationWithData:userInfo];
     }
 }
 
@@ -323,6 +333,87 @@
 }
 
 -(void)postItemUpdateFailure:(NSError *)error{
+    
+    self.dataUpdate = true;
+    
+    if(self.notificationUpdate){
+        self.completionHandler(UIBackgroundFetchResultNewData);
+        [self.context save:&error];
+    }
+    
+}
+
+-(void)deleteEventNotificationWithData:(NSDictionary *)userInfo{
+    
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Event"];
+    request.predicate = [NSPredicate predicateWithFormat:@"event_id = %@", [userInfo objectForKey:@"eventid"]];
+    
+    NSError *error = nil;
+    
+    NSUInteger count = [self.context countForFetchRequest:request error:&error];
+    if(count == 1) {
+        //Handle error
+        
+        NSArray* result = [self.context executeFetchRequest:request error:&error];
+        
+        [self.context deleteObject:[result firstObject]];
+        
+    }
+    
+    self.dataUpdate = true;
+    
+    if(self.notificationUpdate){
+        self.completionHandler(UIBackgroundFetchResultNewData);
+        [self.context save:&error];
+    }
+    
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"eventUpdate" object:nil];
+}
+
+-(void)newEventNotificationWithData:(NSDictionary *)userInfo{
+    
+    NSNumber* eventid = [[NSNumber alloc] initWithInt:[[userInfo objectForKey:@"eventid"] intValue]];
+    self.item_id = eventid;
+    
+    UpdateEventItem *uei = [[UpdateEventItem alloc] init];
+    [uei updateEventItemWithID:eventid withDelegate:self];
+    
+}
+
+-(void)updateEventNotificationWithData:(NSDictionary *)userInfo{
+    
+    NSNumber* eventid = [[NSNumber alloc] initWithInt:[[userInfo objectForKey:@"eventid"] intValue]];
+    self.item_id = eventid;
+    
+    UpdateEventItem *uei = [[UpdateEventItem alloc] init];
+    [uei updateEventItemWithID:eventid withDelegate:self];
+    
+}
+
+-(void)eventItemUpdateSuccess{
+    
+    NSLog(@"Update Post Item Success");
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"eventUpdate" object:nil];
+    
+    if(self.userOpened){
+        
+        
+        
+    }
+    
+    self.dataUpdate = true;
+    
+    if(self.notificationUpdate){
+        self.completionHandler(UIBackgroundFetchResultNewData);
+        NSError *error;
+        [self.context save:&error];
+    }
+    
+}
+
+-(void)eventItemUpdateFailure:(NSError *)error{
     
     self.dataUpdate = true;
     

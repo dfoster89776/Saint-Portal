@@ -74,8 +74,8 @@
     self.window.rootViewController = homeScreenVC;
     [self.window makeKeyAndVisible];
     
-    self.salm = [[StAndrewsLocationManager alloc] init];
-    [self.salm setupLocationManager];
+    //self.salm = [[StAndrewsLocationManager alloc] init];
+    //[self.salm setupLocationManager];
     
     return YES;
 }
@@ -95,6 +95,19 @@
 - (void)applicationWillEnterForeground:(UIApplication *)application {
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
     [self.salm applicationEnteredForeground];
+    
+    NSError *error;
+    
+    //Print list of posts
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Posts"];
+    NSArray *posts = [self.managedObjectContext executeFetchRequest:request error:&error];
+    
+    for(Posts *post in posts){
+        
+        NSLog(@"Post id: %@: %@", post.post_id, post.post_name);
+        
+    }
+    
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
@@ -167,7 +180,6 @@
     // Returns the managed object context for the application (which is already bound to the persistent store coordinator for the application.)
     if (_managedObjectContext != nil) {
         
-        NSLog(@"Managed object context: %@", _managedObjectContext);
         return _managedObjectContext;
     }
     
@@ -179,7 +191,6 @@
     _managedObjectContext = [[NSManagedObjectContext alloc] init];
     [_managedObjectContext setPersistentStoreCoordinator:coordinator];
     
-    NSLog(@"Managed object context: %@", _managedObjectContext);
     return _managedObjectContext;
 }
 

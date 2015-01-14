@@ -111,8 +111,6 @@
                     feedback.grade = [NSNumber numberWithInteger:[[feedbackData objectForKey:@"grade"] floatValue]];
                     feedback.comment = [feedbackData objectForKey:@"comment"];
                     
-                    //NSLog(@"Feedback received");
-                    
                 }
                 
                 [self.module addModule_assignmentsObject:new_coursework];
@@ -162,8 +160,6 @@
                     feedback.coursework_item = new_coursework;
                     feedback.grade = [NSNumber numberWithInteger:[[feedbackData objectForKey:@"grade"] floatValue]];
                     feedback.comment = [feedbackData objectForKey:@"comment"];
-                    
-                    NSLog(@"Feedback received");
                     
                 }
                 

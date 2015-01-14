@@ -24,7 +24,8 @@ enum {
     UpdateTopicItemRequest = 12,
     UpdatePostItemRequest = 13,
     UpdateModuleStaffRequest = 14,
-    UpdateNotificationsList = 15
+    UpdateNotificationsList = 15,
+    UpdateEventItemRequest = 16
 };
 
 typedef NSUInteger SaintPortalAPIOperation;
