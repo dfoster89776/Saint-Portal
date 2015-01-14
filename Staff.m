@@ -20,5 +20,5 @@
 @dynamic surname;
 @dynamic modules;
 @dynamic office_location;
-
+@dynamic record_id;
 @end

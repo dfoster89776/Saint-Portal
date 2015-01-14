@@ -8,6 +8,7 @@
 
 #import "LoginViewController.h"
 #import "SaintPortalAPI.h"
+#import "AppDelegate.h"
 
 @interface LoginViewController () <UITextFieldDelegate, SaintPortalAPIDelegate>
 
@@ -89,6 +90,10 @@
     
     //If successful, store access token in UserDefaults, and segue to setup view
     if(success){
+        
+        [(AppDelegate *)[[UIApplication sharedApplication] delegate] managedObjectContext];
+        
+        [(AppDelegate *)[[UIApplication sharedApplication] delegate] saveContext];
         
         NSUserDefaults *prefs = [[NSUserDefaults alloc] initWithSuiteName:@"group.SaintAndrews"];
         

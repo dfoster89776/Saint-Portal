@@ -94,13 +94,13 @@
             }
             
             NSError *error;
-            [self.context save:&error];
+            [(AppDelegate *)[[UIApplication sharedApplication] delegate] saveContext];
             
         }
         
     }
     
-    [self.context save:&error];
+    [(AppDelegate *)[[UIApplication sharedApplication] delegate] saveContext];
     
     [self.delegate postItemUpdateSuccess];
     
@@ -151,7 +151,7 @@
         }
         
         NSError *error;
-        [self.context save:&error];
+        [(AppDelegate *)[[UIApplication sharedApplication] delegate] saveContext];
     }
     
     //Remove any events not on core database
@@ -167,7 +167,7 @@
     }
     
     NSError *error;
-    [self.context save:&error];
+    [(AppDelegate *)[[UIApplication sharedApplication] delegate] saveContext];
     
 }
 
@@ -213,7 +213,7 @@
         
         
         NSError *error;
-        [self.context save:&error];
+        [(AppDelegate *)[[UIApplication sharedApplication] delegate] saveContext];
     }
     
     //Remove any events not on core database
@@ -229,7 +229,7 @@
     }
     
     NSError *error;
-    [self.context save:&error];
+    [(AppDelegate *)[[UIApplication sharedApplication] delegate] saveContext];
     
 }
 

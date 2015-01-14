@@ -168,7 +168,7 @@
     
     NSError* error;
     
-    [self.context save:&error];
+    [(AppDelegate *)[[UIApplication sharedApplication] delegate] saveContext];
     
     [self.tableView reloadData];
     
