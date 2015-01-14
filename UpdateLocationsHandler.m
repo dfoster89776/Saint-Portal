@@ -126,7 +126,7 @@
     
 
     NSError *error;
-    [(AppDelegate *)[[UIApplication sharedApplication] delegate] saveContext];
+    [self.context save:&error];
     
     [self.delegate callback];
     

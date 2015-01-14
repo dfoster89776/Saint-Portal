@@ -24,7 +24,7 @@
     
     NSError *error;
     
-    [(AppDelegate *)[[UIApplication sharedApplication] delegate] saveContext];
+    [context save:&error];
 }
 
 -(void)updateCourseworkDirectory:(Coursework_Directory *)directory withData:(NSDictionary *)data{
@@ -38,7 +38,7 @@
     
     NSError *error;
     
-    [(AppDelegate *)[[UIApplication sharedApplication] delegate] saveContext];
+    [context save:&error];
     
 }
 

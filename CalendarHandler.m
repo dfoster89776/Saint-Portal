@@ -64,28 +64,14 @@
             }
         }
         
-        EKCalendar *calendar;
-        BOOL success = false;
+        EKCalendar *calendar = [EKCalendar calendarForEntityType:EKEntityTypeEvent eventStore:store];
+        calendar.title = @"St Andrews";
+        calendar.source = localSource;
         
-        for (EKCalendar *cal in [[localSource calendarsForEntityType:EKEntityTypeEvent] allObjects]){
-            
-            if([cal.title isEqualToString:@"St Andrews"]){
-                calendar = cal;
-            }
-            success = true;
-            
-        }
-        
-        if(calendar == nil) {
-            EKCalendar *calendar = [EKCalendar calendarForEntityType:EKEntityTypeEvent eventStore:store];
-            calendar.title = @"St Andrews";
-            calendar.source = localSource;
-            success = [store saveCalendar:calendar commit:YES error:&error];
-        }
-        
-        
+        BOOL success = [store saveCalendar:calendar commit:YES error:&error];
         if (success && error == nil) {
             [prefs setObject:calendar.calendarIdentifier forKey:@"calender_id"];
+        } else {
         }
     }
     

@@ -27,8 +27,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTableContents:) name:@"eventUpdate" object:nil];
-    
     self.context = [(AppDelegate *)[[UIApplication sharedApplication] delegate] managedObjectContext];
     [self.tableView registerNib:[UINib nibWithNibName:@"UpcomingHeaderCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"UpcomingHeaderCell"];
     [self.tableView registerNib:[UINib nibWithNibName:@"ModuleEventTableViewCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"ModuleEventCell"];
@@ -44,12 +42,6 @@
     // Dispose of any resources that can be recreated.
 }
 
--(void)updateTableContents:(NSNotification *)notification{
-    
-    [self.tableView reloadData];
-    
-}
-
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -63,17 +55,11 @@
     
     request.predicate = [NSPredicate predicateWithFormat:@"(end_time >= %@) AND (start_time <= %@)", now, midnight];
     
-    NSSortDescriptor *sortDate = [[NSSortDescriptor alloc] initWithKey:@"start_time" ascending:YES];
-    
-    request.sortDescriptors = [NSArray arrayWithObject:sortDate];
-    
     NSError *error = nil;
     
     self.todayEvents = [self.context executeFetchRequest:request error:&error];
     
     request.predicate = [NSPredicate predicateWithFormat:@"(end_time >= %@) AND (start_time <= %@)", midnight, midnightTomorrow];
-    
-    request.sortDescriptors = [NSArray arrayWithObject:sortDate];
     
     self.tomorrowEvents = [self.context executeFetchRequest:request error:&error];
         

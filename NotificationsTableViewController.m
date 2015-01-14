@@ -152,7 +152,7 @@
         
         else if([notification.type isEqualToString:@"event"]){
             
-            [(AppDelegate *)[[UIApplication sharedApplication] delegate] displayEventItemWithId:notification.linked_id];
+            [(AppDelegate *)[[UIApplication sharedApplication] delegate] displayCourseworkItemWithId:notification.linked_id];
             
         }
         
@@ -162,18 +162,16 @@
             
         }
         
+        
     }
     
     notification.read = [NSNumber numberWithBool:YES];
     
     NSError* error;
     
-    [(AppDelegate *)[[UIApplication sharedApplication] delegate] saveContext];
+    [self.context save:&error];
     
     [self.tableView reloadData];
-    
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"NotificationsUpdate" object:nil];
-
 }
 
 /*

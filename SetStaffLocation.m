@@ -11,13 +11,11 @@
 #import "AppDelegate.h"
 #import "Rooms.h"
 #import "Staff.h"
-#import <AddressBook/AddressBook.h>
 
 @interface SetStaffLocation () <UpdateLocationsDelegate>
 @property (nonatomic, strong)NSManagedObjectContext* context;
 @property (nonatomic) int location_id;
 @property (nonatomic, strong) Staff* staff;
-@property (nonatomic) ABAddressBookRef addressBookRef;
 @end
 
 @implementation SetStaffLocation
@@ -73,82 +71,8 @@
     
     NSError* error;
     
-    [(AppDelegate *)[[UIApplication sharedApplication] delegate] saveContext];
+    [self.context save:&error];
     
-    [self updateContact];
-}
-
--(void)updateContact{
-    
-    //Get authorisation to access address book
-    self.addressBookRef = ABAddressBookCreateWithOptions(NULL, NULL);
-    
-    if (ABAddressBookGetAuthorizationStatus() == kABAuthorizationStatusNotDetermined) {
-        ABAddressBookRequestAccessWithCompletion(self.addressBookRef, ^(bool granted, CFErrorRef error) {
-            if (granted) {
-                // First time access has been granted, add the contact
-                [self updateContactCard];
-            } else {
-                // User denied access
-                // Display an alert telling user the contact could not be added
-            }
-        });
-    }
-    else if (ABAddressBookGetAuthorizationStatus() == kABAuthorizationStatusAuthorized) {
-        // The user has previously given access, add the contact
-        [self updateContactCard];
-    }
-    else {
-        // The user has previously denied access
-        // Send an alert telling user to change privacy setting in settings app
-    }
-    
-    
-}
-
--(void)updateContactCard{
-    
-    ABRecordRef newPerson;
-    CFErrorRef error;
-    
-    if([self.staff.record_id intValue] == 0){
-    
-        newPerson = ABPersonCreate();
-        ABRecordSetValue(newPerson, kABPersonFirstNameProperty, (__bridge CFStringRef)self.staff.firstname, &error);
-        ABRecordSetValue(newPerson, kABPersonLastNameProperty, (__bridge CFStringRef)self.staff.surname, &error);
-        NSLog(@"No record exists");
-        
-        ABAddressBookAddRecord(self.addressBookRef, newPerson, &error);
-        
-        ABAddressBookSave(self.addressBookRef, &error);
-        
-        NSLog(@"Record id: %d", ABRecordGetRecordID(newPerson));
-        
-        self.staff.record_id = [NSNumber numberWithInt:ABRecordGetRecordID(newPerson)];
-        
-        NSLog(@"Record id set as: %@", self.staff.record_id);
-        
-        CFRelease(newPerson);
-        
-    }else{
-        
-        newPerson = ABAddressBookGetPersonWithRecordID(self.addressBookRef, [self.staff.record_id intValue]);
-        
-        ABRecordSetValue(newPerson, kABPersonFirstNameProperty, (__bridge CFStringRef)self.staff.firstname, &error);
-        ABRecordSetValue(newPerson, kABPersonLastNameProperty, (__bridge CFStringRef)self.staff.surname, &error);
-        NSLog(@"Record exists");
-        
-        ABAddressBookAddRecord(self.addressBookRef, newPerson, &error);
-        
-        ABAddressBookSave(self.addressBookRef, &error);
-        
-        self.staff.record_id = [NSNumber numberWithInt:ABRecordGetRecordID(newPerson)];
-        
-        CFRelease(newPerson);
-        
-    }
- 
-    [(AppDelegate *)[[UIApplication sharedApplication] delegate] saveContext];
     
 }
 

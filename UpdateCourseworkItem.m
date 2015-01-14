@@ -111,6 +111,8 @@
                     feedback.grade = [NSNumber numberWithInteger:[[feedbackData objectForKey:@"grade"] floatValue]];
                     feedback.comment = [feedbackData objectForKey:@"comment"];
                     
+                    //NSLog(@"Feedback received");
+                    
                 }
                 
                 [self.module addModule_assignmentsObject:new_coursework];
@@ -161,6 +163,8 @@
                     feedback.grade = [NSNumber numberWithInteger:[[feedbackData objectForKey:@"grade"] floatValue]];
                     feedback.comment = [feedbackData objectForKey:@"comment"];
                     
+                    NSLog(@"Feedback received");
+                    
                 }
                 
                 if(new_coursework.submitted){
@@ -185,7 +189,7 @@
         }
     }
     
-    [(AppDelegate *)[[UIApplication sharedApplication] delegate] saveContext];
+    [self.context save:&error];
     
     [self.delegate courseworkItemUpdateSuccess];
     

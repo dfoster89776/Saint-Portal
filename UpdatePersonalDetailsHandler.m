@@ -71,7 +71,7 @@
     
     NSError *err = nil;
     
-    [(AppDelegate *)[[UIApplication sharedApplication] delegate] saveContext];
+    [context save:&err];
     
     self.status = YES;
     

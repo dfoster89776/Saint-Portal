@@ -88,7 +88,7 @@
             }
             
             NSError *error;
-            [(AppDelegate *)[[UIApplication sharedApplication] delegate] saveContext];
+            [self.context save:&error];
             
         }
         
@@ -107,7 +107,7 @@
     }
     
     NSError *error;
-    [(AppDelegate *)[[UIApplication sharedApplication] delegate] saveContext];
+    [self.context save:&error];
 
     [self.delegate topicPostsUpdateSuccess];
     
@@ -165,7 +165,7 @@
         }
         
         NSError *error;
-        [(AppDelegate *)[[UIApplication sharedApplication] delegate] saveContext];
+        [self.context save:&error];
     }
     
     //Remove any events not on core database
@@ -181,7 +181,7 @@
     }
     
     NSError *error;
-    [(AppDelegate *)[[UIApplication sharedApplication] delegate] saveContext];
+    [self.context save:&error];
     
 }
 
@@ -229,7 +229,7 @@
         
         
         NSError *error;
-        [(AppDelegate *)[[UIApplication sharedApplication] delegate] saveContext];
+        [self.context save:&error];
     }
     
     //Remove any events not on core database
@@ -245,7 +245,7 @@
     }
     
     NSError *error;
-    [(AppDelegate *)[[UIApplication sharedApplication] delegate] saveContext];
+    [self.context save:&error];
     
 }
 
