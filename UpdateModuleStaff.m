@@ -69,7 +69,7 @@
     self.status = true;
     
     NSError *error;
-    [self.context save:&error];
+    [(AppDelegate *)[[UIApplication sharedApplication] delegate] saveContext];
     
     [self.delegate moduleStaffUpdateSuccess];
     
@@ -136,7 +136,7 @@
     }
     
         
-    [self.context save:&error];
+    [(AppDelegate *)[[UIApplication sharedApplication] delegate] saveContext];
     
     //Return staff member
     return staff;

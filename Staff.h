@@ -20,6 +20,7 @@
 @property (nonatomic, retain) NSString * surname;
 @property (nonatomic, retain) NSSet *modules;
 @property (nonatomic, retain) Rooms *office_location;
+@property (nonatomic, retain) NSNumber * record_id;
 @end
 
 @interface Staff (CoreDataGeneratedAccessors)

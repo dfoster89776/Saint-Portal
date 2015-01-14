@@ -40,6 +40,8 @@
     new_event.end_time = [df dateFromString:[event objectForKey:@"event_end"]];
     new_event.event_id = [NSNumber numberWithInteger:[[event objectForKey:@"event_id"] integerValue]];;
     new_event.event_module = module;
+    new_event.event_type = [event valueForKey:@"event_type"];
+
     
     self.event = new_event;
     
@@ -141,8 +143,7 @@
     
     self.event.event_location = room;
     
-    NSError* error;
-    [self.context save:&error];
+    [(AppDelegate *)[[UIApplication sharedApplication] delegate] saveContext];
     
     [self UpdateEventInCalender];
     
@@ -157,18 +158,19 @@
 }
 
 -(void)setEventPost:(NSNumber *)post_id{
-    
+        
     self.post_id = post_id;
     
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Posts"];
     
-    request.predicate = [NSPredicate predicateWithFormat:@"post_id == %@", post_id];
+    request.predicate = [NSPredicate predicateWithFormat:@"post_id == %@", self.post_id];
     
     NSError* error;
     
     int count = (int)[self.context countForFetchRequest:request error:&error];
     
     if(count == 0){
+        
         UpdatePostItem *upi = [[UpdatePostItem alloc] init];
         [upi updatePostItemWithID:post_id withDelegate:self];
     }else if (count == 1){
@@ -181,7 +183,7 @@
         
     }
     
-    [self.context save:&error];
+    [(AppDelegate *)[[UIApplication sharedApplication] delegate] saveContext];
 }
 
 -(void)postItemUpdateSuccess{
@@ -202,20 +204,20 @@
         
         self.event.event_post = post;
         
-        [self.context save:&error];
+        [(AppDelegate *)[[UIApplication sharedApplication] delegate] saveContext];
         
     }else{
         self.event.event_post = nil;
     }
     
-    [self.context save:&error];
+    [(AppDelegate *)[[UIApplication sharedApplication] delegate] saveContext];
     
 }
 
 -(void)postItemUpdateFailure:(NSError *)error{
     
     self.event.event_post = nil;
-    [self.context save:&error];
+    [(AppDelegate *)[[UIApplication sharedApplication] delegate] saveContext];
 }
 
 

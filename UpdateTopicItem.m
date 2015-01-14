@@ -100,12 +100,12 @@
             [topics addObject:new_topic];
             
             NSError *error;
-            [self.context save:&error];
+            [(AppDelegate *)[[UIApplication sharedApplication] delegate] saveContext];
         }
         
     }
     
-    [self.context save:&error];
+    [(AppDelegate *)[[UIApplication sharedApplication] delegate] saveContext];
     
     NSArray *topics_array = [NSArray arrayWithArray:topics];
     

@@ -88,7 +88,7 @@
             [topics addObject:new_topic];
             
             NSError *error;
-            [self.context save:&error];
+            [(AppDelegate *)[[UIApplication sharedApplication] delegate] saveContext];
         }
         
     }
@@ -106,7 +106,7 @@
     }
     
     NSError *error;
-    [self.context save:&error];
+    [(AppDelegate *)[[UIApplication sharedApplication] delegate] saveContext];
     
     self.topicsCount = [topic_list count];
     

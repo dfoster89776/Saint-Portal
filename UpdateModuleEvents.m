@@ -13,7 +13,7 @@
 #import "SetEventDetails.h"
 #import "CalendarHandler.h"
 
-@interface UpdateModuleEvents () <SaintPortalAPIDelegate>
+@interface UpdateModuleEvents () <SaintPortalAPIDelegate, SetEventDetailsDelegate>
 @property (nonatomic, strong)Modules *module;
 @property (nonatomic, strong)NSManagedObjectContext *context;
 @property (nonatomic, strong)id delegate;
@@ -75,7 +75,7 @@
             }
             
             NSError *error;
-            [self.context save:&error];
+            [(AppDelegate *)[[UIApplication sharedApplication] delegate] saveContext];
             
         }
     }
@@ -96,7 +96,7 @@
     }
     
     NSError *error;
-    [self.context save:&error];
+    [(AppDelegate *)[[UIApplication sharedApplication] delegate] saveContext];
     
     if(self.eventsReturned == self.eventsCount){
         
