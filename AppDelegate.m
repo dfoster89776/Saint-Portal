@@ -369,7 +369,6 @@
     
     notification.read = [NSNumber numberWithBool:NO];
     
-    NSError *error;
     [(AppDelegate *)[[UIApplication sharedApplication] delegate] saveContext];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:@"NotificationsUpdate" object:nil];

@@ -68,9 +68,7 @@
         person.student_support_number = [data objectForKey:@"student_support_number"];
         person.fee_status = [data objectForKey:@"fee_status"];
     }
-    
-    NSError *err = nil;
-    
+        
     [(AppDelegate *)[[UIApplication sharedApplication] delegate] saveContext];
     
     self.status = YES;

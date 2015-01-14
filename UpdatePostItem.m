@@ -93,7 +93,6 @@
                 
             }
             
-            NSError *error;
             [(AppDelegate *)[[UIApplication sharedApplication] delegate] saveContext];
             
         }
@@ -150,7 +149,6 @@
             
         }
         
-        NSError *error;
         [(AppDelegate *)[[UIApplication sharedApplication] delegate] saveContext];
     }
     
@@ -166,7 +164,6 @@
         [post removePosts_slidesObject:slide];
     }
     
-    NSError *error;
     [(AppDelegate *)[[UIApplication sharedApplication] delegate] saveContext];
     
 }
@@ -212,7 +209,6 @@
         
         
         
-        NSError *error;
         [(AppDelegate *)[[UIApplication sharedApplication] delegate] saveContext];
     }
     
@@ -228,7 +224,6 @@
         [post removePosts_examplesObject:example];
     }
     
-    NSError *error;
     [(AppDelegate *)[[UIApplication sharedApplication] delegate] saveContext];
     
 }

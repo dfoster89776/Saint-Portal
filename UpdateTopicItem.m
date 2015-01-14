@@ -99,7 +99,6 @@
             
             [topics addObject:new_topic];
             
-            NSError *error;
             [(AppDelegate *)[[UIApplication sharedApplication] delegate] saveContext];
         }
         

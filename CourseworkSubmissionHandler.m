@@ -45,9 +45,7 @@
     NSMutableDictionary *submissionData = [data objectForKey:@"submission"];
         
     self.coursework.submission = [CourseworkSubmissionHandler updateSubmissionFile:submissionData withContext:self.context];
-    
-    NSError* error;
-    
+        
     [(AppDelegate *)[[UIApplication sharedApplication] delegate] saveContext];
     
     [self.delegate CourseworkUploadSuccess];

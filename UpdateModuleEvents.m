@@ -74,7 +74,6 @@
                 
             }
             
-            NSError *error;
             [(AppDelegate *)[[UIApplication sharedApplication] delegate] saveContext];
             
         }
@@ -95,7 +94,6 @@
         [CalendarHandler deleteEventFromCalendar:event];
     }
     
-    NSError *error;
     [(AppDelegate *)[[UIApplication sharedApplication] delegate] saveContext];
     
     if(self.eventsReturned == self.eventsCount){

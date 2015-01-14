@@ -70,9 +70,7 @@
 -(void)setStaffLocation:(Rooms *)room{
     
     self.staff.office_location = room;
-    
-    NSError* error;
-    
+        
     [(AppDelegate *)[[UIApplication sharedApplication] delegate] saveContext];
     
     [self updateContact];

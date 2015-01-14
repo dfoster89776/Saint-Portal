@@ -87,7 +87,6 @@
             
             [topics addObject:new_topic];
             
-            NSError *error;
             [(AppDelegate *)[[UIApplication sharedApplication] delegate] saveContext];
         }
         
@@ -105,7 +104,6 @@
         [self.module removeModules_topicsObject:topic];
     }
     
-    NSError *error;
     [(AppDelegate *)[[UIApplication sharedApplication] delegate] saveContext];
     
     self.topicsCount = [topic_list count];

@@ -21,9 +21,6 @@
     
     [self updateFilesinDirectory:example withData:[data objectForKey:@"files"] withContext:(NSManagedObjectContext *)context];
     
-    
-    NSError *error;
-    
     [(AppDelegate *)[[UIApplication sharedApplication] delegate] saveContext];
 }
 
@@ -36,7 +33,6 @@
     [self updateFilesinDirectory:directory withData:[data objectForKey:@"files"] withContext:(NSManagedObjectContext *)context];
     
     
-    NSError *error;
     
     [(AppDelegate *)[[UIApplication sharedApplication] delegate] saveContext];
     

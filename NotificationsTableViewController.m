@@ -165,9 +165,7 @@
     }
     
     notification.read = [NSNumber numberWithBool:YES];
-    
-    NSError* error;
-    
+        
     [(AppDelegate *)[[UIApplication sharedApplication] delegate] saveContext];
     
     [self.tableView reloadData];

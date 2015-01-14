@@ -147,7 +147,7 @@
     
     if(self.notificationUpdate){
         self.completionHandler(UIBackgroundFetchResultNewData);
-        NSError *error;
+
         [(AppDelegate *)[[UIApplication sharedApplication] delegate] saveContext];
     }
     
@@ -238,7 +238,6 @@
     
     self.dataUpdate = true;
     
-    NSError *error;
     if(self.notificationUpdate){
         self.completionHandler(UIBackgroundFetchResultNewData);
         [(AppDelegate *)[[UIApplication sharedApplication] delegate] saveContext];
@@ -326,7 +325,6 @@
     
     if(self.notificationUpdate){
         self.completionHandler(UIBackgroundFetchResultNewData);
-        NSError *error;
         [(AppDelegate *)[[UIApplication sharedApplication] delegate] saveContext];
     }
     
@@ -407,7 +405,6 @@
     
     if(self.notificationUpdate){
         self.completionHandler(UIBackgroundFetchResultNewData);
-        NSError *error;
         [(AppDelegate *)[[UIApplication sharedApplication] delegate] saveContext];
     }
     
@@ -440,7 +437,6 @@
     if(self.dataUpdate){
         
         self.completionHandler(UIBackgroundFetchResultNewData);
-        NSError *error;
         [(AppDelegate *)[[UIApplication sharedApplication] delegate] saveContext];
 
     }

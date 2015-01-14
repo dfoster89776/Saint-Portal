@@ -87,7 +87,6 @@
 
             }
             
-            NSError *error;
             [(AppDelegate *)[[UIApplication sharedApplication] delegate] saveContext];
             
         }
@@ -106,7 +105,6 @@
         [self.topic removeTopics_postsObject:post];
     }
     
-    NSError *error;
     [(AppDelegate *)[[UIApplication sharedApplication] delegate] saveContext];
 
     [self.delegate topicPostsUpdateSuccess];
@@ -164,7 +162,6 @@
             
         }
         
-        NSError *error;
         [(AppDelegate *)[[UIApplication sharedApplication] delegate] saveContext];
     }
     
@@ -180,7 +177,6 @@
         [post removePosts_slidesObject:slide];
     }
     
-    NSError *error;
     [(AppDelegate *)[[UIApplication sharedApplication] delegate] saveContext];
     
 }
@@ -228,7 +224,6 @@
         
         
         
-        NSError *error;
         [(AppDelegate *)[[UIApplication sharedApplication] delegate] saveContext];
     }
     
@@ -244,7 +239,6 @@
         [post removePosts_examplesObject:example];
     }
     
-    NSError *error;
     [(AppDelegate *)[[UIApplication sharedApplication] delegate] saveContext];
     
 }
