@@ -40,16 +40,15 @@
     
         [CalendarHandler setupCalendar];
 
-    /*
+    
         //Update personal details
         self.updatePersonalDetailsHandler = [[UpdatePersonalDetailsHandler alloc] init];
         [self.updatePersonalDetailsHandler UpdatePersonalDetailsWithDelegate:self];
     
         self.updateModuleDataHandler = [[UpdateAllModuleData alloc] init];
         [self.updateModuleDataHandler updateAllModuleDataWithDelegate:self];
-    */
     
-    self.moduleData = true;
+    
     [self updateStatus];
 }
 
@@ -57,8 +56,7 @@
     
     
     //Check status of personal details setup
-    //BOOL personal = [self.updatePersonalDetailsHandler getStatus];
-    BOOL personal = true;
+    BOOL personal = [self.updatePersonalDetailsHandler getStatus];
     
     if(personal){
         [self.personalDetailsActivityIndicator stopAnimating];

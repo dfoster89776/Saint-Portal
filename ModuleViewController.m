@@ -31,7 +31,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    NSManagedObjectContext *context = [(AppDelegate *)[[UIApplication sharedApplication] delegate] managedObjectContext];
     
 }
 

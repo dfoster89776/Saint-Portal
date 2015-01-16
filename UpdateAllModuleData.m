@@ -58,9 +58,9 @@
 
 
 -(void)moduleEnrollmentUpdateFailure:(NSError*)error{
-    
+    if(self.delegate != nil){
     [self.delegate updateAllModuleDataFailure:error];
-    
+    }
 }
 
 
@@ -70,8 +70,10 @@
     
     if(self.moduleReturns == self.moduleCount){
         
-        [self.delegate updateAllModuleDataSuccess];
+        if(self.delegate != nil){
         
+        [self.delegate updateAllModuleDataSuccess];
+        }
     }
 }
 
@@ -80,9 +82,9 @@
     self.moduleReturns++;
     
     if(self.moduleReturns == self.moduleCount){
-        
-        [self.delegate updateAllModuleDataSuccess];
-        
+        if(self.delegate != nil){
+            [self.delegate updateAllModuleDataSuccess];
+        }
     }
     
 }

@@ -32,6 +32,8 @@
     self.tableView.estimatedRowHeight = 44.0;
     self.tableView.rowHeight = UITableViewAutomaticDimension;
     
+    [self refreshNotificationList:nil];
+    
     [self updateTableData:nil];
 }
 

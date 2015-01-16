@@ -38,40 +38,6 @@
                                             <segue destination="Eta-c5-7aU" kind="show" id="Vz7-j3-AYK"/>
                                         </connections>
                                     </tableViewCell>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" textLabel="oCi-pW-lIw" style="IBUITableViewCellStyleDefault" id="d89-wR-qq5">
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="d89-wR-qq5" id="Vpn-Kj-goi">
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <subviews>
-                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Academic Record" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="oCi-pW-lIw">
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                                    <nil key="highlightedColor"/>
-                                                    <variation key="heightClass=regular-widthClass=compact">
-                                                        <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                                    </variation>
-                                                </label>
-                                            </subviews>
-                                        </tableViewCellContentView>
-                                    </tableViewCell>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" textLabel="upi-55-9ry" style="IBUITableViewCellStyleDefault" id="YiO-hd-UvH">
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="YiO-hd-UvH" id="pv3-nR-wkj">
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <subviews>
-                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Prizes and Achievements" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="upi-55-9ry">
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                                    <nil key="highlightedColor"/>
-                                                    <variation key="heightClass=regular-widthClass=compact">
-                                                        <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                                    </variation>
-                                                </label>
-                                            </subviews>
-                                        </tableViewCellContentView>
-                                    </tableViewCell>
                                 </cells>
                             </tableViewSection>
                             <tableViewSection headerTitle="Settings" id="nYe-hj-MVs">
@@ -483,7 +449,7 @@
                             </textField>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ett-EI-ncA">
                                 <rect key="frame" x="276" y="164" width="49" height="36"/>
-                                <color key="backgroundColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="backgroundColor" red="0.0" green="0.68235294120000001" blue="0.93725490199999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="329" id="BWC-6A-PMI"/>
                                     <constraint firstAttribute="height" constant="48" id="Gtd-Y3-W0I"/>
@@ -818,19 +784,17 @@
                                     <segue destination="hhP-WI-vet" kind="show" id="tJl-jI-fSn"/>
                                 </connections>
                             </button>
-                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" animating="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="t6b-ZF-0Hq">
-                                <rect key="frame" x="404" y="93" width="20" height="20"/>
-                            </activityIndicatorView>
                             <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" animating="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="kXQ-41-pnV">
                                 <rect key="frame" x="404" y="121" width="20" height="20"/>
-                                <variation key="heightClass=regular-widthClass=compact" fixedFrame="YES">
-                                    <rect key="frame" x="304" y="122" width="20" height="20"/>
-                                </variation>
+                            </activityIndicatorView>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" animating="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="t6b-ZF-0Hq">
+                                <rect key="frame" x="404" y="93" width="20" height="20"/>
                             </activityIndicatorView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="N79-oI-ddF" firstAttribute="trailing" secondItem="4sh-Wb-jph" secondAttribute="trailing" id="05v-Uy-VNg"/>
+                            <constraint firstItem="N79-oI-ddF" firstAttribute="centerY" secondItem="t6b-ZF-0Hq" secondAttribute="centerY" id="0A0-EU-eKb"/>
                             <constraint firstItem="US2-x8-aK4" firstAttribute="leading" secondItem="cjP-uB-3Bp" secondAttribute="leading" id="1HN-ZB-IRH"/>
                             <constraint firstItem="N79-oI-ddF" firstAttribute="top" secondItem="t6b-ZF-0Hq" secondAttribute="bottom" id="2T0-vK-C4p"/>
                             <constraint firstItem="4sh-Wb-jph" firstAttribute="top" secondItem="Hav-nk-H6j" secondAttribute="bottom" constant="19" id="2mL-X5-Tid"/>
@@ -918,6 +882,7 @@
                             <constraint firstItem="US2-x8-aK4" firstAttribute="centerY" secondItem="N79-oI-ddF" secondAttribute="centerY" id="rd7-Tf-3c3"/>
                             <constraint firstItem="N79-oI-ddF" firstAttribute="top" secondItem="t6b-ZF-0Hq" secondAttribute="bottom" constant="1" id="rkz-DL-COg"/>
                             <constraint firstItem="cjP-uB-3Bp" firstAttribute="top" secondItem="4sh-Wb-jph" secondAttribute="top" id="t9z-pU-0Yo"/>
+                            <constraint firstItem="N79-oI-ddF" firstAttribute="centerX" secondItem="t6b-ZF-0Hq" secondAttribute="centerX" id="tru-Ur-CAi"/>
                             <constraint firstItem="t6b-ZF-0Hq" firstAttribute="centerY" secondItem="4sh-Wb-jph" secondAttribute="centerY" id="v3K-KI-Kmf"/>
                             <constraint firstItem="69j-T4-Mzw" firstAttribute="top" secondItem="ufH-0J-4LI" secondAttribute="bottom" constant="8" symbolic="YES" id="vue-YV-rIK"/>
                             <constraint firstItem="ufH-0J-4LI" firstAttribute="centerX" secondItem="fNV-bN-cfR" secondAttribute="centerX" id="wej-w1-3FW"/>
@@ -990,6 +955,7 @@
                                 <exclude reference="mPw-R0-0qj"/>
                                 <exclude reference="z03-bC-mkU"/>
                                 <exclude reference="05v-Uy-VNg"/>
+                                <exclude reference="0A0-EU-eKb"/>
                                 <exclude reference="2T0-vK-C4p"/>
                                 <exclude reference="5ho-f4-Ij4"/>
                                 <exclude reference="GGF-n1-NcV"/>
@@ -997,6 +963,7 @@
                                 <exclude reference="iIj-1W-EyP"/>
                                 <exclude reference="pZd-xI-qe4"/>
                                 <exclude reference="rkz-DL-COg"/>
+                                <exclude reference="tru-Ur-CAi"/>
                                 <exclude reference="4fU-Gz-oLL"/>
                                 <exclude reference="6oO-KV-QGk"/>
                                 <exclude reference="8OQ-Jh-0VG"/>
@@ -1060,8 +1027,8 @@
                                 <include reference="Pp8-BU-VdQ"/>
                                 <exclude reference="Tp0-VP-Z5i"/>
                                 <exclude reference="UTi-yN-NEM"/>
-                                <include reference="VOJ-AO-vUi"/>
-                                <include reference="gbx-kL-NPq"/>
+                                <exclude reference="VOJ-AO-vUi"/>
+                                <exclude reference="gbx-kL-NPq"/>
                                 <include reference="is8-YE-yXZ"/>
                                 <exclude reference="xbl-xr-oJo"/>
                                 <exclude reference="zMQ-Ex-Sy7"/>
@@ -1069,9 +1036,11 @@
                                 <exclude reference="DDY-fO-HW1"/>
                                 <exclude reference="EdO-38-fAM"/>
                                 <exclude reference="v3K-KI-Kmf"/>
+                                <include reference="0A0-EU-eKb"/>
                                 <exclude reference="5ho-f4-Ij4"/>
                                 <exclude reference="Eug-1d-hQI"/>
                                 <exclude reference="O8X-tC-H2x"/>
+                                <include reference="tru-Ur-CAi"/>
                                 <include reference="4fU-Gz-oLL"/>
                                 <exclude reference="AIX-Wt-DAG"/>
                                 <exclude reference="al8-g9-6Ks"/>

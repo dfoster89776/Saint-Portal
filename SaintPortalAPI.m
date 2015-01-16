@@ -14,6 +14,7 @@
            , nonatomic) id delegate;
 @property (strong, nonatomic) NSMutableData *responseData;
 @property (strong, nonatomic) NSURLConnection *conn;
+@property (nonatomic) BOOL coursework;
 @end
 
 @implementation SaintPortalAPI
@@ -26,6 +27,8 @@
 
 #pragma mark API Request
 -(BOOL)APIRequest:(SaintPortalAPIOperation)APIOperation withData:(NSDictionary *)data withDelegate:(id)caller{
+    
+    self.coursework = false;
     
     self.delegate = caller;
     
@@ -328,29 +331,74 @@
 
 -(void)uploadCourseworkSubmissionWithData:(NSDictionary *)data{
     
+    self.coursework = true;
+    
     //NSString* filename = @"index";
     //NSString* extension = @".pdf";
     
     NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
     NSString *accesstoken = [NSString stringWithFormat:@"%@", [prefs valueForKey:@"access_token"]];
     
-    NSLog(@"Uploading coursework submission");
     
-    //URL for authentication API
-    NSURL *url = [NSURL URLWithString:@"https://drf8.host.cs.st-andrews.ac.uk/SaintPortal/API/uploadCourseworkSubmission.php"];
+    NSMutableDictionary* _params = [[NSMutableDictionary alloc] init];
+    [_params setObject:accesstoken forKey:@"accesstoken"];
+    [_params setObject:[UIDevice currentDevice].identifierForVendor.UUIDString forKey:@"deviceID"];
+    [_params setObject:[data objectForKey:@"courseworkid"] forKey:@"courseworkid"];
     
-    // Create the request.
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url
+    // the boundary string : a random string, that will not repeat in post data, to separate post data fields.
+    NSString *boundary = @"----------V2ymHFg03ehbqgZCaKO6jy";
+    
+    // string constant for the post parameter 'file'. My server uses this name: `file`. Your's may differ
+    NSString* FileParamConstant = @"file";
+    
+    // the server url to which the image (or the media) is uploaded. Use your server url here
+    NSURL* requestURL = [NSURL URLWithString:@"https://drf8.host.cs.st-andrews.ac.uk/SaintPortal/API/uploadCourseworkSubmission.php"];
+    
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:requestURL
                                                            cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData
                                                        timeoutInterval:40.0];
-    request.HTTPMethod = @"POST";
-    NSString *stringData = [NSString stringWithFormat:@"accesstoken=%@&deviceID=%@&courseworkid=%@", accesstoken, [UIDevice currentDevice].identifierForVendor.UUIDString, [data objectForKey:@"courseworkid"]];
+    [request setCachePolicy:NSURLRequestReloadIgnoringLocalCacheData];
+    [request setHTTPShouldHandleCookies:NO];
+    [request setTimeoutInterval:30];
+    [request setHTTPMethod:@"POST"];
     
-    request.HTTPBody = [stringData dataUsingEncoding:NSUTF8StringEncoding];
+    // set Content-Type in HTTP header
+    NSString *contentType = [NSString stringWithFormat:@"multipart/form-data; boundary=%@", boundary];
+    [request setValue:contentType forHTTPHeaderField: @"Content-Type"];
     
-    // Create url connection, set request and delegate
+    // post body
+    NSMutableData *body = [NSMutableData data];
+    
+    // add params (all params are strings)
+    for (NSString *param in _params) {
+        [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"%@\"\r\n\r\n", param] dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[[NSString stringWithFormat:@"%@\r\n", [_params objectForKey:param]] dataUsingEncoding:NSUTF8StringEncoding]];
+    }
+    
+    // add image data
+    NSData *imageData = [data objectForKey:@"fileData"];
+    if (imageData) {
+        [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"%@\"; filename=\"%@\"\r\n", FileParamConstant, [data objectForKey:@"filename"]] dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[@"Content-Type: image/jpeg\r\n\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:imageData];
+        [body appendData:[[NSString stringWithFormat:@"\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+    }
+    
+    [body appendData:[[NSString stringWithFormat:@"--%@--\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+    
+    // setting the body of the post to the reqeust
+    [request setHTTPBody:body];
+    
+    // set the content-length
+    NSString *postLength = [NSString stringWithFormat:@"%lu", (unsigned long)[body length]];
+    [request setValue:postLength forHTTPHeaderField:@"Content-Length"];
+    
+    // set URL
+    [request setURL:requestURL];
+
     conn = [[NSURLConnection alloc] initWithRequest:request delegate:self];
-    
 }
 
 -(void)updateTopicItemWithData:(NSDictionary *)data{
@@ -468,8 +516,13 @@
 #pragma mark Connection Did Finish Loading
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
     
-    //NSString *strData = [[NSString alloc]initWithData:responseData encoding:NSUTF8StringEncoding];
+    if(self.coursework){
+    
+        NSString *strData = [[NSString alloc]initWithData:responseData encoding:NSUTF8StringEncoding];
+    
+        NSLog(@"%@", strData);
         
+    }
     // The request is complete and data has been received
     NSError *e = nil;
     

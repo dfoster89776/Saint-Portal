@@ -28,6 +28,8 @@
     
     NSData *fileData = [NSData dataWithContentsOfURL:url];
     
+    [data setValue:[[url path] lastPathComponent] forKey:@"filename"];
+    [data setValue:@".pdf" forKey:@"extension"];
     [data setValue:fileData forKey:@"fileData"];
     [data setValue:coursework.coursework_id forKey:@"courseworkid"];
     

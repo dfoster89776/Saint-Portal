@@ -18,6 +18,8 @@
 #import "EventModalViewController.h"
 #import "Notification.h"
 #import "PostModalViewController.h"
+#import "UpdatePersonalDetailsHandler.h"
+#import "UpdateAllModuleData.h"
 
 #define UIColorFromRGB(rgbValue) [UIColor colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 green:((float)((rgbValue & 0xFF00) >> 8))/255.0 blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
 
@@ -62,6 +64,13 @@
         
         if(([[NSUserDefaults standardUserDefaults] objectForKey:@"setup_complete"] != nil)){
             homeScreenVC = [storyboard instantiateViewControllerWithIdentifier:@"TabBarController"];
+            
+            UpdatePersonalDetailsHandler* updatePersonalDetailsHandler = [[UpdatePersonalDetailsHandler alloc] init];
+            [updatePersonalDetailsHandler UpdatePersonalDetailsWithDelegate:nil];
+            
+            UpdateAllModuleData* updateModuleDataHandler = [[UpdateAllModuleData alloc] init];
+            [updateModuleDataHandler updateAllModuleDataWithDelegate:nil];
+            
         }else{
             homeScreenVC = [storyboard instantiateViewControllerWithIdentifier:@"SetupViewController"];
         }
