@@ -1,19 +1,21 @@
 //
-//  PostSlidesTableViewController.m
+//  PostExercisesTableViewController.m
 //  Saint Portal
 //
-//  Created by David Foster on 11/11/2014.
-//  Copyright (c) 2014 David Foster. All rights reserved.
+//  Created by David Foster on 15/01/2015.
+//  Copyright (c) 2015 David Foster. All rights reserved.
 //
 
-#import "PostSlidesTableViewController.h"
+#import "PostExercisesTableViewController.h"
+#import "Exercises.h"
 #import "OpenStoreHandler.h"
 
-@interface PostSlidesTableViewController ()
-@property (nonatomic, strong) NSArray* slides;
+
+@interface PostExercisesTableViewController ()
+@property (strong, nonatomic) NSArray *exercises;
 @end
 
-@implementation PostSlidesTableViewController
+@implementation PostExercisesTableViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -39,33 +41,33 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
-    self.slides = [self.post.posts_slides allObjects];
+    self.exercises = [self.post.posts_exercises allObjects];
     
-    // Return the number of rows in the section.
-    return [self.slides count];
+    return [self.exercises count];
+    
 }
-
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
+    Exercises *exercise = [self.exercises objectAtIndex:indexPath.row];
+    
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"StandardCell" forIndexPath:indexPath];
     
-    // Configure the cell...
-    
-    Slides *slide = [self.slides objectAtIndex:indexPath.row];
-    
-    cell.textLabel.text = slide.name;
+    cell.textLabel.text = exercise.name;
     
     return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     
+    Exercises *exercise = [self.exercises objectAtIndex:indexPath.row];
+    
     OpenStoreHandler *osh = [[OpenStoreHandler alloc] init];
     
-    [osh openFile:[self.slides objectAtIndex:indexPath.row] withCurrentView:self.parentViewController];
+    [osh openDirectory:exercise withCurrentView:self.parentViewController];
+    
+    
     
 }
-
 
 @end

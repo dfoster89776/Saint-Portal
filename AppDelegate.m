@@ -74,8 +74,8 @@
     self.window.rootViewController = homeScreenVC;
     [self.window makeKeyAndVisible];
     
-    //self.salm = [[StAndrewsLocationManager alloc] init];
-    //[self.salm setupLocationManager];
+    self.salm = [[StAndrewsLocationManager alloc] init];
+    [self.salm setupLocationManager];
     
     return YES;
 }

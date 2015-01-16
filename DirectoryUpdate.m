@@ -24,6 +24,18 @@
     [(AppDelegate *)[[UIApplication sharedApplication] delegate] saveContext];
 }
 
+
+-(void)updateExercisesDirectory:(Exercises *)exercise withData:(NSDictionary *)data{
+    
+    NSManagedObjectContext *context = [(AppDelegate *)[[UIApplication sharedApplication] delegate] managedObjectContext];
+    
+    [self updateDirectoriesInDirectory:exercise withData:[data objectForKey:@"subdirectories"] withContext:(NSManagedObjectContext *)context];
+    
+    [self updateFilesinDirectory:exercise withData:[data objectForKey:@"files"] withContext:(NSManagedObjectContext *)context];
+    
+    [(AppDelegate *)[[UIApplication sharedApplication] delegate] saveContext];
+}
+
 -(void)updateCourseworkDirectory:(Coursework_Directory *)directory withData:(NSDictionary *)data{
     
     NSManagedObjectContext *context = [(AppDelegate *)[[UIApplication sharedApplication] delegate] managedObjectContext];

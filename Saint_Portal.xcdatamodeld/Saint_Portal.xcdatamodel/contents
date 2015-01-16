@@ -55,6 +55,10 @@
         <attribute name="example_id" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <relationship name="examples_post" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Posts" inverseName="posts_examples" inverseEntity="Posts" syncable="YES"/>
     </entity>
+    <entity name="Exercises" representedClassName="Exercises" parentEntity="Directory" syncable="YES">
+        <attribute name="exercise_id" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <relationship name="exercises_post" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Posts" inverseName="posts_exercises" inverseEntity="Posts" syncable="YES"/>
+    </entity>
     <entity name="Feedback" representedClassName="Feedback" syncable="YES">
         <attribute name="comment" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="grade" optional="YES" attributeType="Float" defaultValueString="0" syncable="YES"/>
@@ -112,9 +116,11 @@
         <attribute name="post_order" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <relationship name="posts_events" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Event" inverseName="event_post" inverseEntity="Event" syncable="YES"/>
         <relationship name="posts_examples" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Examples" inverseName="examples_post" inverseEntity="Examples" syncable="YES"/>
+        <relationship name="posts_exercises" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Exercises" inverseName="exercises_post" inverseEntity="Exercises" syncable="YES"/>
         <relationship name="posts_readings" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Reading" inverseName="readings_post" inverseEntity="Reading" syncable="YES"/>
         <relationship name="posts_slides" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Slides" inverseName="slides_post" inverseEntity="Slides" syncable="YES"/>
         <relationship name="posts_topic" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Topics" inverseName="topics_posts" inverseEntity="Topics" syncable="YES"/>
+        <relationship name="posts_tutorials" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Tutorial" inverseName="tutorial_post" inverseEntity="Tutorial" syncable="YES"/>
     </entity>
     <entity name="Reading" representedClassName="Reading" isAbstract="YES" syncable="YES">
         <attribute name="reading_id" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
@@ -156,6 +162,9 @@
         <relationship name="topics_module" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Modules" inverseName="modules_topics" inverseEntity="Modules" syncable="YES"/>
         <relationship name="topics_posts" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Posts" inverseName="posts_topic" inverseEntity="Posts" syncable="YES"/>
     </entity>
+    <entity name="Tutorial" representedClassName="Tutorial" parentEntity="File" syncable="YES">
+        <relationship name="tutorial_post" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Posts" inverseName="posts_tutorials" inverseEntity="Posts" syncable="YES"/>
+    </entity>
     <entity name="Web_Reading" representedClassName="Web_Reading" parentEntity="Reading" syncable="YES">
         <attribute name="web_address" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
@@ -174,7 +183,7 @@
         <element name="Modules" positionX="-3942" positionY="-1908" width="128" height="223"/>
         <element name="Notification" positionX="-4554" positionY="-2158" width="128" height="118"/>
         <element name="Personal_Details" positionX="-4401" positionY="-1863" width="128" height="133"/>
-        <element name="Posts" positionX="-4095" positionY="-1404" width="128" height="178"/>
+        <element name="Posts" positionX="-4095" positionY="-1404" width="128" height="208"/>
         <element name="Reading" positionX="-4383" positionY="-1342" width="128" height="73"/>
         <element name="Rooms" positionX="-3521" positionY="-1782" width="128" height="133"/>
         <element name="Slides" positionX="-3818" positionY="-1399" width="128" height="58"/>
@@ -183,5 +192,7 @@
         <element name="Submission" positionX="-3861" positionY="-1480" width="128" height="73"/>
         <element name="Topics" positionX="-4016" positionY="-1575" width="128" height="133"/>
         <element name="Web_Reading" positionX="-4205" positionY="-1107" width="128" height="58"/>
+        <element name="Tutorial" positionX="-3863" positionY="-1206" width="128" height="58"/>
+        <element name="Exercises" positionX="-3665" positionY="-1057" width="128" height="73"/>
     </elements>
 </model>

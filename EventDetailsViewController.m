@@ -63,7 +63,7 @@
     NSDateFormatter *df = [[NSDateFormatter alloc] init];
     [df setDateFormat:@"HH:mm"];
     
-    if([self.event.start_time compare:[NSDate date]] == NSOrderedAscending){
+    if(([self.event.start_time compare:[NSDate date]] == NSOrderedAscending) && ([self.event.end_time compare:[NSDate date]] == NSOrderedDescending)){
         
         [self.startTimeLabel setHidden:true];
         [self.endTimeLabel setHidden:true];

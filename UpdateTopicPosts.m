@@ -12,6 +12,8 @@
 #import "Posts.h"
 #import "Topics.h"
 #import "Slides.h"
+#import "Tutorial.h"
+#import "Exercises.h"
 #import "Examples.h"
 #import "Directory.h"
 #import "DirectoryUpdate.h"
@@ -53,12 +55,15 @@
             
             [post_list addObject:[NSNumber numberWithInteger:[[post objectForKey:@"post_id"] integerValue]]];
             
-            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"post_id == %i", [[post objectForKey:@"post_id"] integerValue]];
+            NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Posts"];
+            request.predicate = [NSPredicate predicateWithFormat:@"post_id == %i", [[post objectForKey:@"post_id"] integerValue]];
             
-            NSSet *matches = [self.topic.topics_posts filteredSetUsingPredicate:predicate];
+            NSError *error;
             
-            if([matches count] == 0){
-                
+            NSArray* results = [self.context executeFetchRequest:request error:&error];
+            
+            if([results count] == 0){
+                                
                 Posts *new_post = [NSEntityDescription insertNewObjectForEntityForName:@"Posts" inManagedObjectContext:self.context];
                 
                 new_post.post_id = [NSNumber numberWithInteger:[[post objectForKey:@"post_id"] integerValue]];
@@ -69,12 +74,14 @@
                 
                 [self updateSlidesForPost:new_post withData:[post objectForKey:@"slides_data"]];
                 [self updateExamplesForPost:new_post withData:[post objectForKey:@"examples"]];
+                [self updateTutorialsForPost:new_post withData:[post objectForKey:@"tutorial_data"]];
+                [self updateExercisesForPost:new_post withData:[post objectForKey:@"exercises"]];
                 
                 [self.topic addTopics_postsObject:new_post];
                 
             }else{
                 
-                Posts *new_post = [[matches allObjects] firstObject];
+                Posts *new_post = [results firstObject];
                 
                 new_post.post_id = [NSNumber numberWithInteger:[[post objectForKey:@"post_id"] integerValue]];
                 new_post.post_name = [post objectForKey:@"post_name"];
@@ -84,6 +91,8 @@
                 
                 [self updateSlidesForPost:new_post withData:[post objectForKey:@"slides_data"]];
                 [self updateExamplesForPost:new_post withData:[post objectForKey:@"examples"]];
+                [self updateTutorialsForPost:new_post withData:[post objectForKey:@"tutorial_data"]];
+                [self updateExercisesForPost:new_post withData:[post objectForKey:@"exercises"]];
 
             }
             
@@ -181,6 +190,64 @@
     
 }
 
+
+-(void)updateTutorialsForPost:(Posts *)post withData:(NSArray *)data{
+    
+    NSMutableArray *tutorial_list = [[NSMutableArray alloc] init];
+    
+    for(NSMutableDictionary *tutorial in data){
+        
+        [tutorial_list addObject:[NSNumber numberWithInteger:[[tutorial objectForKey:@"file_id"] integerValue]]];
+        
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"file_id == %i", [[tutorial objectForKey:@"file_id"] integerValue]];
+        
+        NSSet *matches = [post.posts_tutorials filteredSetUsingPredicate:predicate];
+        
+        if([matches count] == 0){
+            
+            Tutorial *new_tutorial = [NSEntityDescription insertNewObjectForEntityForName:@"Tutorial" inManagedObjectContext:self.context];
+            
+            new_tutorial.file_id = [NSNumber numberWithInteger:[[tutorial objectForKey:@"file_id"] integerValue]];
+            new_tutorial.name = [tutorial objectForKey:@"tutorial_name"];
+            new_tutorial.file_url = [tutorial objectForKey:@"file_url"];
+            NSArray *parts = [new_tutorial.file_url componentsSeparatedByString:@"/"];
+            new_tutorial.file_name = [parts lastObject];
+            new_tutorial.tutorial_post = post;
+            
+            [post addPosts_tutorialsObject:new_tutorial];
+            
+        }else{
+            
+            Tutorial *new_tutorial = [[matches allObjects] firstObject];
+            
+            new_tutorial.file_id = [NSNumber numberWithInteger:[[tutorial objectForKey:@"file_id"] integerValue]];
+            new_tutorial.name = [tutorial objectForKey:@"tutorial_name"];
+            new_tutorial.file_url = [tutorial objectForKey:@"file_url"];
+            NSArray *parts = [new_tutorial.file_url componentsSeparatedByString:@"/"];
+            new_tutorial.file_name = [parts lastObject];
+            new_tutorial.tutorial_post = post;
+            
+        }
+        
+        [(AppDelegate *)[[UIApplication sharedApplication] delegate] saveContext];
+    }
+    
+    //Remove any events not on core database
+    NSArray *deletingTutorials = [NSArray arrayWithArray:tutorial_list];
+    
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"NOT (file_id IN %@)", deletingTutorials];
+    
+    NSSet *tutorialsToDelete = [post.posts_tutorials filteredSetUsingPredicate:predicate];
+    
+    for(Tutorial *tutorial in tutorialsToDelete){
+        [post removePosts_tutorialsObject:tutorial];
+        [self.context deleteObject:tutorial];
+    }
+    
+    [(AppDelegate *)[[UIApplication sharedApplication] delegate] saveContext];
+    
+}
+
 -(void)updateExamplesForPost:(Posts *)post withData:(NSArray *)data{
     
     //NSLog(@"%@", data);
@@ -237,6 +304,68 @@
     for(Examples *example in examplesToDelete){
         [self.context deleteObject:example];
         [post removePosts_examplesObject:example];
+    }
+    
+    [(AppDelegate *)[[UIApplication sharedApplication] delegate] saveContext];
+    
+}
+
+-(void)updateExercisesForPost:(Posts *)post withData:(NSArray *)data{
+    
+    //NSLog(@"%@", data);
+    
+    NSMutableArray *exercises_list = [[NSMutableArray alloc] init];
+    
+    for(NSDictionary *exercise in data){
+        
+        [exercises_list addObject:[NSNumber numberWithInteger:[[exercise objectForKey:@"exercise_id"] integerValue]]];
+        
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"exercise_id == %i", [[exercise objectForKey:@"exercise_id"] integerValue]];
+        
+        NSSet *matches = [post.posts_exercises filteredSetUsingPredicate:predicate];
+        
+        if([matches count] == 0){
+            
+            Exercises *new_exercise = [NSEntityDescription insertNewObjectForEntityForName:@"Exercises" inManagedObjectContext:self.context];
+            
+            new_exercise.exercise_id = [NSNumber numberWithInteger:[[exercise objectForKey:@"exercise_id"] integerValue]];
+            new_exercise.name = [exercise objectForKey:@"exercise_name"];
+            new_exercise.exercises_post = post;
+            
+            [post addPosts_exercisesObject:new_exercise];
+            
+            DirectoryUpdate *du = [[DirectoryUpdate alloc] init];
+            [du updateExercisesDirectory:new_exercise withData:[exercise objectForKey:@"directory_details"]];
+            
+            
+        }else{
+            
+            Exercises *new_exercise = [[matches allObjects] firstObject];
+            
+            new_exercise.exercise_id = [NSNumber numberWithInteger:[[exercise objectForKey:@"exercise_id"] integerValue]];
+            new_exercise.name = [exercise objectForKey:@"exercise_name"];
+            new_exercise.exercises_post = post;
+            
+            DirectoryUpdate *du = [[DirectoryUpdate alloc] init];
+            [du updateExercisesDirectory:new_exercise withData:[exercise objectForKey:@"directory_details"]];
+            
+        }
+        
+        
+        
+        [(AppDelegate *)[[UIApplication sharedApplication] delegate] saveContext];
+    }
+    
+    //Remove any events not on core database
+    NSArray *deleteingExercises = [NSArray arrayWithArray:exercises_list];
+    
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"NOT (exercise_id IN %@)", deleteingExercises];
+    
+    NSSet *exercisesToDelete = [post.posts_exercises filteredSetUsingPredicate:predicate];
+    
+    for(Exercises *exercise in exercisesToDelete){
+        [post removePosts_exercisesObject:exercise];
+        [self.context deleteObject:exercise];
     }
     
     [(AppDelegate *)[[UIApplication sharedApplication] delegate] saveContext];

@@ -114,17 +114,21 @@
         newPerson = ABPersonCreate();
         ABRecordSetValue(newPerson, kABPersonFirstNameProperty, (__bridge CFStringRef)self.staff.firstname, &error);
         ABRecordSetValue(newPerson, kABPersonLastNameProperty, (__bridge CFStringRef)self.staff.surname, &error);
-        NSLog(@"No record exists");
+        
+        ABMutableMultiValueRef multiEmail = ABMultiValueCreateMutable(kABMultiStringPropertyType);
+        ABMultiValueAddValueAndLabel(multiEmail, (__bridge CFStringRef)self.staff.email, kABWorkLabel, NULL);
+        ABRecordSetValue(newPerson, kABPersonEmailProperty, multiEmail, &error);
+        CFRelease(multiEmail);
+        
+        ABMutableMultiValueRef multiPhone = ABMultiValueCreateMutable(kABMultiStringPropertyType);
+        ABMultiValueAddValueAndLabel(multiPhone, (__bridge CFStringRef)self.staff.phone_number, kABPersonPhoneMobileLabel, NULL);
+        ABRecordSetValue(newPerson, kABPersonPhoneProperty, multiPhone,nil);
         
         ABAddressBookAddRecord(self.addressBookRef, newPerson, &error);
         
         ABAddressBookSave(self.addressBookRef, &error);
         
-        NSLog(@"Record id: %d", ABRecordGetRecordID(newPerson));
-        
         self.staff.record_id = [NSNumber numberWithInt:ABRecordGetRecordID(newPerson)];
-        
-        NSLog(@"Record id set as: %@", self.staff.record_id);
         
         CFRelease(newPerson);
         
@@ -132,9 +136,23 @@
         
         newPerson = ABAddressBookGetPersonWithRecordID(self.addressBookRef, [self.staff.record_id intValue]);
         
+        if(newPerson == NULL){
+            
+            newPerson = ABPersonCreate();
+            
+        }
+        
         ABRecordSetValue(newPerson, kABPersonFirstNameProperty, (__bridge CFStringRef)self.staff.firstname, &error);
         ABRecordSetValue(newPerson, kABPersonLastNameProperty, (__bridge CFStringRef)self.staff.surname, &error);
-        NSLog(@"Record exists");
+        
+        ABMutableMultiValueRef multiEmail = ABMultiValueCreateMutable(kABMultiStringPropertyType);
+        ABMultiValueAddValueAndLabel(multiEmail, (__bridge CFStringRef)self.staff.email, kABWorkLabel, NULL);
+        ABRecordSetValue(newPerson, kABPersonEmailProperty, multiEmail, &error);
+        CFRelease(multiEmail);
+        
+        ABMutableMultiValueRef multiPhone = ABMultiValueCreateMutable(kABMultiStringPropertyType);
+        ABMultiValueAddValueAndLabel(multiPhone, (__bridge CFStringRef)self.staff.phone_number, kABPersonPhoneMobileLabel, NULL);
+        ABRecordSetValue(newPerson, kABPersonPhoneProperty, multiPhone,nil);
         
         ABAddressBookAddRecord(self.addressBookRef, newPerson, &error);
         

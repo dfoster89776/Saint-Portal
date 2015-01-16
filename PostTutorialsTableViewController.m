@@ -1,19 +1,20 @@
 //
-//  PostSlidesTableViewController.m
+//  PostTutorialsTableViewController.m
 //  Saint Portal
 //
-//  Created by David Foster on 11/11/2014.
-//  Copyright (c) 2014 David Foster. All rights reserved.
+//  Created by David Foster on 15/01/2015.
+//  Copyright (c) 2015 David Foster. All rights reserved.
 //
 
-#import "PostSlidesTableViewController.h"
+#import "PostTutorialsTableViewController.h"
 #import "OpenStoreHandler.h"
+#import "Tutorial.h"
 
-@interface PostSlidesTableViewController ()
-@property (nonatomic, strong) NSArray* slides;
+@interface PostTutorialsTableViewController ()
+@property (nonatomic, strong) NSArray* tutorials;
 @end
 
-@implementation PostSlidesTableViewController
+@implementation PostTutorialsTableViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -38,23 +39,20 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    
-    self.slides = [self.post.posts_slides allObjects];
+    // Return the number of rows in the section.
+    self.tutorials = [self.post.posts_tutorials allObjects];
     
     // Return the number of rows in the section.
-    return [self.slides count];
+    return [self.tutorials count];
 }
-
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"StandardCell" forIndexPath:indexPath];
     
-    // Configure the cell...
-    
-    Slides *slide = [self.slides objectAtIndex:indexPath.row];
-    
-    cell.textLabel.text = slide.name;
+    Tutorial *tutorial = [self.tutorials objectAtIndex:indexPath.row];
+        
+    cell.textLabel.text = tutorial.name;
     
     return cell;
 }
@@ -63,9 +61,19 @@
     
     OpenStoreHandler *osh = [[OpenStoreHandler alloc] init];
     
-    [osh openFile:[self.slides objectAtIndex:indexPath.row] withCurrentView:self.parentViewController];
+    [osh openFile:[self.tutorials objectAtIndex:indexPath.row] withCurrentView:self.parentViewController];
     
 }
 
+
+/*
+#pragma mark - Navigation
+
+// In a storyboard-based application, you will often want to do a little preparation before navigation
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    // Get the new view controller using [segue destinationViewController].
+    // Pass the selected object to the new view controller.
+}
+*/
 
 @end

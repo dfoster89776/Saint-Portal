@@ -11,6 +11,7 @@
 #import "ModuleTopicsTableViewController.h"
 #import "ModuleOverviewViewController.h"
 #import "ModuleViewController.h"
+#import "ModuleEventsTableViewController.h"
 
 @interface ModulePageViewController ()
 @property (strong, nonatomic) NSArray *myViewControllers;
@@ -33,12 +34,14 @@
     ModuleCourseworkTableViewController *p2 = [self.storyboard
                             instantiateViewControllerWithIdentifier:@"Module_Coursework"];
     
+    ModuleEventsTableViewController *p3 = [self.storyboard instantiateViewControllerWithIdentifier:@"Module_Events"];
+    
     p0.module = self.module;
     p1.module = self.module;
     p2.module = self.module;
+    p3.module = self.module;
     
-    
-    self.myViewControllers = @[p0, p1, p2];
+    self.myViewControllers = @[p0, p1, p2, p3];
     
     [self setViewControllers:@[p0]
                    direction:UIPageViewControllerNavigationDirectionForward

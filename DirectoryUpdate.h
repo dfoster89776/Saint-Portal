@@ -8,12 +8,15 @@
 
 #import <Foundation/Foundation.h>
 #import "Examples.h"
+#import "Exercises.h"
 #import "Directory.h"
 #import "Coursework_Directory.h"
 
 @interface DirectoryUpdate : NSObject
 
 -(void)updateExamplesDirectory:(Examples *)example withData:(NSDictionary *)data;
+
+-(void)updateExercisesDirectory:(Exercises *)exercise withData:(NSDictionary *)data;
 
 -(void)updateCourseworkDirectory:(Coursework_Directory *)coursework withData:(NSDictionary *)data;
 

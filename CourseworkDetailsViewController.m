@@ -260,7 +260,7 @@
 -(void)CourseworkUploadFailure{
     
     [self.uploadActivityIndicator stopAnimating];
-    self.uploadStatusLabel.text = @"Failed to Upload";
+    self.uploadStatusLabel.text = @"Failed to Upload.";
     [self.uploadStatusLabel setHidden:false];
     
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 10 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{

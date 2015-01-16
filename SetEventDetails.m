@@ -24,8 +24,6 @@
 
 @implementation SetEventDetails
 
-
-
 -(void)setDetailsForNewEvent:(Event *)new_event forModule:(Modules *)module withData:(NSDictionary *)event withDelegate:(id)delegate{
     
     self.context = [(AppDelegate *)[[UIApplication sharedApplication] delegate] managedObjectContext];
@@ -168,6 +166,8 @@
     NSError* error;
     
     int count = (int)[self.context countForFetchRequest:request error:&error];
+    
+    NSLog(@"Post Count: %i", count);
     
     if(count == 0){
         

@@ -15,6 +15,8 @@
 #import "TopicsPostsTableViewController.h"
 #import "AllPostsTableViewController.h"
 #import "ModuleStaffTableViewController.h"
+#import "EventDetailsViewController.h"
+#import "ModuleEventsTableViewController.h"
 
 #define UIColorFromRGB(rgbValue) [UIColor colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 green:((float)((rgbValue & 0xFF00) >> 8))/255.0 blue:((float)(rgbValue & 0xFF))/255.0 alpha:1]
 
@@ -31,19 +33,11 @@
     
     NSManagedObjectContext *context = [(AppDelegate *)[[UIApplication sharedApplication] delegate] managedObjectContext];
     
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Staff"];
-    
-    //request.predicate = [NSPredicate predicateWithFormat:@"staff_id == %i", [[data objectForKey:@"staff_id"] integerValue]];
-    
-    NSError *error = nil;
-    NSUInteger count = [context countForFetchRequest:request error:&error];
-    
-    NSLog(@"STAFF COUNT: %lu : %lu", count, (unsigned long)[self.module.staff count]);
 }
 
 -(void)viewDidLayoutSubviews{
     
-    NSArray *headerArray = [NSArray arrayWithObjects:@"Overview",@"Topics & Posts", @"Coursework", nil];
+    NSArray *headerArray = [NSArray arrayWithObjects:@"Overview",@"Topics & Posts", @"Coursework", @"Events", nil];
     
     self.width = self.headerScrollView.frame.size.width;
     
@@ -129,6 +123,13 @@
         ModuleStaffTableViewController *destination = segue.destinationViewController;
         destination.module = self.module;
         destination.title = @"Staff";
+    }else if ([segue.identifier isEqualToString:@"showEventDetails"]){
+        
+        Event* selectedEvent = [(ModuleEventsTableViewController *)sender getSelectedEvent];
+        
+        EventDetailsViewController *destination = segue.destinationViewController;
+        destination.event = selectedEvent;
+        
     }
     
 }
